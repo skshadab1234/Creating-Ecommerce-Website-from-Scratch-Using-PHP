@@ -3,23 +3,31 @@ require 'includes/session.php';
 require('config.php');
 include('smtp/PHPMailerAutoload.php');
 
+
 if(isset($_POST['stripeToken'])){
-	$uid = $user['id'];
-	$PriceTTSql= "SELECT SUM(prod_price) as TTPrice FROM `cart` WHERE user_id = '$uid'";
-	$PriceRes = mysqli_query($con, $PriceTTSql);
-	$priceRow = mysqli_fetch_assoc($PriceRes);
-	$actual_price = $priceRow['TTPrice'];
+    $uid = $user['id'];
+    $sql = "SELECT *, cart.id as cid FROM `cart` left join product_details on cart.product_id = product_details.id where cart.user_id = '$uid'";
+    $result = mysqli_query($con , $sql);
+    $actual_price = "";
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+        $price_totals = $actual_price.",";
+        $price_totals .= $row['product_price'] * $row['qty'];
+        $price_total_arr = explode(",", $price_totals);
+        $actual_price = array_sum($price_total_arr);
+    }
 
-	if($priceRow['TTPrice'] > 500) {
+    if($actual_price > 500) {
         $shipping_fee = 'Free';
-        $actual_price = $priceRow['TTPrice'];
-		$total_payable = $priceRow['TTPrice'] * 10000;
-	}else {
+        $actual_price = $actual_price;
+		$total_payable = $actual_price * 10000;
+    }else {
         $shipping_fee = 500;
-        $actual_price = $priceRow['TTPrice'] + 500;
-		$total_payable = ($priceRow['TTPrice'] + 500) * 10000;
-	}
-
+        $actual_price = $actual_price + 500;
+		$total_payable = ($actual_price + 500) * 10000;
+    }
+}   
+      
 	\Stripe\Stripe::setVerifySslCerts(false);
 
 	$token=$_POST['stripeToken'];
@@ -52,7 +60,20 @@ if(isset($_POST['stripeToken'])){
 	$created = $data['created'];
 	$card_id = $data['source']['id'];
 
-    prx($data);
+    // Increaing Total Sold Value in Product Details 
+    $product_ids = explode(",", $product_id);
+    $qty = explode(",", $qtys);
+    foreach($product_ids as $key => $val) {
+        $Sql = "SELECT * FROM product_details WHERE id = '$val'"; // retrieving last stock from this query
+        $resultant = mysqli_query($con, $Sql);
+        $row = mysqli_fetch_assoc($resultant);
+        
+        $total_sold = $row['total_sold'] + $qty[$key];
+        
+        $UpdateSql = "UPDATE product_details set total_sold = '$total_sold' where id = ".$row['id']."";
+        mysqli_query($con,$UpdateSql);
+        
+    }
 
 	$sql = "INSERT into payment_details(
 		Order_Id,
@@ -1016,10 +1037,12 @@ $html .= '<div class="u-row-container" style="padding: 0px;background-color: tra
 </body>
 
 </html>';
-	send_email($user['email'], $html, 'Order Confirmation');
+	    send_email($user['email'], $html, 'Order Confirmation');
 		$DeleteCart = "DELETE FROM cart where user_id = '".$user['id']."'";
 		mysqli_query($con, $DeleteCart);
 		unset($_SESSION['id_address_delivery']);
+
+        
 
 		redirect(FRONT_SITE_PATH.'order-confirmation?orderId='.$order_id);
 }else{

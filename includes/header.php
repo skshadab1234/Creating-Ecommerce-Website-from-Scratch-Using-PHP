@@ -20,6 +20,7 @@ $body_name = 'product';
 
 if ($page_url == FRONT_SITE_PATH || $page_url == FRONT_SITE_PATH.'index.php') {
     $title = 'PS Fashon Store';
+    $body_name = 'index';
 }elseif ($page_url == FRONT_SITE_PATH.'identity.php') {
     if (isset($_SESSION['UID'])) {
         $title = $user['firstname'].' '.$user['lastname'].' - Profile';
@@ -53,18 +54,21 @@ if ($page_url == FRONT_SITE_PATH || $page_url == FRONT_SITE_PATH.'index.php') {
     }else{
         $title = $user['firstname'].' '.$user['lastname'].' - Order Hstory';
     }
+}elseif ($page_url == FRONT_SITE_PATH.'wishlist.php') {
+    
+    if (isset($_SESSION['UID'])) {
+        $title = $user['firstname'].' '.$user['lastname'].' - Wishlist';
+    }else{
+        redirect(FRONT_SITE_PATH);
+    }
 }
-
 $base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .  $_SERVER['HTTP_HOST'];
 $url = $base_url . $_SERVER["REQUEST_URI"];
 
-
-
 ?>
 
-
 <!doctype html>
-<html lang="en">
+<html lang="en" id='ls-global'> 
 
 <head>
     <meta charset="utf-8">
@@ -887,7 +891,15 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
 
 <body id="<?= $body_name ?>"
     class="lang-en country-us currency-usd layout-full-width page-product tax-display-disabled product-id-3 product-cashmere-tank product-id-category-6 product-id-manufacturer-2 product-id-supplier-0 product-available-for-order home-1">
-
+    <div class="mfp-bg mfp-zoom-in mfp-ready" id="wish_error" style="display:none"></div>
+    <div class="mfp-wrap mfp-close-btn-in mfp-auto-cursor mfp-zoom-in mfp-ready" tabindex="-1"  style="display:none">
+    <div class="mfp-container mfp-s-ready mfp-inline-holder">
+        <div class="mfp-content" style="display: flex;justify-content: center;align-items: center;height: 100vh;position:absolute;left:0;top:0">
+            <div class="rb-popup-content rb-small-popup text-center">You must be logged. <a href="javascript:void(0)" id="add_wishlist_no_login">Sign in</a>
+            <button title="Close (Esc)" type="button" class="mfp-close">×</button>
+        </div>
+    </div>
+    <div class="mfp-preloader">Loading...</div></div></div>
 
         <!-- <div class="rb-loading" style="background: #f1f1f1;z-index: 1;">
             <div id="loadFacebookG">
@@ -1461,11 +1473,11 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
 
                                                 <!-- TPL wishlist -->
                                                 <div class="rb-id-wishlist">
-                                                    <a href="">
+                                                    <a href="<?= FRONT_SITE_PATH."wishlist" ?>">
                                                         <span class="rb-header-item">
                                                             <i class="fa fa-heart"></i>
                                                             <span class="title">Wishlist</span>
-                                                            <span class="rb-wishlist-quantity rb-amount-inline">0</span>
+                                                            <span class="rb-wishlist-quantity rb-amount-inline"><?= count(WishlistData($user['id'])) ?></span>
                                                         </span>
                                                     </a>
                                                 </div>
@@ -1492,7 +1504,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                         <div class="relative form-group">
                                                             <div class="icon-true">
                                                                 <input class="form-control" name="email" type="email"
-                                                                    value="" placeholder="Email" required="">
+                                                                     placeholder="Email" required="">
                                                                 <i class="material-icons">email</i>
                                                             </div>
                                                         </div>
@@ -1501,7 +1513,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                                 <div class="icon-true relative">
                                                                     <input
                                                                         class="form-control js-child-focus js-visible-password"
-                                                                        name="password" type="password" value=""
+                                                                        name="password" type="password"
                                                                         placeholder="Password" required="">
                                                                     <i class="material-icons">vpn_key</i>
                                                                 </div>
@@ -1603,25 +1615,6 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
 
                                                 </div>
                                                 <!-- TPL LOGIN -->
-
-                                                <!-- TPL wishlist -->
-
-                                                <!-- TPL LOGIN -->
-                                                <!-- End -->
-
-                                                <!-- End -->
-
-                                                <!-- TPL wishlist -->
-                                                <div class="rb-id-wishlist">
-                                                    <a href="">
-                                                        <span class="rb-header-item">
-                                                            <i class="fa fa-heart"></i>
-                                                            <span class="title">Wishlist</span>
-                                                            <span class="rb-wishlist-quantity rb-amount-inline">0</span>
-                                                        </span>
-                                                    </a>
-                                                </div>
-
 
                                                 <!-- <div id="language_selector" class="d-inline-block">
                                                     <div class="language-selector dropdown js-dropdown">
@@ -2277,22 +2270,16 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                 Information
                                             </span>
                                         </a>
-                                        <a id="addresses-link" href="">
+                                        <a id="addresses-link" href="<?= FRONT_SITE_PATH.'addresses' ?>">
                                             <span class="link-item">
                                                 <i class="fa fa-map-marker"></i>
                                                 Addresses
                                             </span>
                                         </a>
-                                        <a id="history-link" href="">
+                                        <a id="history-link" href="<?= FRONT_SITE_PATH.'order-history' ?>">
                                             <span class="link-item">
                                                 <i class="fa fa-calendar"></i>
                                                 Order history and details
-                                            </span>
-                                        </a>
-                                        <a id="discounts-link" href="">
-                                            <span class="link-item">
-                                                <i class="fa fa-tag"></i>
-                                                Vouchers
                                             </span>
                                         </a>
 

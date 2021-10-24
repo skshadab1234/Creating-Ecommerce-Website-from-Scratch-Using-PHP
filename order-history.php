@@ -223,7 +223,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="text-xs-right line-products">
-                                        <td colspan="3">Subtotal</td>
+                                        <td colspan="4">Subtotal</td>
                                         <?php
                                             if ($row['delivery_charge'] == 'Free') {
                                                 $subtotal = $row['amount_captured'];
@@ -235,19 +235,19 @@
                                         <td><?= "₹ ".$subtotal ?></td>
                                     </tr>
                                     <tr class="text-xs-right line-shipping">
-                                        <td colspan="3">Shipping and handling</td>
+                                        <td colspan="4">Shipping and handling</td>
                                         <?php
-                                                        if ($row['delivery_charge'] == 'Free') {
-                                                            $shipping_fee = '<span style="color:green">Free</span>';
-                                                        }else{
-                                                            $shipping_fee = "₹ 500";
-                                                        }
-                                                    ?>
+                                            if ($row['delivery_charge'] == 'Free') {
+                                                $shipping_fee = '<span style="color:green">Free</span>';
+                                            }else{
+                                                $shipping_fee = "₹ 500";
+                                            }
+                                        ?>
                                         <td><?= $shipping_fee ?></td>
                                     </tr>
                                     
                                     <tr class="text-xs-right line-total">
-                                        <td colspan="3">Total</td>
+                                        <td colspan="4">Total</td>
                                         <td>₹ <?= $row['amount_captured'] ?></td>
                                     </tr>
                                 </tfoot>
@@ -447,7 +447,7 @@
                                                     ?>
                                 <tr>
                                     <th scope="row"><?= $row['Order_Id'] ?></th>
-                                    <td><?= date("d-m-Y", $row['created']) ?></td>
+                                    <td><?= date("d-m-Y h:i A", $row['created']) ?></td>
                                     <td class="text-xs-right">₹ <?= $row['amount_captured'] ?></td>
                                     <td class="hidden-md-down">By Card</td>
                                     <td>

@@ -8,14 +8,13 @@
 
 <div class="">
     <div class="row">
-        <div id="content-wrapper" class="col-lg-12 col-xs-12">  
+        <div id="content-wrapper" class="col-lg-12 col-xs-12">
             <section id="main">
                 <section id="content" class="page-content card card-block">
                     <div id="rb" class="rb">
                         <div id="rb" class="rb">
                             <div id="rb-inner">
                                 <div id="rb-section-wrap">
-                                    
                                     <div class="column-5 rb-section rb-element rb-element-qd5ri7o rb-top-section rb-section-boxed rb-section-height-default rb-section-height-default"
                                         data-element_type="section">
                                         <div class="container container-large rb-container rb-column-gap-default">
@@ -46,6 +45,20 @@
                                                                                             $ProductImageById = ProductImageById($productdata['id'], 'limit 2');
                                                                                             array_unshift($ProductImageById,"");
                                                                                             unset($ProductImageById[0]);
+
+                                                                                            $ProductSizes = $productdata['product_size'];
+                                                                                            $sizes = explode(",", $ProductSizes);
+                                                                                            
+
+                                                                                            $DiscountPercentage  =  100 - (($productdata['product_price'] / $productdata['product_oldPrice']) * 100) ;
+                                                                                            $DiscountPercentage = floor($DiscountPercentage);
+
+                                                                                            if($DiscountPercentage > 50) {
+                                                                                                $changeDiscountColor = 'green';
+                                                                                            }else{
+                                                                                                $changeDiscountColor = 'red';
+                                                                                            }
+
                                                                                             ?>
                                                                                     <article
                                                                                         class="product-miniature js-product-miniature col-xl-2-4 col-lg-3 col-md-4 col-sm-6 col-xs-6 col-sp-12"
@@ -76,42 +89,182 @@
 
                                                                                                 <ul
                                                                                                     class="product-flags">
-                                                                                                    <li
-                                                                                                        class="product-flag discount">
-                                                                                                        -20%
+                                                                                                    <?php
+                                                                                                    
+                                                                                                        if(RemainingStock($productdata['id']) == '<span style="color:red">Out of Stock</span>')   {
+                                                                                                            ?>
+                                                                                                    <li class="product-flag discount"
+                                                                                                        style="color: red">
+                                                                                                        <?= RemainingStock($productdata['id']) ?>
                                                                                                     </li>
+                                                                                                    <?php
+                                                                                                        }else{
+                                                                                                            ?>
+                                                                                                    <li class="product-flag discount"
+                                                                                                        style="color: <?= $changeDiscountColor ?>">
+                                                                                                        <?= $DiscountPercentage."%" ?>
+                                                                                                    </li>
+                                                                                                    <?php
+                                                                                                        }
+
+                                                                                                        ?>
                                                                                                 </ul>
 
 
-                                                                                                <div
-                                                                                                    class="rb-ajax-loading">
+
+                                                                                                <?php
+                                                                                                    if(isset($_SESSION['UID'])) {
+                                                                                                       ?>
+                                                                                                <div class="rb-wishlist">
                                                                                                     <div
-                                                                                                        class="cssload-container">
+                                                                                                        class="dropdown rb-wishlist-dropdown ">
+                                                                                                        <button
+                                                                                                            class="rb-wishlist-button rb-btn-product show-list btn-product btn rb_added" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                                                            <span class="rb-wishlist-content">
+                                                                                                                <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                                                                                                                <span class="icon-title">Add to Wishlist</span>
+                                                                                                            </span>
+                                                                                                        </button>
                                                                                                         <div
-                                                                                                            class="cssload-speeding-wheel">
+                                                                                                            class="dropdown-menu rb-list-wishlist rb-list-wishlist-4">
+                                                                                                            <?php
+                                                                                                                $WishlistData = WishlistData($user['id']);
+                                                                                                                
+                                                                                                                foreach($WishlistData as $key => $val){
+                                                                                                                    $ProductSizes = $productdata['product_size'];
+                                                                                                                    $sizes = explode(",", $ProductSizes);
+                                                                                                                    
+                                                                                                                    // Convert Product from string to array 
+                                                                                                                    $productFromWishlist = explode(",", $val['wishlist_prod_id']);
+                                                                                                                    
+                                                                                                                    if (in_array($productdata['id'], $productFromWishlist)) {
+                                                                                                                        $icon = 'fa fa-check';
+                                                                                                                        $css_wish_id = 'color:green;pointer-events:none';
+                                                                                                                    }else{
+                                                                                                                        $icon = 'icon-btn-product icon-wishlist icon-Icon_Wishlist';
+                                                                                                                        $css_wish_id = '';
+                                                                                                                    }
+                                                                                                                    ?>
+                                                                                                                         <a href="javascript:void(0)"
+                                                                                                                            onclick = "AddtoWishList('<?= $val['id'] ?>', '<?= $productdata['id'] ?>', '<?= $sizes['0'] ?>')"
+                                                                                                                            class="rb-wishlist-link dropdown-item list-group-item list-group-item-action wishlist-item rb_added<?= $val['id'].'_'.$productdata['id'] ?> " 
+                                                                                                                            title="Remove from Wishlist" style= "<?= $css_wish_id ?>"> 
+                                                                                                                            <i class="<?= $icon ?>"></i>
+                                                                                                                            <?= $val['wishlist_name'] ?>
+                                                                                                                        </a>                 
+                                                                                                                    <?php
+                                                                                                                }
+                                                                                                            ?>
+                                                                                                      
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
+                                                                                                <?php
+                                                                                                    }else{
+                                                                                                        ?>
+                                                                                                    <div class="rb-wishlist"> 
+                                                                                                        <a href="javascript:void(0)"  class="no_login_wishlist_2"> 
+                                                                                                            <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                                                                                                        </a>
+                                                                                                    </div>
+                                                                                                <?php
+                                                                                                    }
+                                                                                                ?>
+
 
                                                                                                 <div
-                                                                                                    class="rb-wishlist">
-                                                                                                    <a class="rb-wishlist-link rb-btn-product "
-                                                                                                        href="#"
-                                                                                                        data-id-wishlist=""
-                                                                                                        data-id-product="1"
-                                                                                                        data-id-product-attribute="1"
-                                                                                                        data-id_wishlist_product="0"
-                                                                                                        title="Add to Wishlist">
-                                                                                                        <i
-                                                                                                            class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
-                                                                                                        <span
-                                                                                                            class="icon-title">Add
-                                                                                                            to
-                                                                                                            Wishlist</span>
-                                                                                                    </a>
+                                                                                                    class="functional-buttons clearfix">
+
+                                                                                                    <?php
+                                                                                                       if(RemainingStock($productdata['id']) == '<span style="color:red">Out of Stock</span>')   {
+                                                                                                           
+                                                                                                       }else{
+                                                                                                        ?>
+                                                                                                    <div
+                                                                                                        class="product-add-cart">
+                                                                                                        <!-- begin /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/rbthemefunction/views/templates/hook/rb-cart.tpl -->
+                                                                                                        <div
+                                                                                                            class="product-add-to-cart-rb">
+
+                                                                                                            <div
+                                                                                                                class="product-quantity">
+                                                                                                                <div
+                                                                                                                    class="add">
+                                                                                                                    <button
+                                                                                                                        class="btn rb-btn-product add-to-cart"
+                                                                                                                        title="Add to cart"
+                                                                                                                        onclick="addtoCart('<?= $productdata['id'] ?>', '<?= $user['id'] ?>', '1',  '<?= $productdata['product_price'] ?>', '<?= $sizes['0'] ?>')">
+                                                                                                                        <i
+                                                                                                                            class="icon-Ico_Cart"></i>
+                                                                                                                        <span
+                                                                                                                            class="icon-title">Add
+                                                                                                                            To
+                                                                                                                            Cart</span>
+                                                                                                                    </button>
+
+
+                                                                                                                    <span
+                                                                                                                        class="product-availability hidden">
+                                                                                                                    </span>
+
+                                                                                                                </div>
+                                                                                                            </div>
+
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div
+                                                                                                        class="product-quickview hidden-sm-down">
+                                                                                                        <a class="rb-quick-view rb-btn-product"
+                                                                                                            href="javascript:void(0)"
+                                                                                                            data-link-action="quickview"
+                                                                                                            onclick="quickviewaction('<?= $productdata['id'] ?>')">
+                                                                                                            <i
+                                                                                                                class="icon-Icon_Quick-view"></i>
+                                                                                                            <span
+                                                                                                                class="icon-title">Quick
+                                                                                                                view</span>
+                                                                                                        </a>
+                                                                                                    </div>
+
+                                                                                                    <div class="product-quick-view"
+                                                                                                        style="display:none;">
+                                                                                                        <a class="quick-view rb-btn-product"
+                                                                                                            href="#"
+                                                                                                            data-link-action="quickview">
+                                                                                                            <i
+                                                                                                                class="icon-Icon_Quick-view search"></i>
+                                                                                                            <span
+                                                                                                                class="icon-title">Quick
+                                                                                                                view</span>
+                                                                                                        </a>
+                                                                                                    </div>
+                                                                                                    <?php
+                                                                                                       }
+                                                                                                    ?>
+
+
+
+
+
+
+
+
+                                                                                                    <div
+                                                                                                        class="product-compare">
+                                                                                                        <a href=""
+                                                                                                            data-id_product="1"
+                                                                                                            title="Product Comparison"
+                                                                                                            class="rb-compare-link rb-btn-product "
+                                                                                                            rel="nofollow">
+                                                                                                            <i
+                                                                                                                class="icon-Icon_Compare"></i>
+                                                                                                            <span
+                                                                                                                class="icon-title">Add
+                                                                                                                Compare</span>
+                                                                                                        </a>
+                                                                                                    </div>
+
                                                                                                 </div>
-
-
 
                                                                                             </div>
 
@@ -119,9 +272,9 @@
                                                                                             <div class="product-meta">
                                                                                                 <h2 class="h3 product-title"
                                                                                                     itemprop="name">
-                                                                                                    <a href="https://rubiktheme.com/demo/rb_evo_demo/en/polo-shirts/1-1-hummingbird-printed-t-shirt.html#/1-size-s/8-color-white"
+                                                                                                    <a href="<?= FRONT_SITE_PATH.'product-details?productname='.urlencode($productdata['product_name']) ?>"
                                                                                                         itemprop="url"
-                                                                                                        content="https://rubiktheme.com/demo/rb_evo_demo/en/polo-shirts/1-1-hummingbird-printed-t-shirt.html#/1-size-s/8-color-white">
+                                                                                                        content="<?= FRONT_SITE_PATH.'product-details?productname='.urlencode($productdata['product_name']) ?>">
                                                                                                         <?= $productdata['product_name'] ?></a>
                                                                                                 </h2>
 
@@ -129,10 +282,12 @@
                                                                                                     class="product-price-and-shipping">
                                                                                                     <span
                                                                                                         class="regular-price"
-                                                                                                        aria-label="Regular price">₹ <?= $productdata['product_oldPrice'] ?></span>
+                                                                                                        aria-label="Regular price">₹
+                                                                                                        <?= $productdata['product_oldPrice'] ?></span>
 
                                                                                                     <span class="price"
-                                                                                                        aria-label="Price">₹ <?= $productdata['product_price'] ?></span>
+                                                                                                        aria-label="Price">₹
+                                                                                                        <?= $productdata['product_price'] ?></span>
                                                                                                     <div itemprop="offers"
                                                                                                         itemscope
                                                                                                         itemtype="http://schema.org/Offer"

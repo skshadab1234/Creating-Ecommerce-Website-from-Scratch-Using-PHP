@@ -42,7 +42,7 @@ function send_email($email,$html,$subject){
 	$mail->SMTPSecure="tls";
 	$mail->SMTPAuth=true;
 	$mail->Username="ks615044@gmail.com";
-	$mail->Password="Shadabloveparveen1!";
+	$mail->Password="Your_Passowrd";
 	$mail->setFrom("ks615044@gmail.com");
 	$mail->addAddress($email);
 	$mail->IsHTML(true);
@@ -167,6 +167,51 @@ function CalculateTotalProductBuying($uid){
 
 
 }
+
+
+function RemainingStock($id) {
+	global $con;
+
+	$ProductDetails = ProductDetails("Where id = '$id'");
+	$ProductDetails = $ProductDetails[0];
+
+	$remaining_stock = $ProductDetails['total_stock'] - $ProductDetails['total_sold'];
+	
+	if($remaining_stock == 0) {
+		$remains = '<span style="color:red">Out of Stock</span>';
+	}
+	else if($remaining_stock < 10) {
+		$remains = '<span style="color:red">Hurry up, Only '.$remaining_stock.' Remains in Stock</span>';
+	}
+	else if($remaining_stock < 100) {
+		$remains = '<span style="color:red">Only '.$remaining_stock.' Remains , Order Fast</span>';
+	}else{
+		$remains = number_format($remaining_stock)." Items";
+	}
+
+	return $remains;
+}
+
+
+function WishlistData($uid) {
+	global $con;
+	$data = array();
+	$Sql = "Select * from wishlist Where user_id = '$uid'";
+	$res = mysqli_query($con, $Sql);
+
+	if (mysqli_num_rows($res) > 0)  {
+		while ($row = mysqli_fetch_assoc($res)) {
+			$data[] = $row;
+		}
+	}
+
+	return $data;
+}
+
+
+
+
+
 
 
 

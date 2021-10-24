@@ -10,10 +10,10 @@ if(isset($_POST['email']) && $_POST['email'] != '' && isset($_POST['password']) 
     $password = get_safe_value($_POST['password']);
 
     $query = "SELECT * FROM users WHERE email = '$email'";
-    $result = mysqli_query($con, $query);
-    if (mysqli_num_rows($result) > 0)
+    $results = mysqli_query($con, $query);
+    if (mysqli_num_rows($results) > 0)
     {
-        while ($row = mysqli_fetch_assoc($result))
+        while ($row = mysqli_fetch_assoc($results))
         {
             if (password_verify($password, $row["password"]))
             {
@@ -43,8 +43,22 @@ if(isset($_POST['email']) && $_POST['email'] != '' && isset($_POST['password']) 
 
                             }
                         }
-                        
+
                     }
+
+                    
+                    // Creating Wishlist Default For User When Logining First Time 
+                    $WishlistSql = "Select * from wishlist where user_id = '$user_id' && default_id = '1'";
+                    $WishlistRes = mysqli_query($con, $WishlistSql);
+
+                    if (mysqli_num_rows($WishlistRes) > 0) {
+                        // Wishlist Already Created 
+
+                    }else{
+                        $date_wishlist =  date("Y-m-d H:i:s");
+                        mysqli_query($con, "INSERT into wishlist (user_id, wishlist_name, wishlist_prod_id, default_id, added_on) VALUES('$user_id', 'My Wishlist', '', '1', '".$date_wishlist."')");
+                    }
+                    
 
                     $arr = array(
                         'status' => 'success',
@@ -153,7 +167,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
         $_SESSION['cart'][$prod_id.','.$prod_size]['prod_qty'] = $prod_qty;
 
        
-       $sql = "SELECT * FROM product_details WHERE id = '$prod_id'";
+        $sql = "SELECT * FROM product_details WHERE id = '$prod_id'";
         $res = mysqli_query($con, $sql);
         $row = mysqli_fetch_assoc($res);
 
@@ -270,6 +284,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
         }
     
     }
+    
     echo json_encode($arr);
     
 }
@@ -297,31 +312,32 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
     
                 $sum += $_SESSION['cart'][$key]['prod_price'];
 
-                $cart_product .= '<li>
-                <div class="cart-product-line no-gutters align-items-center">
-                    <span class="product-image media-middle">
-                        <a href=""><img
-                                src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
-                                alt="'.$row['product_name'].'" class="img-fluid"></a>
-                    </span>
-                    <div class="product-info">
-                        <a class="product-name" href="'.FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name']).'">'.$row['product_name'].'</a>
-                        <div class="product-attributes text-muted pb-1">
-                            <div class="product-line-info">
-                                <span class="label">Size :</span>
-                                <span class="value">'.$get_pid_size['1'].'</span>
+                $cart_product .= '
+                <li>
+                    <div class="cart-product-line no-gutters align-items-center">
+                        <span class="product-image media-middle">
+                            <a href=""><img
+                                    src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
+                                    alt="'.$row['product_name'].'" class="img-fluid"></a>
+                        </span>
+                        <div class="product-info">
+                            <a class="product-name" href="'.FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name']).'">'.$row['product_name'].'</a>
+                            <div class="product-attributes text-muted pb-1">
+                                <div class="product-line-info">
+                                    <span class="label">Size :</span>
+                                    <span class="value">'.$get_pid_size['1'].'</span>
+                                </div>
+                            </div>
+                            <div class="product-price-quantity">
+                                <span class="text-muted">'.$val['prod_qty'].' x</span>
+                                <span class="product-price">'.$val['prod_price'].'</span>
                             </div>
                         </div>
-                        <div class="product-price-quantity">
-                            <span class="text-muted">'.$val['prod_qty'].' x</span>
-                            <span class="product-price">'.$val['prod_price'].'</span>
+                        <div class="remove-cart">
+                        <a>₹ '.$val['prod_price'].'</a>
                         </div>
                     </div>
-                    <div class="remove-cart">
-                    <a>₹ '.$val['prod_price'].'</a>
-                    </div>
-                </div>
-            </li>';
+                </li>';
 
             }
             
@@ -338,6 +354,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
             }
 
                 $cart_products_count = 'There are '.$CartTotal.' items in your cart.';
+                
                 $arr = array(
                     'status'=>'success', 
                     'cart_products_count' => $cart_products_count,  
@@ -352,18 +369,22 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
         }
 
     }else {
-
         $sql = "SELECT *, cart.id as cid FROM `cart` left join product_details on cart.product_id = product_details.id where cart.user_id = '$uid'";
         $result = mysqli_query($con , $sql);
         
         $cart_product = '';
         $product_payment_section = '';
         $detaills_page_data = '';
+        $price_total = "";
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $ProductImageById = ProductImageById($row['id'], 'limit 1');
                 array_unshift($ProductImageById,"");
                 unset($ProductImageById[0]);
+                $price_total = $price_total.",";
+                $price_total .= $row['product_price'] * $row['qty'];
+                $price_total_arr = explode(",", $price_total);
+                $price_total = array_sum($price_total_arr);
 
                 $cart_product .= '<li>
                                     <div class="cart-product-line no-gutters align-items-center">
@@ -391,8 +412,8 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
                                     </div>
                                 </li>';
 
-            // For Checkout Page Payment Section Confirmation 
-            $product_payment_section .= '
+                // For Checkout Page Payment Section Confirmation 
+                $product_payment_section .= '
                 <div class="order-line row">
                     <div class="col-sm-2 col-xs-3">
                         <span class="image">
@@ -402,7 +423,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
                     </div>
                     <div class="col-sm-4 col-xs-9 details">
                         <a href="'.FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name']).'"
-                            target="_blank"> <span>'.$row['product_name'].'</span>
+                            target="_blank"> <span>'.$row['product_name'].' <br> (Size - '.$row['size'].')</span>
                         </a>
                     </div>
                     <div class="col-sm-6 col-xs-12 qty">
@@ -443,17 +464,13 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
             }
 
             $cart_products_count = 'There are '.$CartTotal.' items in your cart.';
-            $PriceTTSql= "SELECT SUM(prod_price) as TTPrice FROM `cart` WHERE user_id = '$uid'";
-            $PriceRes = mysqli_query($con, $PriceTTSql);
-            $priceRow = mysqli_fetch_assoc($PriceRes);
-            $price_total  = '₹ '.$priceRow['TTPrice'];
             
-            if($priceRow['TTPrice'] > 500) {
+            if($price_total > 500) {
                 $shipping_price = '<span style="color:green">Free</span>';
-                $total_payable = '₹ '.$priceRow['TTPrice'];
+                $total_payable = '₹ '.$price_total;
             }else {
                 $shipping_price = '₹ 500';
-                $total_payable = '₹ '.($priceRow['TTPrice'] + 500);
+                $total_payable = '₹ '.($price_total + 500);
             }
 
 
@@ -464,7 +481,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
                         'cart_product' => $cart_product, 
                         'cart_products_count' => $cart_products_count, 
                         'cart_total' => $CartTotal, 
-                        'price_total' => $price_total, 
+                        'price_total' => '₹ '.$price_total, 
                         'shipping_price' => $shipping_price,
                         'total_payable' => $total_payable,
                         'product_payment_section' => $product_payment_section,
@@ -475,7 +492,6 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
             $arr = array('status'=>'error', 'msg' => 'There are no more items in your cart');
             
         }
-        
 
     }   
 
@@ -521,7 +537,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['data'])) {
                                 <div
                                     class=\"product-line-grid-body col-md-5 col-sm-5 col-xs-12\">
                                     <div class=\"product-line-info\">
-                                        <a class=\"label\" href=\"\"
+                                        <a class=\"label\" href=\"".FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name'])."\"
                                             data-id_customization=\"0\">".$row['product_name']."</a>
                                     </div>
     
@@ -573,7 +589,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['data'])) {
                                             class=\"col-md-2 col-sm-3 col-xs-2 text-xs-right\">
                                             <div class=\"cart-line-product-actions\">
                                                 <a class=\"remove-from-cart\"
-                                                    rel=\"nofollow\" href=\"#\" onclick=\"delete_product_from_cart('$id',".$row['id'].",'$size')\">
+                                                    rel=\"nofollow\" href=\"javascript:void(0)\" onclick=\"delete_product_from_cart('$id',".$row['id'].",'$size')\">
                                                     <i
                                                         class=\"fa fa-trash-o float-xs-left\"></i>
                                                 </a>
@@ -619,7 +635,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['data'])) {
                                     <div
                                         class=\"product-line-grid-body col-md-5 col-sm-5 col-xs-12\">
                                         <div class=\"product-line-info\">
-                                            <a class=\"label\" href=\"\"
+                                            <a class=\"label\" href=\"".FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name'])."\"
                                                 data-id_customization=\"0\">".$row['product_name']."</a>
                                         </div>
     
@@ -723,7 +739,7 @@ function onChangeFunctionNoLogin(value, id, size, curr_price) {
         success: (res) => {
             getCartDetails();
             var json_arr = $.parseJSON(res);
-            $("#product"+id+""+size+" strong").html("₹ " + json_arr.updated_price);
+            $("#product" + id + "" + size + " strong").html("₹ " + json_arr.updated_price);
         }
     })
 }
@@ -830,6 +846,543 @@ elseif (isset($_POST['CARTTOTALDAILY']) && $_POST['CARTTOTALDAILY'] != '') {
     echo $CartTotal;
 }
 
+elseif (isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['quickview'])) {
+    $prod_id = get_safe_value($_POST['prod_id']);
+    $ProductDetails =  ProductDetails('left join brands on product_details.product_brand = brands.bid where id = "'.$prod_id.'"');
+    $ProductDetails = $ProductDetails[0];
+    $DiscountPercentage = 100 - (($ProductDetails['product_price'] / $ProductDetails['product_oldPrice']) * 100) ;
+    $DiscountPercentage = floor($DiscountPercentage);
+    if($DiscountPercentage > 50) {
+        $changeDiscountColor = 'green';
+    }else{
+        $changeDiscountColor = 'red';
+    }
+    ?>
+<style>
+.has-discount .discount {
+    border: 2px solid <?=$changeDiscountColor ?>;
+    color: <?=$changeDiscountColor ?>;
+}
+
+.has-discount .discount:before {
+    border: 13px solid <?=$changeDiscountColor ?>;
+    border-right-color: transparent;
+}
+</style>
+<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 col-sp-12">
+
+    <section class="page-content" id="content_quick_view">
+
+        <div class="images-container">
+            <div class="product-cover product-img-slick">
+                <?php
+                        $ProductImageById = ProductImageById($prod_id);
+                        array_unshift($ProductImageById,"");
+                        unset($ProductImageById[0]);
+                        foreach ($ProductImageById as $key => $value) {
+                            ?>
+
+                <img class="images-zoom" data-zoom-image="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
+                    data-src="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
+                    data-zoom="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
+                    src="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>" style="width:100%">
+                <?php
+                    }
+                ?>
+            </div>
 
 
 
+            <div id="rb_gallery" class="product-img-slick">
+
+                <?php
+                        foreach ($ProductImageById as $key => $value) {
+                            ?>
+                <a class="thumb-container" href="javascript:void(0)"
+                    data-image="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
+                    data-zoom-image="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>">
+                    <img class="img img-thumb" id="rb_img_1"
+                        src="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>" />
+                </a>
+                <?php 
+                        }
+                        ?>
+
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<div class="col-md-6 col-sm-6">
+    <h1 class="h1"><?= $ProductDetails['product_name'] ?></h1>
+
+    <div class="product-prices">
+        <div class="product-discount">
+
+            <span class="regular-price">₹ <?= $ProductDetails['product_oldPrice'] ?></span>
+        </div>
+
+        <div class="product-price h5 has-discount" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+            <link itemprop="availability" href="https://schema.org/InStock">
+            <meta itemprop="priceCurrency" content="INR">
+
+            <div class="current-price">
+                <span itemprop="price" content="<?= $ProductDetails['product_price'] ?>">₹
+                    <?= $ProductDetails['product_price'] ?></span>
+
+                <span class="discount discount-percentage"><?= $DiscountPercentage.'%' ?></span>
+            </div>
+
+        </div>
+
+
+        <div class="tax-shipping-delivery-label">
+        </div>
+
+        <div class="product-attributes-label">
+            <div class="product-manufacturer">
+                <label class="label">Brand:</label>
+
+                <a href="<?= FRONT_SITE_PATH.'brand?brand_name='.$ProductDetails['brand_name'] ?>">
+                    <img src="<?= FRONT_SITE_IMAGE_BRAND.$ProductDetails['brand_img'] ?>"
+                        class="img img-thumbnail manufacturer-logo" alt="<?= $ProductDetails['brand_name'] ?>">
+                </a>
+
+            </div>
+
+            <div class="product-quantities">
+                <label class="label">In stock</label>
+                <span data-stock="278" data-allow-oosp="0"><?= number_format($ProductDetails['total_stock']    ) ?>
+                    Items</span>
+            </div>
+
+        </div>
+
+        <div id="product-availability">
+        </div>
+
+    </div>
+
+
+    <div id="product-description-short" itemprop="description">
+        <p><?= $ProductDetails['product_desc_short'] ?></p>
+    </div>
+
+
+    <div class="product-actions">
+        <!-- begin /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
+        <div class="cssload-container rb-ajax-loading">
+            <div class="cssload-double-torus"></div>
+        </div>
+        <!-- end /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
+        <form action="" method="post" id="add-to-cart-product">
+            <input type="hidden" name='prod_id' value="<?= $ProductDetails['id'] ?>">
+            <input type="hidden" name='user_id' value="<?= $user['id'] ?>">
+            <input type="hidden" name='prod_price' value="<?= $ProductDetails['product_price'] ?>">
+
+            <div class="product-variants">
+                <div class="clearfix product-variants-item">
+                    <span class="control-label">Size</span>
+                    <ul id="group_3">
+                        <?php
+                                $ProductSizes = $ProductDetails['product_size'];
+                                
+                                $sizeExtract = explode(', ', $ProductSizes);
+                                foreach ($sizeExtract as $key => $value) {
+                                    // Hitting Check at inital Size 
+                                    if ($key == 0) {
+                                        $checked = "checked='checked'";
+                                    }else {
+                                        $checked = '';
+                                    }
+                                        ?>
+                        <li class="input-container float-xs-left instock">
+                            <label>
+                                <input class="input-radio" type="radio" name="check_sizes" value="<?= $value ?>"
+                                    title="<?= $value ?>" required <?= $checked ?>>
+                                <span class="radio-label"><?= $value ?></span>
+                            </label>
+                        </li>
+                        <?php
+                                            }
+                                            ?>
+                    </ul>
+                </div>
+            </div>
+            <section class="product-discounts">
+            </section>
+
+            <div class="product-add-to-cart">
+
+                <div class="product-quantity clearfix">
+                    <div class="qty">
+                        <span class="control-label hidden-xl-down">Quantity</span>
+                        <div class="input-group bootstrap-touchspin">
+                            <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
+                            <input type="text" name="qty" id="quantity_wanted" value="1"
+                                class="input-group form-control" min="1" aria-label="Quantity" style="display: block;">
+                            <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
+                            <span class="input-group-btn-vertical">
+                                <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
+                                    <i class="material-icons touchspin-up"></i>
+                                </button>
+                                <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
+                                    <i class="material-icons touchspin-down"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="add">
+                        <button class="btn btn-primary add-to-cart" type="submit">
+                            <i class="rub-shopping-cart"></i>
+                            Add to cart
+                        </button>
+                        <div class="page-loading-overlay add-to-cart-loading"></div>
+                    </div>
+                </div>
+        </form>
+        <div class="compare-wishlist-button">
+            <div class="rb-wishlist">
+                <div class="dropdown rb-wishlist-dropdown">
+            
+                <button class="rb-wishlist-button rb-btn-product show-list btn-product btn rb_added"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-id-wishlist="9"
+                        data-id-product="4" data-id-product-attribute="16">
+                        <span class="rb-wishlist-content">
+                            <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                            <span class="icon-title">Add to Wishlist</span>
+                        </span>
+                </button>
+                <div class="dropdown-menu rb-list-wishlist rb-list-wishlist-4">
+                <?php
+                    $WishlistData = WishlistData($user['id']);
+                    
+                    foreach($WishlistData as $key => $val){
+                        $ProductSizes = $ProductDetails['product_size'];
+                        $sizes = explode(",", $ProductSizes);
+                        
+                        // Convert Product from string to array 
+                        $productFromWishlist = explode(",", $val['wishlist_prod_id']);
+                        
+                        if (in_array($ProductDetails['id'], $productFromWishlist)) {
+                            $icon = 'fa fa-check';
+                            $css_wish_id = 'color:green;pointer-events:none';
+                        }else{
+                            $icon = 'icon-btn-product icon-wishlist icon-Icon_Wishlist';
+                            $css_wish_id = '';
+                        }
+                    ?>
+            
+                    
+                        <a href="javascript:void(0)"
+                            onclick = "AddtoWishList('<?= $val['id'] ?>', '<?= $ProductDetails['id'] ?>', '<?= $sizes['0'] ?>')"
+                            class="rb-wishlist-link dropdown-item list-group-item list-group-item-action wishlist-item rb_added<?= $val['id'].'_'.$ProductDetails['id'] ?> " 
+                            title="Remove from Wishlist" style= "<?= $css_wish_id ?>"> 
+                            <i class="<?= $icon ?>"></i>
+                            <?= $val['wishlist_name'] ?>
+                        </a>
+                       <?php
+                       }
+                       ?>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+
+    </div>
+
+    <script>
+    $("#add-to-cart-product").submit((e) => {
+        e.preventDefault();
+        var data = $("#add-to-cart-product").serialize();
+
+        $.ajax({
+            url: 'ajax_call.php',
+            type: 'post',
+            data: data,
+            success: (res) => {
+                // caliing getCartDetails function to get details when we click add to cart button 
+                getCartDetails();
+
+                var json_arr = $.parseJSON(res);
+                $("#quickview-modal-3-13").removeClass("quickview in");
+                $("#quickview-modal-3-13").css({
+                    "display": "none"
+                });
+
+                setTimeout(() => {
+
+                    $("#blockcart-modal-wrap").show();
+                    $("#blockcart-modal").show();
+
+                    if (json_arr.status = 'logged') {
+                        $("#blockcart-modal .modal-content .modal-header .modal-title")
+                            .html(json_arr.modal_title);
+                        $("#blockcart-modal .modal-content .modal-body").html(json_arr.msg);
+                        $(".cart-products-count-btn").html(json_arr.Cart_Total);
+                    } else {
+                        $("#blockcart-modal .modal-content .modal-body").html(json_arr.msg);
+                        $(".cart-products-count-btn").html(json_arr.Cart_Total);
+                    }
+
+                }, 1000);
+
+            }
+        });
+    })
+
+    var quantity = $("#quantity_wanted").val();
+    $(".bootstrap-touchspin-up").click(() => {
+        quantity++;
+        if (quantity > 0) {
+            $("#quantity_wanted").val(quantity)
+        }
+    });
+
+    $(".bootstrap-touchspin-down").click(() => {
+        quantity--;
+        if (quantity > 0) {
+            $("#quantity_wanted").val(quantity)
+        }
+    });
+    </script>
+
+</div>
+
+
+</div>
+<?php
+}
+
+elseif (isset($_POST['show_wishlist'])) {
+    $uid = $_SESSION['UID'];
+
+    $SQL = "SELECT * FROM wishlist WHERE user_id = '$uid'";
+    $res = mysqli_query($con, $SQL);
+    
+    ?>
+<div class="rb-list-wishlist">
+    <table class="table table-striped">
+        <thead class="wishlist-table-head">
+            <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th class="wishlist-datecreate-head">Created</th>
+                <th>View Link</th>
+                <th>Default</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <?php
+                    if (mysqli_num_rows($res) > 0) {
+                        while ($row = mysqli_fetch_assoc($res)) {
+                            $products = explode(",",  $row['wishlist_prod_id']);
+                            if(empty($products['0'])){
+                                $count = 0;
+                            }else{
+                                $count = count($products);
+                            }
+
+                            if($row['default_id'] == 1) {
+                                $checked = 'checked="checked" disabled';
+                                $message = 'Default Wishlist Cannot be deleted';
+                            }else{
+                                $checked = ' ';
+                                $message = '<a class="delete-wishlist" href="javascript:void(0)" onclick="DeleteWishlist('.$row['id'].')" title="Delete"><i class="material-icons">&#xE872;</i></a>';
+                            }
+                    ?>
+
+            <tr>
+                <td>
+                    <!-- begin /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
+                    <div class="cssload-container rb-ajax-loading">
+                        <div class="cssload-double-torus"></div>
+                    </div>
+                    <!-- end /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
+                    <a href="javascript:void(0)" class="view-wishlist-product" data-name-wishlist="My wishlist"><i
+                            class="material-icons">&#xE8EF;</i><?= $row['wishlist_name'] ?></a>
+                </td>
+
+                <td class="wishlist-numberproduct wishlist-numberproduct-5">
+                    <?=  $count   ?>
+                </td>
+
+                <td class="wishlist-datecreate"><?= date("d M, Y h:i A", strtotime($row['added_on'])) ?></td>
+
+                <td>
+                    <a class="view-wishlist" target="_blank"
+                        href="<?= FRONT_SITE_PATH."wishlist?viewList=".$row['id']."" ?>" title="View">View</a>
+                </td>
+
+                <td>
+                    <label class="form-check-label">
+                        <input class="default-wishlist form-check-input" <?= $checked ?>
+                            onclick="DefaultWishlist('<?= $row['id'] ?>')" type="checkbox">
+                    </label>
+
+                </td>
+
+                <td>
+                    <?= $message ?>
+                </td>
+            </tr>
+
+
+
+            <?php
+            }
+        }
+                ?>
+
+            <script>
+            function DefaultWishlist(wish_id) {
+                var setDefaultWishlist = 'setDefaultWishlist';
+                $.ajax({
+                    url: 'ajax_call.php',
+                    type: "post",
+                    data: {
+                        setDefaultWishlist: setDefaultWishlist,
+                        wish_id: wish_id
+                    },
+                })
+            }
+
+            // Delete Wishlist 
+            function DeleteWishlist(wish_id) {
+                var DeleteWishlist = 'DeleteWishlist';
+                swal({
+                    title: "Are you sure?",
+                    icon: "warning",
+                    buttons: [
+                        'No, cancel it!',
+                        'Yes, I am sure!'
+                    ],
+                    dangerMode: true,
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: 'ajax_call.php',
+                            type: "post",
+                            data: {
+                                DeleteWishlist: DeleteWishlist,
+                                wish_id: wish_id
+                            },
+                            success: (res) => {
+                                swal("Deleted", "Your Wishlist Deleted Successfully", "error");
+
+                            }
+                        })
+                    }
+                });
+
+            }
+            </script>
+        </tbody>
+    </table>
+</div>
+
+<?php
+
+}
+
+elseif (isset($_POST['setDefaultWishlist']) && isset($_POST['wish_id'])) {
+    $wish_id = get_safe_value($_POST['wish_id']);
+    $uid = $_SESSION['UID'];
+
+
+    mysqli_query($con, "UPDATE wishlist set default_id = 0 WHERE user_id = '$uid'");
+    mysqli_query($con, "UPDATE wishlist set default_id = 1 WHERE id = '$wish_id'");
+
+    echo 'This is Your Default Wishlist';
+
+}
+
+
+// New Wihlist Adding For User 
+elseif (isset($_POST['wishlist_name_new'])) {
+    $wishlist_name_new = get_safe_value($_POST['wishlist_name_new']);
+    $uid = $_SESSION['UID'];
+    // check exist or not 
+
+    $checkSql = "Select * from wishlist where  wishlist_name = '$wishlist_name_new' && user_id = '$uid'";
+    $res = mysqli_query($con, $checkSql);
+    
+    // exist then return error message 
+    if (mysqli_num_rows($res) > 0) {
+        $arr = array(
+            'status' => 'error',
+            'message' => 'Wishlist Already Exist'
+        );
+    }
+    else{
+    // not exist then add data to database 
+        $date = date("Y-m-d h:i:s");
+        mysqli_query($con, "INSERT into wishlist(user_id, wishlist_name, wishlist_prod_id, wishlist_prod_size, default_id, added_on) VALUES('$uid', '".$wishlist_name_new."', '', '', '0', '".$date."')");
+        $arr = array(
+            'status' => 'success',
+            'message' => 'New Wishlist '.$wishlist_name_new.' Added'
+        );
+    }
+
+    echo json_encode($arr);
+
+}
+
+elseif (isset($_POST['DeleteWishlist']) && $_POST['DeleteWishlist'] != '' && isset($_POST['wish_id']) && $_POST['wish_id'] > 0) {
+    $wish_id = get_safe_value($_POST['wish_id']);
+
+    mysqli_query($con, "DELETE FROM wishlist WHERE id = '$wish_id'");
+
+    echo "done";
+}
+
+
+
+elseif (isset($_POST['AddtoWishList']) && $_POST['AddtoWishList'] != '' &&  isset($_POST['wishlist_id']) && $_POST['wishlist_id'] > 0 && isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['sizes']) && $_POST['sizes'] != '') {
+    $wish_id = get_safe_value($_POST['wishlist_id']);
+    $prod_id = get_safe_value($_POST['prod_id']);
+    // Select that wishlist id on which you hae to insert that item 
+    $SelectSql = mysqli_query($con, "SELECT * FROM wishlist where id = '$wish_id'");
+    $row = mysqli_fetch_assoc($SelectSql);
+
+    if ($row['wishlist_prod_id'] == '') {
+        mysqli_query($con, "UPDATE wishlist set wishlist_prod_id = '$prod_id' WHERE id = '$wish_id'");
+        $arr = array(
+                'status' => 'success',
+                'message' => 'Product Added to '.$row['wishlist_name'].' Wishlist'
+            ); 
+    }else{
+        $getProductIds =  $row['wishlist_prod_id'];
+        
+        $ExplodeProd = explode(",", $getProductIds);
+        
+        if (!in_array($prod_id, $ExplodeProd)) {
+            $finalProduct = $getProductIds.','.$prod_id;
+            mysqli_query($con, "UPDATE wishlist set wishlist_prod_id = '$finalProduct' WHERE id = '$wish_id'");   
+            $arr = array(
+                'status' => 'success',
+                'message' => 'Product Added to '.$row['wishlist_name'].' Wishlist'
+            ); 
+        }else{
+            
+            $arr = array(
+                'status' => 'error',
+                'message' => 'This Item is Exist in '.$row['wishlist_name'].' Wishlist'
+            ); 
+        }
+
+        
+    }
+
+    echo json_encode($arr);
+}

@@ -79,55 +79,69 @@
                                     <div id="delivery-addresses" class="address-selector js-address-selector">
                                         <?php
                                             $addresss_data = FetchUserAddresssDetails($user['id']);
-                                            foreach ($addresss_data as $key => $value) {
-                                                if (isset($_SESSION['id_address_delivery'])) {
-                                                    if ($_SESSION['id_address_delivery'] == $value['id']) {
-                                                        $setCheck = 'checked';
-                                                        $selected = 'selected';
-                                                    }else{
-                                                        $setCheck = '';
-                                                        $selected = '';
-                                                    }
-                                                }else {
-                                                    if($value['default_address'] > 0){
-                                                        $setCheck = 'checked';
-                                                        $selected = 'selected';
+                                            if (empty($addresss_data)) {
+                                                $FOOTERBUTTON = '';
+                                            }else {
+                                                $FOOTERBUTTON = '<footer class="form-footer clearfix">
+                                                                    <button type="submit" class="continue btn btn-primary float-xs-right"
+                                                                        name="confirm-addresses" id="continue_address">
+                                                                        Continue
+                                                                    </button>
+
+                                                                    <div class="page-loading-overlay main-product-details-loading"
+                                                                        style="position:absolute"></div>
+                                                                </footer>';
+                                                                
+                                                foreach ($addresss_data as $key => $value) {
+                                                    if (isset($_SESSION['id_address_delivery'])) {
+                                                        if ($_SESSION['id_address_delivery'] == $value['id']) {
+                                                            $setCheck = 'checked';
+                                                            $selected = 'selected';
+                                                        }else{
+                                                            $setCheck = '';
+                                                            $selected = '';
+                                                        }
                                                     }else {
-                                                        $setCheck = '';
-                                                        $selected = '';
+                                                        if($value['default_address'] > 0){
+                                                            $setCheck = 'checked';
+                                                            $selected = 'selected';
+                                                        }else {
+                                                            $setCheck = '';
+                                                            $selected = '';
+                                                        }
                                                     }
-                                                }
-                                                ?>
-                                        <article class="address-item <?= $selected ?>"
-                                            id="id-address-delivery-address-15">
-                                            <header class="h4">
-                                                <label class="radio-block">
-                                                    <span class="custom-radio">
-                                                        <input type="radio" name="id_address_delivery" <?= $setCheck ?>
-                                                            value="<?= $value['id'] ?>">
-                                                        <span></span>
-                                                    </span>
-                                                    <span
-                                                        class="address-alias h4"><?= $value['add_firstname'].' '.$value['add_lastname'] ?></span>
-                                                    <div class="address">
-                                                        <?= $value['company'] ?><br><?= $value['address'] ?><br><?= $value['addres_complement'] ?><br><?= $value['city'].', '.$value['state'].'-'.$value['postal_code'] ?><br><?= $value['country'] ?><br><?= $value['phone_number'] ?>
-                                                    </div>
-                                                </label>
-                                            </header>
-                                            <hr>
-                                            <footer class="address-footer">
-                                                <a class="edit-address text-muted" data-link-action="edit-address"
-                                                    href="<?= FRONT_SITE_PATH.'addresses?controller=update&id='.$value['id'].'&redirect='.$url.'' ?>">
-                                                    <i class="fa fa-pencil-square-o edit"></i>Edit
-                                                </a>
-                                                <a class="delete-address text-muted" data-link-action="delete-address"
-                                                    href="<?= FRONT_SITE_PATH.'addresses?controller=delete&id='.$value['id'].'&redirect='.$url ?>">
-                                                    <i class="fa fa-trash-o delete"></i>Delete
-                                                </a>
-                                            </footer>
-                                        </article>
-                                        <?php
+                                                    ?>
+                                                <article class="address-item <?= $selected ?>"
+                                                    id="id-address-delivery-address-15">
+                                                    <header class="h4">
+                                                        <label class="radio-block">
+                                                            <span class="custom-radio">
+                                                                <input type="radio" name="id_address_delivery" <?= $setCheck ?>
+                                                                    value="<?= $value['id'] ?>">
+                                                                <span></span>
+                                                            </span>
+                                                            <span
+                                                                class="address-alias h4"><?= $value['add_firstname'].' '.$value['add_lastname'] ?></span>
+                                                            <div class="address">
+                                                                <?= $value['company'] ?><br><?= $value['address'] ?><br><?= $value['addres_complement'] ?><br><?= $value['city'].', '.$value['state'].'-'.$value['postal_code'] ?><br><?= $value['country'] ?><br><?= $value['phone_number'] ?>
+                                                            </div>
+                                                        </label>
+                                                    </header>
+                                                    <hr>
+                                                    <footer class="address-footer">
+                                                        <a class="edit-address text-muted" data-link-action="edit-address"
+                                                            href="<?= FRONT_SITE_PATH.'addresses?controller=update&id='.$value['id'].'&redirect='.$url.'' ?>">
+                                                            <i class="fa fa-pencil-square-o edit"></i>Edit
+                                                        </a>
+                                                        <a class="delete-address text-muted" data-link-action="delete-address"
+                                                            href="<?= FRONT_SITE_PATH.'addresses?controller=delete&id='.$value['id'].'&redirect='.$url ?>">
+                                                            <i class="fa fa-trash-o delete"></i>Delete
+                                                        </a>
+                                                    </footer>
+                                                </article>
+                                            <?php
                                             }
+                                        } 
                                          ?>
 
                                     </div>
@@ -144,15 +158,7 @@
                                                 </a>
                                             </div>
 
-                                            <footer class="form-footer clearfix">
-                                                <button type="submit" class="continue btn btn-primary float-xs-right"
-                                                    name="confirm-addresses" id='continue_address'>
-                                                    Continue
-                                                </button>
-
-                                                <div class="page-loading-overlay main-product-details-loading"
-                                                    style="position:absolute"></div>
-                                            </footer>
+                                            <?= $FOOTERBUTTON ?>    
 
 
 
@@ -287,15 +293,23 @@
                                     </button>
                                     <?php
                                         $uid = $user['id'];
-                                        $PriceTTSql= "SELECT SUM(prod_price) as TTPrice FROM `cart` WHERE user_id = '$uid'";
-                                        $PriceRes = mysqli_query($con, $PriceTTSql);
-                                        $priceRow = mysqli_fetch_assoc($PriceRes);
+                                        $sql = "SELECT *, cart.id as cid FROM `cart` left join product_details on cart.product_id = product_details.id where cart.user_id = '$uid'";
+                                        $result = mysqli_query($con , $sql);
+                                         $price_total = "";
+                                        if (mysqli_num_rows($result) > 0) {
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                $price_total = $price_total.",";
+                                                $price_total .= $row['product_price'] * $row['qty'];
+                                                $price_total_arr = explode(",", $price_total);
+                                                $price_total = array_sum($price_total_arr);
+                                            }
 
-                                        if($priceRow['TTPrice'] > 500) {
-                                            $total_payable = $priceRow['TTPrice'] * 10000;
-                                        }else {
-                                            $total_payable = ($priceRow['TTPrice'] + 500) * 10000;
-                                        }
+                                            if($price_total > 500) {
+                                                $total_payable = $price_total * 10000;
+                                            }else {
+                                                $total_payable = ($price_total + 500) * 10000;
+                                            }
+                                        }   
                                         
                                     ?>
 
