@@ -74,7 +74,7 @@ if(isset($_POST['email']) && $_POST['email'] != '' && isset($_POST['password']) 
                 //return false;
                     $arr = array(
                         'status' => 'error',
-                        'msg' => 'Email or Password is incorrect',
+                        'msg' => 'Password is incorrect',
                         'field' => 'error'
                     );
                 
@@ -98,6 +98,7 @@ else if(isset($_POST['email_signup']) && $_POST['email_signup'] != '' && isset($
     $firstname = get_safe_value($_POST['firstname']);
     $lastname = get_safe_value($_POST['lastname']);
     $page_url = get_safe_value($_POST['page_url']);
+    $date = date("Y-m-d");
     
 
     $query = "SELECT * FROM users WHERE email = '$email'";
@@ -126,7 +127,7 @@ else if(isset($_POST['email_signup']) && $_POST['email_signup'] != '' && isset($
             $newsletter = '';
         }
 
-        mysqli_query($con, "insert into users(social_title, firstname, lastname, password, email, newsletter, verify, userLoginCode) VALUES('$social_title', '$firstname', '$lastname', '$new_password', '$email', '$newsletter', '0', '$rand_str')");
+        mysqli_query($con, "insert into users(social_title, firstname, lastname, password, email, newsletter, verify, userLoginCode, userAdded_On) VALUES('$social_title', '$firstname', '$lastname', '$new_password', '$email', '$newsletter', '0', '$rand_str','$date')");
         $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$email.'&userLoginCode='.$rand_str.'&redirect='.$page_url.">Click here to Verify</a>";
         $responseMail = send_email($email, $html, 'Verify Your Account '.$firstname.' '.$lastname);
 
@@ -1278,7 +1279,7 @@ elseif (isset($_POST['show_wishlist'])) {
                                 wish_id: wish_id
                             },
                             success: (res) => {
-                                swal("Deleted", "Your Wishlist Deleted Successfully", "error");
+                                swal("Deleted", "Your Wishlist Deleted Successfully", "success");
 
                             }
                         })

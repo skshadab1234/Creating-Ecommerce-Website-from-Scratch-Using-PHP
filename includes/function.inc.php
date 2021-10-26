@@ -208,7 +208,50 @@ function WishlistData($uid) {
 	return $data;
 }
 
+function numtostring($n)
+{
+    $n = (0+str_replace(",","",$n));
 
+        // is this a number?
+        if(!is_numeric($n)) return false;
+
+        // now filter it;
+        if($n>1000000000000) return round(($n/1000000000000),1).'t';
+        else if($n>1000000000) return round(($n/1000000000),1).'b';
+        else if($n>1000000) return round(($n/1000000),1).'m';
+        else if($n>1000) return round(($n/1000),1).'k';
+
+        return number_format($n);
+}
+
+
+function OrderSql($query = ''){
+	global $con;
+	$data = array();
+	$res = mysqli_query($con, "SELECT * FROM payment_details ".$query);
+
+	if (mysqli_num_rows($res) > 0)  {
+		while ($row = mysqli_fetch_assoc($res)) {
+			$data[] = $row;
+		}
+	}
+
+	return $data;
+}
+
+function UsersDetails($query = ''){
+	global $con;
+	$data = array();
+	$res = mysqli_query($con, "SELECT * FROM users ".$query);
+
+	if (mysqli_num_rows($res) > 0)  {
+		while ($row = mysqli_fetch_assoc($res)) {
+			$data[] = $row;
+		}
+	}
+
+	return $data;
+}
 
 
 

@@ -16,3 +16,10 @@ define('SERVER_IMAGE_PRODUCT',SERVER_IMAGE.'media/product_img/');
 define('FRONT_SITE_IMAGE_BRAND',FRONT_SITE_PATH.'media/Brand/');
 define('SERVER_IMAGE_BRAND',SERVER_IMAGE.'media/Brand/');
 
+
+// For Admin 
+define('ADMIN_FRONT_SITE','http://localhost/Ecomm/PS_ADMIN/');
+
+
+define('ADMIN_PROFILE',ADMIN_FRONT_SITE.'media/admin_profile/');
+define('SERVER_ADMIN_PROFILE',SERVER_IMAGE.'media/admin_profile/');

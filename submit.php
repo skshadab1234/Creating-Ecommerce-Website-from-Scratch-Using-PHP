@@ -57,7 +57,8 @@ if(isset($_POST['stripeToken'])){
 	$payment_method = $data['payment_method'];
 	$fingerprint = $data['source']['fingerprint'];
 	$currency = $data['currency'];
-	$created = $data['created'];
+	$created = date("Y-m-d h:i:s", $data['created']);
+    $added_on = date("Y-m-d", $data['created']);
 	$card_id = $data['source']['id'];
 
     // Increaing Total Sold Value in Product Details 
@@ -93,6 +94,7 @@ if(isset($_POST['stripeToken'])){
 		fingerprint,
 		currency,
 		created,
+        added_on,
 		card_id) 
 	
 	VALUES(
@@ -113,6 +115,7 @@ if(isset($_POST['stripeToken'])){
 		'$fingerprint',
 		'$currency', 
 		'$created',
+        '$added_on',
 		'$card_id'
 		)";
 
@@ -1037,7 +1040,7 @@ $html .= '<div class="u-row-container" style="padding: 0px;background-color: tra
 </body>
 
 </html>';
-	    send_email($user['email'], $html, 'Order Confirmation');
+	    // send_email($user['email'], $html, 'Order Confirmation');
 		$DeleteCart = "DELETE FROM cart where user_id = '".$user['id']."'";
 		mysqli_query($con, $DeleteCart);
 		unset($_SESSION['id_address_delivery']);
