@@ -83,7 +83,7 @@
                                     <div class="col-xs-9">
                                         <strong>
                                             Order ID <?= $row['Order_Id'] ?> - placed on
-                                            <?= date("d-m-Y", $row['created']) ?>
+                                            <?= date("d-m-Y", strtotime($row['created'])) ?>
                                         </strong>
                                     </div>
                                     <div class="col-xs-3 text-xs-right">
@@ -337,7 +337,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><?= date("d-m-Y", strtotime("+1 day", $row['created'])); ?></td>
+                                        <td><?= date("d-m-Y", strtotime("+1 day", strtotime($row['created']))); ?></td>
                                         <td>My carrier</td>
                                         <td><?= $shipping_fee ?></td>
                                         <td>-</td>
@@ -348,7 +348,7 @@
                                 <div class="shipping-line">
                                     <ul>
                                         <li>
-                                            <strong>Date</strong> <?=  date("d-m-Y", strtotime("+1 day", $row['created'])); ?>
+                                            <strong>Date</strong> <?=  date("d-m-Y", strtotime("+1 day", strtotime($row['created']))); ?>
                                         </li>
                                         <li>
                                             <strong>Carrier</strong> My carrier
@@ -447,7 +447,7 @@
                                                     ?>
                                 <tr>
                                     <th scope="row"><?= $row['Order_Id'] ?></th>
-                                    <td><?= date("d-m-Y h:i A", $row['created']) ?></td>
+                                    <td><?= date("d M,Y h:i:s A", strtotime($row['created'])) ?></td>
                                     <td class="text-xs-right">₹ <?= $row['amount_captured'] ?></td>
                                     <td class="hidden-md-down">By Card</td>
                                     <td>

@@ -15,7 +15,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                       <input type="date" class='form-control' value='<?= $date ?>' id="Date_Dashboard">
+                        <input type="date" class='form-control' value='<?= $date ?>' id="Date_Dashboard">
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -37,7 +37,8 @@
                         <div class="icon">
                             <i class="ion-arrow-graph-up-right text-success"></i>
                         </div>
-                        <a href="javascript:void(0)" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="javascript:void(0)" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -52,7 +53,8 @@
                         <div class="icon">
                             <i class="ion-ios-cart-outline text-info"></i>
                         </div>
-                        <a href="javascript:void(0)" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="javascript:void(0)" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -65,9 +67,10 @@
                             <p>Customers</p> -->
                         </div>
                         <div class="icon">
-                            <i class="ion ion-person-add text-primary" ></i>
+                            <i class="ion ion-person-add text-primary"></i>
                         </div>
-                        <a href="javascript:void(0)" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="javascript:void(0)" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -82,18 +85,26 @@
                         <div class="icon">
                             <i class="ion ion-cash text-success"></i>
                         </div>
-                        <a href="javascript:void(0)" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="javascript:void(0)" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
             </div>
-        </div>
-          
-    </div>
-    <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
 
+            <div class="row">
+                <div class="col-md-6 ">
+                    <!-- Bar chart -->
+                    
+                    <!-- /.card -->
+                </div>
+            </div>
+
+
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
 
 <?php
     require 'includes/footer.php';

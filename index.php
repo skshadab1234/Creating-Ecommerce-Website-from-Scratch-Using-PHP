@@ -2,7 +2,7 @@
     require 'includes/header.php';
     // prx($user);
     $date = date('Y-m-d');
-    $ProductDetails =  ProductDetails('where product_added_on = "'.$date.'"');
+    $ProductDetails =  ProductDetails('where  product_status= 1');
     
 ?>
 

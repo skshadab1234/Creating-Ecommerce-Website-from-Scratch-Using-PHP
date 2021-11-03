@@ -1,5 +1,8 @@
 <?php
     require 'session.php';
+    
+    $menu_open= '';
+    $active = '';
 
     $page_url =  'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
     if ($page_url == ADMIN_FRONT_SITE || $page_url == ADMIN_FRONT_SITE.'index.php') {
@@ -7,8 +10,22 @@
       $active = 'active';
       $page_url = 'javascript:void(0)';
 
-      if(!isset($_SESSION['ADMIN_ID'])) redirect(ADMIN_FRONT_SITE.'login');
     }
+    else if ($page_url == ADMIN_FRONT_SITE.'products.php') {
+        $title = SITE_NAME.' - Prodcts';
+        $catalog_active = 'active';
+        $menu_open = 'menu-open';
+        $page_url = 'javascript:void(0)';
+    }
+    else if ($page_url == ADMIN_FRONT_SITE.'category.php') {
+        $title = SITE_NAME.' - Category';
+        $category_active = 'active';
+        $menu_open = 'menu-open';
+        $page_url = 'javascript:void(0)';
+    }
+
+    if(!isset($_SESSION['ADMIN_ID'])) redirect(ADMIN_FRONT_SITE.'login');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +47,25 @@
     <link rel="stylesheet" href="https://adminlte.io/themes/v3/dist/css/adminlte.min.css">]
     <!-- ion icon CDN  -->
     <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    
+    <!-- summernote -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css" integrity="sha512-ngQ4IGzHQ3s/Hh8kMyG4FC74wzitukRMIcTOoKT3EyzFZCILOPF0twiXOQn75eDINUfKBYmzYn2AA8DkAk8veQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- DataTables -->
+  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+
+  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+  <link rel="stylesheet" href="https://www.jqueryscript.net/demo/Bootstrap-4-Tag-Input-Plugin-jQuery/tagsinput.css">
+
+  <!-- For FileUpload  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css" />
+
     
     <!-- custom internal css includes  -->
     <style>
@@ -51,14 +86,14 @@
             
         }
 
-        .layout-fixed .main-sidebar{
+        .layout-fixed .main-sidebar, .dark-mode .btn-app, .dark-mode .btn-default{
             background:#283046  
         }
         
         [class*=sidebar-dark] .btn-sidebar, [class*=sidebar-dark] .form-control-sidebar, .dark-mode .list-group-item {
             background-color: #161d31;
         }
-        [class*=sidebar-dark] .btn-sidebar:hover{
+        [class*=sidebar-dark] .btn-sidebar:hover, .note-editor.note-airframe .note-editing-area, .note-editor.note-frame .note-editing-area, .note-editor.note-airframe .note-editing-area .note-codable, .note-editor.note-frame .note-editing-area .note-codable{
             background-color: #161d31;
         }
         .dark-mode .main-footer{
@@ -73,6 +108,7 @@
             background:#283046;
             border:none
         }
+
     </style>
 </head>
 
@@ -154,29 +190,29 @@
                             </a>
                         </li>
 
-                        <!-- <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
+                         <li class="nav-item <?= $menu_open ?>">
+                            <a href="javascript:void(0)" class="nav-link <?= $catalog_active ?>">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
-                                    Starter Pages
+                                    Catalog
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="dashboard" class="nav-link ">
+                                    <a href="<?= urldecode('products') ?>" class="nav-link <?= $catalog_active ?>">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Active Page</p>
+                                        <p>Products</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link active">
+                                    <a href="<?= urldecode('category') ?>" class="nav-link <?=  $category_active ?>">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Inactive Page</p>
+                                        <p>Category</p>
                                     </a>
                                 </li>
                             </ul>
-                        </li> -->
+                        </li> 
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

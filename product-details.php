@@ -6,7 +6,7 @@
     $ProductDetails = $ProductDetails[0];
     
     
-    if ($pname == '' || $ProductDetails['product_name'] != $pname) {
+    if ($pname == '' || $ProductDetails['product_name'] != $pname || $ProductDetails['product_status'] == 0)  {
         redirect(FRONT_SITE_PATH);
     }
 
@@ -893,7 +893,8 @@
 
 
 
-                                    <span class="price" aria-label="Price">$12.90</span>
+                                    
+                                <span class="price" aria-label="Price">$12.90</span>
                                     <div itemprop="offers" itemscope itemtype="http://schema.org/Offer"
                                         class="invisible">
                                         <meta itemprop="priceCurrency" content="USD" />

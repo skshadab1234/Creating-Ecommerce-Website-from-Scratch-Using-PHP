@@ -277,11 +277,6 @@ function addtoCart(prod_id, user_id, qty, prod_price, check_size) {
     });
 }
 
-function addtowishlist(prod_id) {
-    
-
-}
-
 function ShowAllWishlistData() {
     var show_wishlist = 'show_wishlist';
     $.ajax({
@@ -439,7 +434,7 @@ $("#submitAddress").submit( (e) => {
 })
 
 // JAB USR LOGN NAHI RAHEGA TB login_to_CHECKOUT YE WALI ID EXIST KREGI US SAMAYE HAME ISKE CLICK EVENT PE CHECKOUT PAGE OPEN KRNA HAI 
-$("#login_to_CHECKOUT, #cart_checkout_id, #add_wishlist_no_login").click( () => {
+$("#login_to_CHECKOUT, #cart_checkout_id, #add_wishlist_no_login, #back_to_login_forgot_password").click( () => {
     $("#blockcart").removeClass("open");
     $(".mfp-bg, .mfp-wrap").hide();
     setTimeout(()=>{
@@ -516,10 +511,58 @@ function AddtoWishList(wishlist_id, prod_id, sizes){
     })
 }
 
+$("#forgotten-password").submit( (e) => {
+    e.preventDefault();
+    var form_data = $("#forgotten-password").serialize();
+    $("#reset_pass_button").prop("disabled", 'disabled');
+    $("#reset_pass_button").html("Sending Link");
+    $.ajax({
+        url : 'ajax_call.php',
+        method : 'post',
+        data : form_data,
+        success : (res) => {
+            var data = $.parseJSON(res);
+            
+            $("#reset_pass_button").attr("disabled", false);
+            $("#reset_pass_button").html("Send reset link");
+
+            if (data.status == 'success') {
+                $("#forgotten-password")[0].reset();
+                swal("Check Your Mail", data.message ,'success');
+            }
+
+            else if(data.status == 'error') {
+                swal("Email id Not Found", data.message ,'error');
+            }
+        
+        }
+    })
+})
 
 
-
-
+// Update Passoword 
+$("#update-password").submit( (e) =>  {
+    e.preventDefault();
+    var form_data = $("#update-password").serialize();
+    $.ajax({
+        url : 'ajax_call.php',
+        method : 'post',
+        data : form_data,
+        success : (res) => {
+            var data = $.parseJSON(res);
+            
+            if (data.status == 'error') {
+                swal(data.message ,'','error');
+            }
+            if (data.status == 'success') {
+                swal(data.message ,'','success');
+                setTimeout( () => {
+                    window.location = window.location.href;
+                }, 3000);
+            }
+        }
+    });
+})
 
 
 

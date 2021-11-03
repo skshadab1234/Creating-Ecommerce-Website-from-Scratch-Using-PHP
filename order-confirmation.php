@@ -198,7 +198,7 @@
                                             Shipping method: My carrier<br>
                                             <em>Delivery next day!
                                                 <?php
-                                                echo date("d-m-Y h:i A", strtotime("+1 day", $row['created']));
+                                                echo date("d-m-Y h:i A", strtotime("+1 day", strtotime($row['created'])));
                                             ?></em>
                                         </li>
                                         <li>Receipt : <a href="<?= $row['receipt_url'] ?>" download target="_blank">View

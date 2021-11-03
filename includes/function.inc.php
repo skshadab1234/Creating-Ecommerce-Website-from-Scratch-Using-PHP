@@ -42,7 +42,7 @@ function send_email($email,$html,$subject){
 	$mail->SMTPSecure="tls";
 	$mail->SMTPAuth=true;
 	$mail->Username="ks615044@gmail.com";
-	$mail->Password="Your_Passowrd";
+	$mail->Password="Password";
 	$mail->setFrom("ks615044@gmail.com");
 	$mail->addAddress($email);
 	$mail->IsHTML(true);
@@ -254,12 +254,44 @@ function UsersDetails($query = ''){
 }
 
 
+function AdminDetails($query = ''){
+	global $con;
+	$data = array();
+	$res = mysqli_query($con, "SELECT * FROM admins ".$query);
+
+	if (mysqli_num_rows($res) > 0)  {
+		while ($row = mysqli_fetch_assoc($res)) {
+			$data[] = $row;
+		}
+	}
+
+	return $data;
+}
+
+function ExecutedQuery($query){
+	global $con;
+	$data = array();
+	$res = mysqli_query($con, $query);
+
+	if (mysqli_num_rows($res) > 0)  {
+		while ($row = mysqli_fetch_assoc($res)) {
+			$data[] = $row;
+		}
+	}
+
+	return $data;
+}
 
 
+function SqlQuery($query) {
+	global $con;
+	$result = mysqli_query($con, $query);
+	return $result;
+}
 
 
-
-
-
-
-
+function slugify($text)
+{ 
+    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+    return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $text));
+}

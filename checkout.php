@@ -117,7 +117,7 @@
                                                         <label class="radio-block">
                                                             <span class="custom-radio">
                                                                 <input type="radio" name="id_address_delivery" <?= $setCheck ?>
-                                                                    value="<?= $value['id'] ?>">
+                                                                    value="<?= $value['id'] ?>" required>
                                                                 <span></span>
                                                             </span>
                                                             <span

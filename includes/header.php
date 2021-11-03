@@ -47,19 +47,42 @@ if ($page_url == FRONT_SITE_PATH || $page_url == FRONT_SITE_PATH.'index.php') {
     $title = $user['firstname'].' '.$user['lastname'].' - Addresses';
     $body_name = 'addresses';
 }elseif ($page_url == FRONT_SITE_PATH.'order-confirmation.php') {
-    $title = $user['firstname'].' '.$user['lastname'].' - Order Confirmation';
-}elseif ($page_url == FRONT_SITE_PATH.'order-history.php') {
-    if(isset($_GET['orderDetails'])){
-        $title = 'Detals';  
+    if (isset($_SESSION['UID'])) {
+        $title = $user['firstname'].' '.$user['lastname'].' - Order Confirmation';
     }else{
-        $title = $user['firstname'].' '.$user['lastname'].' - Order Hstory';
+        redirect(FRONT_SITE_PATH);
     }
+}elseif ($page_url == FRONT_SITE_PATH.'order-history.php') {
+   
+    if (isset($_SESSION['UID'])) {
+        if(isset($_GET['orderDetails'])){
+            $title = 'Detals';  
+        }else{
+            $title = $user['firstname'].' '.$user['lastname'].' - Order Hstory';
+        }
+    }else{
+        redirect(FRONT_SITE_PATH);
+    }
+    
 }elseif ($page_url == FRONT_SITE_PATH.'wishlist.php') {
     
     if (isset($_SESSION['UID'])) {
         $title = $user['firstname'].' '.$user['lastname'].' - Wishlist';
     }else{
         redirect(FRONT_SITE_PATH);
+    }
+
+}elseif ($page_url == FRONT_SITE_PATH.'password_recovery.php') {
+    if (isset($_SESSION['UID'])) {
+        redirect(FRONT_SITE_PATH);
+    }else{
+        $title = 'Recover Password';
+    }
+}elseif ($page_url == FRONT_SITE_PATH.'update_password.php') {
+    if (isset($_SESSION['UID'])) {
+        $title = $user['firstname'].' '.$user['lastname'].' - Update Password';
+    }else{
+        $title = 'Update Password';
     }
 }
 $base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .  $_SERVER['HTTP_HOST'];
@@ -1529,7 +1552,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
 
                                                         </div>
 
-                                                        <a href="" rel="nofollow">
+                                                        <a href="<?= FRONT_SITE_PATH.'password_recovery' ?>" rel="nofollow">
                                                             Forgot your password?
                                                         </a>
                                                     </form>
@@ -2341,7 +2364,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
 
                                                 </div>
 
-                                                <a href="" rel="nofollow">
+                                                <a href="<?= FRONT_SITE_PATH.'password_recovery' ?>" rel="nofollow">
                                                     Forgot your password?
                                                 </a>
 

@@ -143,6 +143,196 @@ else if(isset($_POST['email_signup']) && $_POST['email_signup'] != '' && isset($
 echo json_encode($arr);
 }
 
+elseif (isset($_POST['reset_email'])) {
+    $reset_email = get_safe_value($_POST['reset_email']);
+
+    // CHECKING MAIL EXIXT OR NOT IN OUR DB 
+    $UsersDetails = UsersDetails("WHERE email = '$reset_email'");
+    if (!empty($UsersDetails)) {
+        $userLoginCode = $UsersDetails[0]['userLoginCode'];
+        $link = FRONT_SITE_PATH.'update_password?userLoginCode='.$userLoginCode.'&email='.$reset_email;
+        $html = '
+        <!DOCTYPE html>
+        <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+        
+          <head>
+            <meta charset="utf-8">
+            <meta name="x-apple-disable-message-reformatting">
+            <meta http-equiv="x-ua-compatible" content="ie=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+            <!--[if mso]>
+            <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+            <style>
+              td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule: exactly;}
+            </style>
+          <![endif]-->
+            <title>Reset your Password</title>
+            <link href="https://fonts.googleapis.com/css?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700" rel="stylesheet" media="screen">
+            <style>
+              .hover-underline:hover {
+                text-decoration: underline !important;
+              }
+        
+              @keyframes spin {
+                to {
+                  transform: rotate(360deg);
+                }
+              }
+        
+              @keyframes ping {
+        
+                75%,
+                100% {
+                  transform: scale(2);
+                  opacity: 0;
+                }
+              }
+        
+              @keyframes pulse {
+                50% {
+                  opacity: .5;
+                }
+              }
+        
+              @keyframes bounce {
+        
+                0%,
+                100% {
+                  transform: translateY(-25%);
+                  animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+                }
+        
+                50% {
+                  transform: none;
+                  animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+                }
+              }
+        
+              @media (max-width: 600px) {
+                .sm-px-24 {
+                  padding-left: 24px !important;
+                  padding-right: 24px !important;
+                }
+        
+                .sm-py-32 {
+                  padding-top: 32px !important;
+                  padding-bottom: 32px !important;
+                }
+        
+                .sm-w-full {
+                  width: 100% !important;
+                }
+              }
+            </style>
+          </head>
+        
+          <body style="margin: 0; padding: 0; width: 100%; word-break: break-word; -webkit-font-smoothing: antialiased; --bg-opacity: 1; background-color: #eceff1; background-color: rgba(236, 239, 241, var(--bg-opacity));">
+            <div role="article" aria-roledescription="email" aria-label="Reset your Password" lang="en">
+              <table style="font-family: Montserrat, -apple-system, \'Segoe UI\', sans-serif; width: 100%;" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td align="center" style="--bg-opacity: 1; background-color: #eceff1; background-color: rgba(236, 239, 241, var(--bg-opacity)); font-family: Montserrat, -apple-system, \'Segoe UI\', sans-serif;" bgcolor="rgba(236, 239, 241, var(--bg-opacity))">
+                    <table class="sm-w-full" style="font-family: \'Montserrat\',Arial,sans-serif; width: 600px;" width="600" cellpadding="0" cellspacing="0" role="presentation">
+                      <tr>
+                        <td align="center" class="sm-px-24" style="font-family: \'Montserrat\',Arial,sans-serif;">
+                          <table style="font-family: \'Montserrat\',Arial,sans-serif; width: 100%;" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                            <tr>
+                              <td class="sm-px-24" style="--bg-opacity: 1; background-color: #ffffff; background-color: rgba(255, 255, 255, var(--bg-opacity)); border-radius: 4px; font-family: Montserrat, -apple-system, \'Segoe UI\', sans-serif; font-size: 14px; line-height: 24px; padding: 48px; text-align: left; --text-opacity: 1; color: #626262; color: rgba(98, 98, 98, var(--text-opacity));" bgcolor="rgba(255, 255, 255, var(--bg-opacity))" align="left">
+                                <p style="font-weight: 600; font-size: 18px; margin-bottom: 0;">Hey</p>
+                                <p style="font-weight: 700; font-size: 20px; margin-top: 0; --text-opacity: 1; color: #ff5850; color: rgba(255, 88, 80, var(--text-opacity));">'.$UsersDetails[0]['firstname'].' '.$UsersDetails[0]['lastname'].'</p>
+                                <p style="margin: 0 0 24px;">
+                                  A request to reset password was received from your
+                                  <span style="font-weight: 600;">'.SITE_NAME.'</span> Account -
+                                  <a href="mailto:'.$UsersDetails[0]['email'].'" class="hover-underline" style="--text-opacity: 1; color: #7367f0; color: rgba(115, 103, 240, var(--text-opacity)); text-decoration: none;">'.$UsersDetails[0]['email'].'</a>
+                                </p>
+                                <p style="margin: 0 0 24px;">Use this link to reset your password and login.</p>
+                                <a href='.$link.' style="display: block; font-size: 14px; line-height: 100%; margin-bottom: 24px; --text-opacity: 1; color: #7367f0; color: rgba(115, 103, 240, var(--text-opacity)); text-decoration: none;">'.$link.'</a>
+                                <table style="font-family: \'Montserrat\',Arial,sans-serif;" cellpadding="0" cellspacing="0" role="presentation">
+                                  <tr>
+                                    <td style="mso-padding-alt: 16px 24px; --bg-opacity: 1; background-color: #7367f0; background-color: rgba(115, 103, 240, var(--bg-opacity)); border-radius: 4px; font-family: Montserrat, -apple-system, \'Segoe UI\', sans-serif;" bgcolor="rgba(115, 103, 240, var(--bg-opacity))">
+                                      <a href='.$link.' style="display: block; font-weight: 600; font-size: 14px; line-height: 100%; padding: 16px 24px; --text-opacity: 1; color: #ffffff; color: rgba(255, 255, 255, var(--text-opacity)); text-decoration: none;">Reset Password &rarr;</a>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <p style="margin: 24px 0;">
+                                  <span style="font-weight: 600;">Note:</span> This link is valid for 1 hour from the time it was
+                                  sent to you and can be used to change your password only once.
+                                </p>
+                                <p style="margin: 0;">
+                                  If you did not intend to deactivate your account or need our help keeping the account, please
+                                  contact us at
+                                  <a href="mailto:support@example.com" class="hover-underline" style="--text-opacity: 1; color: #7367f0; color: rgba(115, 103, 240, var(--text-opacity)); text-decoration: none;">support@example.com</a>
+                                </p>
+                                <table style="font-family: \'Montserrat\',Arial,sans-serif; width: 100%;" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                                  <tr>
+                                    <td style="font-family: \'Montserrat\',Arial,sans-serif; padding-top: 32px; padding-bottom: 32px;">
+                                      <div style="--bg-opacity: 1; background-color: #eceff1; background-color: rgba(236, 239, 241, var(--bg-opacity)); height: 1px; line-height: 1px;">&zwnj;</div>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <p style="margin: 0 0 16px;">Thanks, <br>The '.SITE_NAME.' Team</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="font-family: \'Montserrat\',Arial,sans-serif; height: 20px;" height="20"></td>
+                            </tr>
+                            <tr>
+                              <td style="font-family: \'Montserrat\',Arial,sans-serif; height: 16px;" height="16"></td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </body>
+        
+        </html>';
+        $emailresp = send_email($reset_email, $html, 'Reset Your Paswword');
+        if ($emailresp == 'Sended') {
+            $arr = array(
+                'status' => 'success',
+                'message' => 'Link Sended to '.$reset_email.''
+            );
+        }
+        
+    }else{
+        $arr = array(
+            'status' => 'error',
+            'message' => 'Please check and try again'
+        );
+    }
+    echo json_encode($arr);
+}
+
+// Update Password 
+elseif (isset($_POST['user_id_update_pass']) && $_POST['user_id_update_pass'] > 0 && isset($_POST['new_password']) && $_POST['new_password'] != '' && isset($_POST['confirm_password']) && $_POST['confirm_password'] != '') {
+    $user_id = get_safe_value($_POST['user_id_update_pass']);
+    $new_password = get_safe_value($_POST['new_password']);
+    $confirm_password = get_safe_value($_POST['confirm_password']);
+
+    if (strlen($new_password) < 8) {
+        $arr= array('status' => 'error', 'message' => 'Password too short!');
+    }
+    else if (!preg_match("#[0-9]+#", $new_password)) {
+        $arr= array('status' => 'error', 'message' => 'Password must include at least one number!');
+    }
+    else  if (!preg_match("#[A-Z]+#", $new_password)) {
+        $arr= array('status' => 'error', 'message' => 'Password must include at least one letter!');
+    }
+    else if ($new_password  != $confirm_password) {
+        $arr= array('status' => 'error', 'message' => 'Please make sure your passwords match.');
+    } 
+    else{
+        $new_password=password_hash($new_password,PASSWORD_BCRYPT);
+        mysqli_query($con, "UPDATE users set password= '$new_password' WHERE id = '$user_id'");
+        $arr = array("status" => 'success', 'message' => 'Password Updated');
+    }
+    echo json_encode($arr);
+}
+
 elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
     $prod_id = get_safe_value($_POST['prod_id']);
     $user_id = get_safe_value($_POST['user_id']);
@@ -159,63 +349,81 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
         $prod_size = get_safe_value($_POST['check_sizes']);
     }
     
+    $ProductDetails = ProductDetails("Where id = '$prod_id'");
+    $ProductDetails = $ProductDetails[0];
+
+    $remaining_stock = $ProductDetails['total_stock'] - $ProductDetails['total_sold'];
+    
     $html = '';
+    
+
     if ($user_id == 'Guest') {
         // Not Login USer so we have to store items to session 
  
-        // Setting Session for product id and size 
-        $_SESSION['cart'][$prod_id.','.$prod_size]['prod_price'] = $prod_price;
-        $_SESSION['cart'][$prod_id.','.$prod_size]['prod_qty'] = $prod_qty;
-
-       
-        $sql = "SELECT * FROM product_details WHERE id = '$prod_id'";
-        $res = mysqli_query($con, $sql);
-        $row = mysqli_fetch_assoc($res);
-
-        $ProductImageById = ProductImageById($row['id'],"limit 1");
-        array_unshift($ProductImageById,"");
-        unset($ProductImageById[0]);
-
-        $html .= '
-            <div class="modal-body">
-                <div class="box-cart-modal">
-                    <div class=" col-sm-4 col-xs-12 divide-right">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-6 text-center">
-                                    <img src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
-                                        alt="'.$row['product_name'].'" title="'.$row['product_name'].'" class="img-fluid">
+        // 1. Check if Qty value match with Stock Remaining Value 
+        if ($prod_qty > $remaining_stock) {
+            $html .= ' <div class="modal-body">
+                            <div class="box-cart-modal text-danger">
+                                Hey Bro, Only '.$remaining_stock.'  items is remaining in our stock. 
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8 col-xs-12">
-                        <div class="cart-info">
-                            <div class="pb-1">
-                                <span class="product-name"><a href="">'.$row['product_name'].'</a></span>
-                            </div>
-                            <div class="product-attributes text-muted pb-1">
-                                <div class="product-line-info">
-                                    <span class="label">Size :</span>
-                                    <span class="value">'.$prod_size.'</span>
+
+                        </div>';
+        $arr = array("status" => 'notlogged',  'msg' => $html, 'modal_title' => 'Limited Stock', 'Cart_Total' => $CartTotal);  
+        }else{
+                // Setting Session for product id and size 
+            $_SESSION['cart'][$prod_id.','.$prod_size]['prod_price'] = $prod_price;
+            $_SESSION['cart'][$prod_id.','.$prod_size]['prod_qty'] = $prod_qty;
+
+        
+            $sql = "SELECT * FROM product_details WHERE id = '$prod_id'";
+            $res = mysqli_query($con, $sql);
+            $row = mysqli_fetch_assoc($res);
+
+            $ProductImageById = ProductImageById($row['id'],"limit 1");
+            array_unshift($ProductImageById,"");
+            unset($ProductImageById[0]);
+
+            $html .= '
+                <div class="modal-body">
+                    <div class="box-cart-modal">
+                        <div class=" col-sm-4 col-xs-12 divide-right">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-6 text-center">
+                                        <img src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
+                                            alt="'.$row['product_name'].'" title="'.$row['product_name'].'" class="img-fluid">
                                 </div>
                             </div>
-                            <span class="text-muted">'.$prod_qty.' x</span> <span>₹ '.$row['product_price'].'</span>
                         </div>
-                        <div class="cart-content pt-2">
-                                <strong>Total Price:</strong>&nbsp;₹ '.$prod_qty * $row['product_price'].'
-                            </p>
+                        <div class="col-sm-8 col-xs-12">
+                            <div class="cart-info">
+                                <div class="pb-1">
+                                    <span class="product-name"><a href="">'.$row['product_name'].'</a></span>
+                                </div>
+                                <div class="product-attributes text-muted pb-1">
+                                    <div class="product-line-info">
+                                        <span class="label">Size :</span>
+                                        <span class="value">'.$prod_size.'</span>
+                                    </div>
+                                </div>
+                                <span class="text-muted">'.$prod_qty.' x</span> <span>₹ '.$row['product_price'].'</span>
+                            </div>
+                            <div class="cart-content pt-2">
+                                    <strong>Total Price:</strong>&nbsp;₹ '.$prod_qty * $row['product_price'].'
+                                </p>
 
-                            <div class="cart-content-btn">
-                                <a href="'.FRONT_SITE_PATH.'cart"
-                                    class="btn btn-primary btn-block btn-sm">Go to Cart</a>
+                                <div class="cart-content-btn">
+                                    <a href="'.FRONT_SITE_PATH.'cart"
+                                        class="btn btn-primary btn-block btn-sm">Go to Cart</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-            </div>';
+                </div>';
+                $arr = array("status" => 'notlogged',  'msg' => $html,'Cart_Total' => $CartTotal);
+        }
         
-       
-        $arr = array("status" => 'notlogged',  'msg' => $html,'Cart_Total' => $CartTotal);
+        
 
     }else{
         $sql = "Select * from cart Where product_id = '".$prod_id."' and size = '".$prod_size."' and user_id = '".$user_id."'";
@@ -228,61 +436,71 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
         $ProductDetails =  ProductDetails('left join brands on product_details.product_brand = brands.bid where id = "'.$prod_id.'"');
         $ProductDetails = $ProductDetails[0];
 
-        $html .= '
-            <div class="modal-body">
-                <div class="box-cart-modal">
-                    <div class=" col-sm-4 col-xs-12 divide-right">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-6 text-center">
-                                    <img src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
-                                        alt="'.$ProductDetails['product_name'].'" title="'.$ProductDetails['product_name'].'" class="img-fluid">
+        if ($prod_qty > $remaining_stock) {
+            $html .= ' <div class="modal-body">
+                            <div class="box-cart-modal text-danger">
+                                Hey Bro, Only '.$remaining_stock.'  items is remaining in our stock. 
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8 col-xs-12">
-                        <div class="cart-info">
-                            <div class="pb-1">
-                                <span class="product-name"><a href="">'.$ProductDetails['product_name'].'</a></span>
-                            </div>
-                            <div class="product-attributes text-muted pb-1">
-                                <div class="product-line-info">
-                                    <span class="label">Size :</span>
-                                    <span class="value">'.$prod_size.'</span>
+                        </div>';
+            $arr = array("status" => 'logged',  'msg' => $html, 'modal_title' => 'Limited Stock', 'Cart_Total' => $CartTotal);                        
+        }else{
+            $html .= '
+                <div class="modal-body">
+                    <div class="box-cart-modal">
+                        <div class=" col-sm-4 col-xs-12 divide-right">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-6 text-center">
+                                        <img src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
+                                            alt="'.$ProductDetails['product_name'].'" title="'.$ProductDetails['product_name'].'" class="img-fluid">
                                 </div>
                             </div>
-                            <span class="text-muted">'.$prod_qty.' x</span> <span>₹ '.$ProductDetails['product_price'].'</span>
                         </div>
-                        <div class="cart-content pt-2">
-                                <strong>Total Price:</strong>&nbsp;₹ '.$prod_qty * $ProductDetails['product_price'].'
-                            </p>
+                        <div class="col-sm-8 col-xs-12">
+                            <div class="cart-info">
+                                <div class="pb-1">
+                                    <span class="product-name"><a href="">'.$ProductDetails['product_name'].'</a></span>
+                                </div>
+                                <div class="product-attributes text-muted pb-1">
+                                    <div class="product-line-info">
+                                        <span class="label">Size :</span>
+                                        <span class="value">'.$prod_size.'</span>
+                                    </div>
+                                </div>
+                                <span class="text-muted">'.$prod_qty.' x</span> <span>₹ '.$ProductDetails['product_price'].'</span>
+                            </div>
+                            <div class="cart-content pt-2">
+                                    <strong>Total Price:</strong>&nbsp;₹ '.$prod_qty * $ProductDetails['product_price'].'
+                                </p>
 
-                            <div class="cart-content-btn">
-                                <a href="'.FRONT_SITE_PATH.'cart"
-                                    class="btn btn-primary btn-block btn-sm">Go to Cart</a>
+                                <div class="cart-content-btn">
+                                    <a href="'.FRONT_SITE_PATH.'cart"
+                                        class="btn btn-primary btn-block btn-sm">Go to Cart</a>
 
-                                <a href="'.FRONT_SITE_PATH.'checkout"
-                                    class="btn btn-success btn-block btn-sm">Proceed to Checkout</a>
+                                    <a href="'.FRONT_SITE_PATH.'checkout"
+                                        class="btn btn-success btn-block btn-sm">Proceed to Checkout</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-            </div>';
+                </div>';
 
-        if (mysqli_num_rows($res) > 0) {
+            if (mysqli_num_rows($res) > 0) {
+                // Update  Cart Quantity
+                mysqli_query($con, "update cart set qty = '".$prod_qty."', prod_price = '".$prod_price."' where product_id = '".$prod_id."' and size = '".$prod_size."' and user_id = '".$user['id']."'");
+                $arr = array("status" => 'logged', 'msg' => $html, 'modal_title' => 'Product Updated', 'Cart_Total' => $CartTotal);
+                    
+            }else {
+                    // Add Product to Cart
+                    $CartTotal= $CartTotal + 1;
+                    
+                    mysqli_query($con, "insert into cart(`user_id`,`product_id`, `qty`, `size`, `prod_price`, `cart_status`, `cart_added_on`) Values('$user_id','$prod_id', '$prod_qty', '$prod_size', '$prod_price', 1, '$date')");
+                    $arr = array("status" => 'logged', 'msg' => $html, 'modal_title' => 'Product Added to Cart', 'Cart_Total' => $CartTotal);
                 
-            // Update  Cart Quantity
-            mysqli_query($con, "update cart set qty = '".$prod_qty."', prod_price = '".$prod_price."' where product_id = '".$prod_id."' and size = '".$prod_size."' and user_id = '".$user['id']."'");
-            $arr = array("status" => 'logged', 'msg' => $html, 'modal_title' => 'Product Updated', 'Cart_Total' => $CartTotal);
-                
-        }else {
-                // Add Product to Cart
-                $CartTotal= $CartTotal + 1;
-                
-                mysqli_query($con, "insert into cart(`user_id`,`product_id`, `qty`, `size`, `prod_price`, `cart_status`, `cart_added_on`) Values('$user_id','$prod_id', '$prod_qty', '$prod_size', '$prod_price', 1, '$date')");
-                $arr = array("status" => 'logged', 'msg' => $html, 'modal_title' => 'Product Added to Cart', 'Cart_Total' => $CartTotal);
-            
+            }
         }
+
+       
     
     }
     
@@ -670,7 +888,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['data'])) {
                                                                 class=\"input-group-addon bootstrap-touchspin-prefix\"
                                                                 style=\"display: none;\"></span><input
                                                                 type=\"number\" value=".$row['qty']."
-                                                                name=\"product-quantity-spin\" min='1' onchange=\"onChangeFunction(this.value, ".$row['cid'].")\"
+                                                                name=\"product-quantity-spin\" min='1' onchange=\"onChangeFunction(this.value, ".$row['cid'].", ".$row['id'].")\"
                                                                 style=\"display: block;width:100px\">
                                                         </div>
                                                     </div>
@@ -711,18 +929,26 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['data'])) {
 
     ?>
 <script>
-function onChangeFunction(value, id) {
+function onChangeFunction(value, id, prod_id) {
     $.ajax({
         url: 'ajax_call.php',
         method: 'post',
         data: {
             value: value,
             id: id,
+            prod_id:prod_id
         },
         success: (res) => {
             var json_arr = $.parseJSON(res);
-            getCartDetails();
-            $("#product" + id).html("₹ " + json_arr.updated_price)
+            
+            if(json_arr.status == 'success') {
+                getCartDetails();
+                $("#product" + id).html("₹ " + json_arr.message)
+            }
+
+            if(json_arr.status == 'error') {
+                swal("No Data", json_arr.message, 'error');
+            }
         }
     })
 }
@@ -767,12 +993,19 @@ elseif (isset($_POST['uid']) && $_POST['uid'] != '' && isset($_POST['pid']) && $
     echo json_encode($arr);
 }
 
-elseif (isset($_POST['value']) && $_POST['value'] > 0 && isset($_POST['id']) && $_POST['id'] > 0) {
+elseif (isset($_POST['value']) && $_POST['value'] > 0 && isset($_POST['id']) && $_POST['id'] > 0 && isset($_POST['prod_id']) && $_POST['prod_id'] > 0) {
 
     $value = get_safe_value($_POST['value']);
     $id = get_safe_value($_POST['id']);
+    $prod_id = get_safe_value($_POST['prod_id']);
 
-   if (isset($_SESSION['UID'])) {
+
+    $ProductDetails = ProductDetails("Where id = '$prod_id'");
+    $ProductDetails = $ProductDetails[0];
+
+    $remaining_stock = $ProductDetails['total_stock'] - $ProductDetails['total_sold'];
+
+    if (isset($_SESSION['UID'])) {
         $CartSql  = 'SELECT * FROM `cart` left JOIN product_details on cart.product_id = product_details.id  where cart.id = "'.$id.'"';
         $CartRes = mysqli_query($con, $CartSql);
         $Cartrow = mysqli_fetch_assoc($CartRes);
@@ -782,20 +1015,27 @@ elseif (isset($_POST['value']) && $_POST['value'] > 0 && isset($_POST['id']) && 
         $prod_price = $Cartrow['product_price'];
         $updated_price = $value * $prod_price;
 
-        $UpdateSql = "Update cart set prod_price = '$updated_price', qty = '$value' where id = '$id'";
-        mysqli_query($con, $UpdateSql);
-
-        
+        if ($value > $remaining_stock) {
+            $arr =array('status' => 'error', 'message' => 'Only, '.$remaining_stock.' items remains');
+        }else{
+            $UpdateSql = "Update cart set prod_price = '$updated_price', qty = '$value' where id = '$id'";
+            mysqli_query($con, $UpdateSql);
+            $arr =array('status' => 'success', 'message' => $updated_price);
+        }
 
    }else {
        $size = get_safe_value($_POST['size']);
        $curr_price = get_safe_value($_POST['curr_price']);
        $updated_price = $value * $curr_price;
-       $_SESSION['cart'][$id.','.$size]['prod_qty'] = $value;
-       $_SESSION['cart'][$id.','.$size]['prod_price'] = $updated_price;
+       if ($value > $remaining_stock) {
+            $arr =array('status' => 'error', 'message' => 'Only, '.$remaining_stock.' items remains');
+        }else{
+            $_SESSION['cart'][$id.','.$size]['prod_qty'] = $value;
+            $_SESSION['cart'][$id.','.$size]['prod_price'] = $updated_price;
+            $arr = array('status' => 'error', 'message' => $updated_price);
+        }
    }
 
-   $arr = array('updated_price' => $updated_price);
    echo json_encode($arr);
 
 }
