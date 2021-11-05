@@ -1,14 +1,14 @@
-
 <input type="hidden" id="date" value="<?= $date ?>">
-  <!-- Main Footer -->
-  <footer class="main-footer">
+<!-- Main Footer -->
+<footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-      <!-- Anything you want -->
+        <!-- Anything you want -->
     </div>
     <!-- Default to the left -->
-    <strong>Copyright &copy; <?= date("Y") ?> <a href="<?= ADMIN_FRONT_SITE ?>"><?= SITE_NAME ?></a>.</strong> All rights reserved.
-  </footer>
+    <strong>Copyright &copy; <?= date("Y") ?> <a href="<?= ADMIN_FRONT_SITE ?>"><?= SITE_NAME ?></a>.</strong> All
+    rights reserved.
+</footer>
 </div>
 <!-- ./wrapper -->
 
@@ -46,12 +46,20 @@
 <script src="https://adminlte.io/themes/v3/plugins/jquery-validation/additional-methods.min.js"></script>
 
 <!-- Summernote -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote.min.js" integrity="sha512-6rE6Bx6fCBpRXG/FWpQmvguMWDLWMQjPycXMr35Zx/HRD9nwySZswkkLksgyQcvrpYMx0FELLJVBvWFtubZhDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote.min.js"
+    integrity="sha512-6rE6Bx6fCBpRXG/FWpQmvguMWDLWMQjPycXMr35Zx/HRD9nwySZswkkLksgyQcvrpYMx0FELLJVBvWFtubZhDQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!-- Dropzone  -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+    integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+<script src="https://www.jqueryscript.net/demo/Bootstrap-4-Tag-Input-Plugin-jQuery/tagsinput.js"></script>
 <!-- Custom Script  -->
-<script src= "<?= ADMIN_FRONT_SITE.'admin_assets/js/script.js' ?>"></script>
+<script src="<?= ADMIN_FRONT_SITE.'admin_assets/js/script.js' ?>"></script>
 </body>
+
 </html>

@@ -175,9 +175,9 @@ function select_all(){
 
 function get_total_selected() {
     if ($('input[type=checkbox]:checked').length > 0) {
-        $("#product_delete_btn").show();
+        $("#product_delete_btn, #product_category_btn").show();
     }else{
-        $("#product_delete_btn").hide();
+        $("#product_delete_btn, #product_category_btn").hide();
     }
 
 }
@@ -213,5 +213,94 @@ function ProductListingAjax() {
     });
 }
 	
+var cloneNodeDataSheetCount = $("#getLastElementDataSheet").val();
+$("#add_more_product_data_sheeet_field").click(()=> {
+    var cloneNodeDataSheet = $("#cloneNodeDataSheet");
+    cloneNodeDataSheetCount++;
+    var DataAppend = '<div class="row" style="width:100%;margin: 2px 0;" id="box_'+cloneNodeDataSheetCount+'"><div class="form-group col-md-6"><label for="data_sheet_name">Product Data Sheet Name</label><input type="text" class="form-control" name="data_sheet_name[]" placeholder="Enter Product Data Sheet Name"></div><div class="form-group col-md-4"><label for="data_sheet_desc">Product Data Sheet Description</label><input type="text" class="form-control" name="data_sheet_desc[]"value="" placeholder="Enter Product Data Sheet Description"></div><div class="col-md-2" style="display: flex;    width: 100%;height: 85px;justify-content: center;align-items: center;"><a class="btn btn-danger" onclick="DeleteCloneNodeDatSheet('+cloneNodeDataSheetCount+')">Remove</a></div></div>';
 
+    cloneNodeDataSheet.append(DataAppend);
+    
+})
 
+function DeleteCloneNodeDatSheet(id) {
+    $("#box_"+id).remove();
+}
+
+function removeDataSheetFromDB(id) {
+    jQuery.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:{
+            id: id,
+            "removeDataSheetFromDB" : "removeDataSheetFromDB"
+        },
+        success:function(result){
+            $("#removeDataSheetFromDB_"+id).remove();
+            swal('Data Sheet Deleted Successfully', '', "success");
+        }
+    });
+}
+
+// Category Select All 
+function select_all_category(){
+	if(jQuery('#delete_check_category').prop("checked")){
+		jQuery('input[type=checkbox]').each(function(){
+			jQuery('#'+this.id).prop('checked',true);
+		});
+        $("#product_category_btn").show();
+	}else{
+		jQuery('input[type=checkbox]').each(function(){
+			jQuery('#'+this.id).prop('checked',false);
+		});
+        $("#product_category_btn").hide();
+	}
+}
+
+$("#delete_all_category_checkbox_frm").submit( (e) => {
+    e.preventDefault();
+
+    var form_data = $("#delete_all_category_checkbox_frm").serialize();
+
+    jQuery.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:form_data,
+        success:function(result){
+            window.location = window.location.href;
+        }
+    });
+})
+
+$("#category_data_form").submit( (e) => {
+    e.preventDefault();
+    var form_data = $("#category_data_form").serialize();
+    jQuery.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:form_data,
+        success:function(result){
+            if (result == 'Updated') {
+                // swal("Category Updated Successfully", '', 'success');
+                swal({
+                    title: "Category Updated Successfully",
+                    text: "",
+                    type: "success"
+                }).then(function() {
+                    window.location = "category";
+                });
+            }
+            if (result == 'insert') {
+                // swal("Category Inserted Successfully", '', 'success');
+                swal({
+                    title: "Category Inserted Successfully",
+                    text: "",
+                    type: "success"
+                }).then(function() {
+                    window.location = "category";
+                });
+            }
+            // window.location = 'category';    
+        }
+    });
+})

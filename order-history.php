@@ -452,16 +452,16 @@
                                     <td class="hidden-md-down">By Card</td>
                                     <td>
                                         <?php
-                                                                if($row['payment_status'] == 'succeeded') {
-                                                                    // Done 
-                                                                    $text = 'Success';
-                                                                    $color = 'green';
-                                                                }else{
-                                                                    // Error 
-                                                                    $text = 'Error';
-                                                                    $color = 'red';
-                                                                }
-                                                            ?>
+                                            if($row['payment_status'] == 'succeeded') {
+                                                // Done 
+                                                $text = 'Success';
+                                                $color = 'green';
+                                            }else{
+                                                // Error 
+                                                $text = 'Error';
+                                                $color = 'red';
+                                            }
+                                        ?>
                                         <span class="label label-pill bright" style="background-color:<?= $color ?> ">
                                             <?= $text ?>
                                         </span>

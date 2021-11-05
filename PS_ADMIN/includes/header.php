@@ -8,20 +8,23 @@
     if ($page_url == ADMIN_FRONT_SITE || $page_url == ADMIN_FRONT_SITE.'index.php') {
       $title = SITE_NAME.' - Dashboard';
       $active = 'active';
-      $page_url = 'javascript:void(0)';
 
     }
     else if ($page_url == ADMIN_FRONT_SITE.'products.php') {
         $title = SITE_NAME.' - Prodcts';
         $catalog_active = 'active';
+        $product_active = 'active';
         $menu_open = 'menu-open';
-        $page_url = 'javascript:void(0)';
     }
     else if ($page_url == ADMIN_FRONT_SITE.'category.php') {
         $title = SITE_NAME.' - Category';
+        $catalog_active = 'active';
         $category_active = 'active';
         $menu_open = 'menu-open';
-        $page_url = 'javascript:void(0)';
+    }
+    else if ($page_url == ADMIN_FRONT_SITE.'orders.php') {
+        $title = SITE_NAME.' - Orders';
+        $order_active = 'active';
     }
 
     if(!isset($_SESSION['ADMIN_ID'])) redirect(ADMIN_FRONT_SITE.'login');
@@ -109,6 +112,69 @@
             border:none
         }
 
+        .dark-mode .btn-secondary {
+            background-color: #161d31 !important;
+            border: none;
+        }
+       
+
+        .dark-mode .dropdown-menu,
+
+        .dark-mode .page-item:not(.active) .page-link,
+        .dark-mode .dropdown-item:hover,
+        .dark-mode .page-item.disabled .page-link,
+        .dark-mode .page-item.disabled a,
+        .select2-container--default .select2-selection--multiple,
+        .select2-container--default .select2-results>.select2-results__options,
+        .bootstrap-tagsinput,
+        .dropzone {
+            background-color: #161d31 !important;
+            border: none;
+        }
+
+        .bootstrap-tagsinput {
+            line-height : 27px;
+        }
+
+        .bootstrap-tagsinput .badge{
+            margin-top: 10px;
+        }
+        
+        .dark-mode a:not(.btn):hover,
+        .bootstrap-tagsinput input {
+            color: #fff;
+        }
+
+        .dark-mode .dropdown-item:focus,
+        .dropdown-item.active,
+        .select2-container--default .select2-selection--multiple .select2-selection__choice,
+        .dark-mode .select2-results__option[aria-selected=true] {
+            background-color: #283046;
+        }
+
+        .form-control,
+        .dark-mode .select2-dropdown {
+            background-color: #161d31 !important;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: 36px;
+            border: none;
+            background-color: #161d31;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #fff;
+        }
+
+        .bootstrap-tagsinput .badge {
+            background-color: #283046;
+            border: 1px solid #283046;
+        }
+
+        .dropzone .dz-preview.dz-image-preview {
+            background: none;
+        }
     </style>
 </head>
 
@@ -200,7 +266,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="<?= urldecode('products') ?>" class="nav-link <?= $catalog_active ?>">
+                                    <a href="<?= urldecode('products') ?>" class="nav-link <?= $product_active ?>">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Products</p>
                                     </a>
@@ -213,6 +279,15 @@
                                 </li>
                             </ul>
                         </li> 
+
+                        <li class="nav-item">
+                            <a href="orders" class="nav-link <?= $order_active ?>">
+                                <i class="nav-icon fab fa-first-order"></i>
+                                <p>
+                                    Orders
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

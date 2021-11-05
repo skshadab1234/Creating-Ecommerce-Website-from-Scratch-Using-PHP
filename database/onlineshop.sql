@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2021 at 07:50 PM
+-- Generation Time: Nov 05, 2021 at 04:06 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -91,7 +91,7 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`id`, `user_id`, `product_id`, `qty`, `size`, `prod_price`, `cart_status`, `cart_added_on`) VALUES
-(58, 8, 74, 1, 's', 280, 1, '2021-11-04');
+(77, 8, 95, 4, 'SMALL', 19996, 1, '2021-11-05');
 
 -- --------------------------------------------------------
 
@@ -127,19 +127,9 @@ CREATE TABLE `payment_details` (
 --
 
 INSERT INTO `payment_details` (`id`, `Order_Id`, `payment_user_id`, `product_id`, `product_varient`, `product_qty`, `delivery_charge`, `delivery_address_id`, `card_brand`, `payment_country`, `payment_id`, `payment_status`, `receipt_url`, `amount_captured`, `payment_method`, `fingerprint`, `currency`, `created`, `added_on`, `card_id`) VALUES
-(89, 'ORD-9698', 8, '3,2,2,2,3', '43,,S,M,44', '2,1,5,1,1', 'Free', 4, 'Visa', 'US', 'ch_3JnORQSFNgPd2Zme1xUEwSkf', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JnORQSFNgPd2Zme1xUEwSkf/rcpt_KSJ3Q3awrFyUViD5246JEGEMrw1HUPl', 16397, 'card_1JnORMSFNgPd2ZmesBcbLkT4', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-26 04:55:35', '2021-10-26', 'card_1JnORMSFNgPd2ZmesBcbLkT4'),
-(90, 'ORD-2403', 8, '2,2', 'S,M', '1,1', '500', 4, 'Visa', 'US', 'ch_3JnOlxSFNgPd2Zme1pHf1w6A', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JnOlxSFNgPd2Zme1pHf1w6A/rcpt_KSJOUtku6CbrUZ2FvHhVtW4VjOPfKy1', 900, 'card_1JnOltSFNgPd2ZmeQTs58Os2', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-25 04:55:35', '2021-10-25', 'card_1JnOltSFNgPd2ZmeQTs58Os2'),
-(91, 'ORD-2932', 8, '3,2,1,2,1', '42,S,M,XXL,S', '1,1,1,1,1', 'Free', 4, 'Visa', 'US', 'ch_3JomJWSFNgPd2Zme1yHNGTVL', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JomJWSFNgPd2Zme1yHNGTVL/rcpt_KTjnAAvw8uOfmD28YgI9TRd9BRh0N8m', 7397, 'card_1JomJRSFNgPd2ZmeERSo4qvm', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-25 04:55:35', '2021-10-25', 'card_1JomJRSFNgPd2ZmeERSo4qvm'),
-(92, 'ORD-7886', 8, '3,2,1,2,1', '42,S,M,XXL,S', '1,1,1,1,1', 'Free', 4, 'Visa', 'US', 'ch_3JomLVSFNgPd2Zme1yuNNsKP', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JomLVSFNgPd2Zme1yuNNsKP/rcpt_KTjpPAN72r4OLafhqhnwJPJ2W80EDtP', 7397, 'card_1JomLRSFNgPd2ZmeBlVRhSqT', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-26 04:54:35', '2021-10-26', 'card_1JomLRSFNgPd2ZmeBlVRhSqT'),
-(93, 'ORD-7145', 6, '1,2,3', 'S,S,42', '1,1,1', 'Free', 4, 'Visa', 'US', 'ch_3JomNlSFNgPd2Zme19pIu964', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JomNlSFNgPd2Zme19pIu964/rcpt_KTjrKp5HDBYhSfzG7e4WetZgYIo8f93', 5198, 'card_1JomNgSFNgPd2Zme2WUQ0Xq6', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-26 04:54:35', '2021-10-26', 'card_1JomNgSFNgPd2Zme2WUQ0Xq6'),
-(94, 'ORD-2288', 6, '3', '42', '1', 'Free', 4, 'Visa', 'US', 'ch_3JonmdSFNgPd2Zme0wgLpyP2', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JonmdSFNgPd2Zme0wgLpyP2/rcpt_KTlJNTvead0DPMAP6iyyWDl9uNIVMHT', 2999, 'card_1JonmZSFNgPd2ZmeOmfYqCiK', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-26 04:55:35', '2021-10-26', 'card_1JonmZSFNgPd2ZmeOmfYqCiK'),
-(95, 'ORD-1509', 6, '1', 'S', '1', 'Free', 4, 'Visa', 'US', 'ch_3JonuDSFNgPd2Zme0GUDurMD', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JonuDSFNgPd2Zme0GUDurMD/rcpt_KTlRa6s5RXPpH179kQwsvxk5gxuo0uA', 1999, 'card_1JonuASFNgPd2Zmes3tOuykx', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-26 05:03:25', '2021-10-26', 'card_1JonuASFNgPd2Zmes3tOuykx'),
-(96, 'ORD-9693', 8, '2', 'M', '1', '500', 5, 'Visa', 'US', 'ch_3Jp2WzSFNgPd2Zme09Hf2E8V', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3Jp2WzSFNgPd2Zme09Hf2E8V/rcpt_KU0YAgrl1GCAz43fjzA6cruc3Ue9wIh', 700, 'card_1Jp2WvSFNgPd2ZmelIdJkHoh', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-27 08:40:25', '2021-10-27', 'card_1Jp2WvSFNgPd2ZmelIdJkHoh'),
-(97, 'ORD-4838', 8, '3', '42', '10', 'Free', 5, 'Visa', 'US', 'ch_3Jp2bdSFNgPd2Zme1JHWI0Rf', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3Jp2bdSFNgPd2Zme1JHWI0Rf/rcpt_KU0cHcLKy6IlsfbDVeSgywQcwYtnGix', 29990, 'card_1Jp2bZSFNgPd2ZmeSPMOtFFZ', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-27 08:45:13', '2021-10-27', 'card_1Jp2bZSFNgPd2ZmeSPMOtFFZ'),
-(98, 'ORD-7166', 8, '3', '42', '1', 'Free', 5, 'Visa', 'US', 'ch_3JpBc9SFNgPd2Zme10kbaPn6', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JpBc9SFNgPd2Zme10kbaPn6/rcpt_KU9w3NfoY8yghjETc9ysJDcRbBDB5Ou', 2999, 'card_1JpBc5SFNgPd2ZmeWOeE00IS', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-27 06:22:21', '2021-10-27', 'card_1JpBc5SFNgPd2ZmeWOeE00IS'),
-(99, 'ORD-2623', 8, '3', '42', '15', 'Free', 5, 'Visa', 'US', 'ch_3JpBd1SFNgPd2Zme1vcdpEFH', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JpBd1SFNgPd2Zme1vcdpEFH/rcpt_KU9wIAjUJQ0DPCIOxGHB8jHR0icKi67', 44985, 'card_1JpBcwSFNgPd2ZmedLwBZlsf', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-27 06:23:15', '2021-10-27', 'card_1JpBcwSFNgPd2ZmedLwBZlsf'),
-(100, 'ORD-2618', 8, '3,2,2', '42,M,S', '8,6,15', 'Free', 5, 'Visa', 'US', 'ch_3JpnDJSFNgPd2Zme1p3Sq6Ap', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JpnDJSFNgPd2Zme1p3Sq6Ap/rcpt_KUmmVCzGIqUCqogLrwaGtr6eEFLXGoO', 28192, 'card_1JpnDHSFNgPd2ZmeY4jY12Nb', 'uxDgiVpbv4g7aFsy', 'inr', '2021-10-29 10:31:13', '2021-10-29', 'card_1JpnDHSFNgPd2ZmeY4jY12Nb'),
-(101, 'ORD-1760', 8, '73', '', '1', 'Free', 5, 'Visa', 'US', 'ch_3JroQESFNgPd2Zme1AQ5K5zj', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JroQESFNgPd2Zme1AQ5K5zj/rcpt_KWsAHqOwWRo4beVzVIANmU8mf5plj0Z', 2499, 'card_1JroQ9SFNgPd2ZmeSVRlcaUX', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-04 12:12:54', '2021-11-04', 'card_1JroQ9SFNgPd2ZmeSVRlcaUX');
+(1, 'ORD-1558', 8, '96,95', 'S,', '17,3', 'Free', 5, 'Visa', 'US', 'ch_3JsIcESFNgPd2Zme0eQAW8k9', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JsIcESFNgPd2Zme0eQAW8k9/rcpt_KXNMzBmbKgJbg5HMOHCivAZJ3tBDbdq', 35601, 'card_1JsIcASFNgPd2ZmeOxq8ipvh', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-05 08:27:18', '2021-11-05', 'card_1JsIcASFNgPd2ZmeOxq8ipvh'),
+(2, 'ORD-8423', 8, '96,96,96,95', 'XXL,S,XL,All', '1,100,100,1', 'Free', 5, 'Visa', 'US', 'ch_3JsMDnSFNgPd2Zme07enZ0ip', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JsMDnSFNgPd2Zme07enZ0ip/rcpt_KXR5coy4YduCXDDGigwmNvgrgBijjun', 248611, 'card_1JsMDjSFNgPd2ZmeIPEvMqok', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-05 12:18:19', '2021-11-05', 'card_1JsMDjSFNgPd2ZmeIPEvMqok'),
+(3, 'ORD-1607', 8, '95,96', 'All,XL', '1,600', 'Free', 5, 'Visa', 'US', 'ch_3JsO4XSFNgPd2Zme1CbrW4Ix', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JsO4XSFNgPd2Zme1CbrW4Ix/rcpt_KXT0jMKzi5xfJAkZPopxi42XcwnmqA4', 732199, 'card_1JsO4USFNgPd2Zme1M6KQh3H', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-05 02:16:53', '2021-11-05', 'card_1JsO4USFNgPd2Zme1M6KQh3H');
 
 -- --------------------------------------------------------
 
@@ -159,27 +149,28 @@ CREATE TABLE `products_image` (
 --
 
 INSERT INTO `products_image` (`id`, `product_img`, `product_id`, `status`) VALUES
-(4, 'black-white-mens-black-and-white-corporate-dress/men1.jpg', 1, 1),
-(5, 'black-white-mens-black-and-white-corporate-dress/men2.jpg', 1, 1),
-(6, 'black-white-mens-black-and-white-corporate-dress/men3.jpg', 1, 1),
-(14, 'elegant-old-blazzer/men4.jpg', 2, 1),
-(15, 'elegant-old-blazzer/men5.jpg', 2, 1),
-(16, '3-pics-sherwani-set-black-colour/3_pcs_suit_sherani.jpg', 3, 1),
-(17, '3-pics-sherwani-set-black-colour/3_pcs_suit_sherwani.jpg', 3, 1),
-(18, '3-pics-sherwani-set-black-colour/3pc_s46whitesilkkp1_3_33e045a8.jpg', 3, 1),
-(19, '3-pics-sherwani-set-black-colour/3pc_s46whitesilkkp1_4_99a5dec5.jpg', 3, 1),
-(20, '3-pics-sherwani-set-black-colour/3pc_s46whitesilkkp1_5_a5134f49.jpg', 3, 1),
-(21, '3-pics-sherwani-set-black-colour/3pc_s46whitesilkkp1_6_f7ae6120.jpg', 3, 1),
-(22, '3-pics-sherwani-set-black-colour/3pc_s46whitesilkkp1_7_9fe1e327.jpg', 3, 1),
-(23, '3-pcs-suit-sherani/3_pcs_suit_sherani.jpg', 73, 1),
-(24, '3-pcs-suit-sherani/3_pcs_suit_sherwani.jpg', 73, 1),
-(25, '3-pcs-suit-sherani/3pc_s46whitesilkkp1_3_33e045a8.jpg', 73, 1),
-(26, '3-pcs-suit-sherani/3pc_s46whitesilkkp1_4_99a5dec5.jpg', 73, 1),
 (27, '3-pcs-suit-sherani/3pc_s46whitesilkkp1_5_a5134f49.jpg', 73, 1),
-(28, '3-pcs-suit-sherani/3pc_s46whitesilkkp1_6_f7ae6120.jpg', 73, 1),
 (29, '3-pcs-suit-sherani/3pc_s46whitesilkkp1_7_9fe1e327.jpg', 73, 1),
-(32, 'fsher-man-t-shrts/men3.jpg', 74, 1),
-(33, 'fsher-man-t-shrts/men2.jpg', 74, 1);
+(34, 'asasaasasasa/men1.jpg', 74, 1),
+(35, 'asasaasasasa/men2.jpg', 74, 1),
+(36, 'asasaasasasa/men3.jpg', 74, 1),
+(37, 'khan-shadabssass/men1.jpg', 81, 1),
+(45, 'khan-shadab-alam/3pc_s46whitesilkkp1_3_33e045a8.jpg', 82, 1),
+(46, 'khan-shadab-alam/3pc_s46whitesilkkp1_4_99a5dec5.jpg', 82, 1),
+(47, 'khan-shadab-alam/3pc_s46whitesilkkp1_6_f7ae6120.jpg', 82, 1),
+(48, 'khan-shadab-alam/3pc_s46whitesilkkp1_7_9fe1e327.jpg', 82, 1),
+(49, 'asakjahdkasjd/3pc_s46whitesilkkp1_3_33e045a8.jpg', 85, 1),
+(50, 'sadsasdasaas/3pc_s46whitesilkkp1_3_33e045a8.jpg', 92, 1),
+(51, 'asdasdasddsadsa/3_pcs_suit_sherwani.jpg', 93, 1),
+(52, 'asdasdasddsadsa/3_pcs_suit_sherwani.jpg', 93, 1),
+(53, 'my-product/3_pcs_suit_sherwani.jpg', 94, 1),
+(54, 'three-piece-shervani-for-wedding/3_pcs_suit_sherani.jpg', 95, 1),
+(55, 'three-piece-shervani-for-wedding/3_pcs_suit_sherwani.jpg', 95, 1),
+(57, 'three-piece-shervani-for-wedding/3pc_s46whitesilkkp1_4_99a5dec5.jpg', 95, 1),
+(58, 'three-piece-shervani-for-wedding/3pc_s46whitesilkkp1_5_a5134f49.jpg', 95, 1),
+(59, 'three-piece-shervani-for-wedding/3pc_s46whitesilkkp1_6_f7ae6120.jpg', 95, 1),
+(64, 'asdasdasdsada/men5.jpg', 96, 1),
+(65, 'black-and-white-cracker-for-men/men4.jpg', 96, 1);
 
 -- --------------------------------------------------------
 
@@ -200,8 +191,15 @@ CREATE TABLE `product_data_sheet` (
 --
 
 INSERT INTO `product_data_sheet` (`id`, `data_sheet_name`, `data_sheet_desc`, `product_id`, `status`) VALUES
-(1, 'Composition', 'Melt Paper', 2, 1),
-(2, 'Cotton', 'Yes', 2, 1);
+(20, 'Compisiton ', 'Melted', 81, 1),
+(21, 'Hyper', 'Not', 81, 1),
+(29, 'Data heet', 'hello', 89, 1),
+(30, 'Sollid', 'yes', 94, 1),
+(31, 'Slky', 'Yes', 95, 1),
+(32, 'Cotton', 'Yes', 95, 1),
+(33, 'Dragon Slk', 'Office', 95, 1),
+(34, 'Material', 'Cotton', 95, 1),
+(35, 'Soft', 'yes', 95, 1);
 
 -- --------------------------------------------------------
 
@@ -220,6 +218,7 @@ CREATE TABLE `product_details` (
   `product_desc_short` varchar(500) NOT NULL,
   `product_size` varchar(255) NOT NULL,
   `product_categories` varchar(255) NOT NULL,
+  `product_subCategories` varchar(255) NOT NULL,
   `product_tags` varchar(255) NOT NULL,
   `product_desc_long` text NOT NULL,
   `product_waist` varchar(255) NOT NULL,
@@ -233,8 +232,9 @@ CREATE TABLE `product_details` (
 -- Dumping data for table `product_details`
 --
 
-INSERT INTO `product_details` (`id`, `product_name`, `product_price`, `product_oldPrice`, `product_brand`, `total_stock`, `total_sold`, `product_desc_short`, `product_size`, `product_categories`, `product_tags`, `product_desc_long`, `product_waist`, `product_hips`, `product_weight`, `product_status`, `product_added_on`) VALUES
-(73, '3 pcs suit sherani', '2499', 3499, 1, 25, 1, '<p>Hey Guys Grav this deal</p>', '', 'Men / Shop', '', '<p>Hey Guys Grav this deal<span style=\"font-size: 1rem;\">Hey Guys Grav this deal</span><span style=\"font-size: 1rem;\">Hey Guys Grav this deal</span><span style=\"font-size: 1rem;\">Hey Guys Grav this deal</span><span style=\"font-size: 1rem;\">Hey Guys Grav this deal</span><span style=\"font-size: 1rem;\">Hey Guys Grav this deal Long</span><br></p>', '', '', '.5', 1, '2021-11-04');
+INSERT INTO `product_details` (`id`, `product_name`, `product_price`, `product_oldPrice`, `product_brand`, `total_stock`, `total_sold`, `product_desc_short`, `product_size`, `product_categories`, `product_subCategories`, `product_tags`, `product_desc_long`, `product_waist`, `product_hips`, `product_weight`, `product_status`, `product_added_on`) VALUES
+(95, 'Three Piece Shervani For Wedding', '4999', 9999, 1, 400, 1, '<p>Special For Men. Gromming For Men</p>', 'S,M,L,XL,XXL', '1', ' Shirts', '', '<p><br></p><table class=\"table table-bordered\"><tbody><tr><td>Special Products</td><td>Special Products<br></td><td>Special Products<br></td></tr><tr><td>Special Products<br></td><td>Special Products Special Products Special Products<br></td><td>Special Products Special Products<br></td></tr><tr><td>Special Products Special Products<br></td><td>Special Products Special Products<br></td><td>Special Products Special Products<br></td></tr></tbody></table><p><br></p>', '', '', '1.5', 1, '2021-11-04'),
+(96, 'Black and White Cracker For Men', '1212', 12121, 1, 1200, 600, '<p>asad</p>', 'S,M,L,XL,XXL', '1', 'Shoes', '', '<p>asasa</p>', '', '', '2.5', 1, '2021-11-04');
 
 -- --------------------------------------------------------
 
@@ -256,7 +256,7 @@ CREATE TABLE `shop` (
 --
 
 CREATE TABLE `shop_category` (
-  `id` int(11) NOT NULL,
+  `cat_id` int(11) NOT NULL,
   `category_name` varchar(255) NOT NULL,
   `sub_category` varchar(1000) NOT NULL,
   `status` int(11) NOT NULL
@@ -266,10 +266,8 @@ CREATE TABLE `shop_category` (
 -- Dumping data for table `shop_category`
 --
 
-INSERT INTO `shop_category` (`id`, `category_name`, `sub_category`, `status`) VALUES
-(1, 'Men', 'Shoes, Shirts, T-shirts', 1),
-(2, 'Shop', 'Shoes, Shrts, Shoks, Dresses, Laravel, Denim', 1),
-(3, 'Women', 'Panda, Skirts, Dresses, Awesome Paintinmg Dresses', 1);
+INSERT INTO `shop_category` (`cat_id`, `category_name`, `sub_category`, `status`) VALUES
+(1, 'Men', 'Shoes, Shirts, T-shirts', 1);
 
 -- --------------------------------------------------------
 
@@ -356,12 +354,7 @@ CREATE TABLE `wishlist` (
 --
 
 INSERT INTO `wishlist` (`id`, `user_id`, `wishlist_name`, `wishlist_prod_id`, `wishlist_prod_size`, `default_id`, `added_on`) VALUES
-(29, 7, 'Favorate', '2', '', 0, '2021-10-23 10:45:28'),
-(30, 8, 'My Wishlist', '3,1,2', '', 1, '2021-10-23 23:19:28'),
-(31, 10, 'My Wishlist', '1', '', 1, '2021-10-24 10:31:53'),
-(32, 10, 'Jack', '3,2', '', 0, '2021-10-24 10:32:08'),
-(33, 6, 'My Wishlist', '1', '', 1, '2021-10-26 15:24:44'),
-(34, 8, 'New Patterns', '1,3', '', 0, '2021-11-01 07:27:55');
+(35, 8, 'My Wishlist', '96,95', '', 1, '2021-11-05 10:21:24');
 
 --
 -- Indexes for dumped tables
@@ -419,7 +412,7 @@ ALTER TABLE `shop`
 -- Indexes for table `shop_category`
 --
 ALTER TABLE `shop_category`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`cat_id`);
 
 --
 -- Indexes for table `users`
@@ -459,31 +452,31 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `payment_details`
 --
 ALTER TABLE `payment_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `products_image`
 --
 ALTER TABLE `products_image`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `product_data_sheet`
 --
 ALTER TABLE `product_data_sheet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `product_details`
 --
 ALTER TABLE `product_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `shop`
@@ -495,13 +488,13 @@ ALTER TABLE `shop`
 -- AUTO_INCREMENT for table `shop_category`
 --
 ALTER TABLE `shop_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `user_address`
@@ -513,7 +506,7 @@ ALTER TABLE `user_address`
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

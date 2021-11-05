@@ -2,9 +2,8 @@
     require 'includes/header.php';
     
     $pname = get_safe_value($_GET['productname']);
-    $ProductDetails =  ProductDetails('left join brands on product_details.product_brand = brands.bid where product_name = "'.$pname.'"');
+    $ProductDetails =  ProductDetails('left join shop_category on product_details.product_categories =  shop_category.cat_id  left join brands on product_details.product_brand = brands.bid  where product_name = "'.$pname.'"');
     $ProductDetails = $ProductDetails[0];
-    
     
     if ($pname == '' || $ProductDetails['product_name'] != $pname || $ProductDetails['product_status'] == 0)  {
         redirect(FRONT_SITE_PATH);
@@ -57,19 +56,28 @@
                 </li>
 
                 <?php
-                     $categories = explode("/",$ProductDetails['product_categories']);
-                     foreach ($categories as $key => $value) {
-                         ?>
+                    if($ProductDetails['category_name'] == ''){
+
+                    }else{
+                        ?>
+                         <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a itemprop="item" href="<?= FRONT_SITE_PATH.'categories?cat_name='.urlencode($ProductDetails['category_name']) ?>">
+                                <span itemprop="name"><?=  $ProductDetails['category_name'] ?></span>
+                            </a>    
+                            <meta itemprop="position" content="2">
+                        </li>
+                        <?php
+                    }
+                ?>
+
+               
 
                 <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a itemprop="item" href="<?= FRONT_SITE_PATH.'categories?cat_name='.urlencode($value) ?>">
-                        <span itemprop="name"><?=  $value ?></span>
+                    <a itemprop="item" href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
+                        <span itemprop="name"><?=  $ProductDetails['product_subCategories'] ?></span>
                     </a>
                     <meta itemprop="position" content="2">
                 </li>
-                <?php
-                     }
-                ?>
 
                 <li>
                     <span><?= $ProductDetails['product_name'] ?></span>
@@ -239,7 +247,6 @@
 
                                         <div class="product-variants">
                                             <div class="clearfix product-variants-item">
-                                                <span class="control-label">Size</span>
                                                 <ul id="group_3">
                                                     <?php
                                                     // Checking if Item Out of Stock the Disabled Button and all 
@@ -247,26 +254,35 @@
                                                 
                                                         $ProductSizes = $ProductDetails['product_size'];
                                                         
-                                                        $sizeExtract = explode(', ', $ProductSizes);
-                                                        foreach ($sizeExtract as $key => $value) {
-                                                            // Hitting Check at inital Size 
-                                                            if ($key == 0) {
-                                                                $checked = "checked='checked'";
-                                                            }else {
-                                                                $checked = '';
-                                                            }
+                                                        if (empty($ProductSizes)) {
+                                                            
+                                                        }else{
                                                             ?>
-                                                    <li class="input-container float-xs-left instock">
-                                                        <label>
-                                                            <input class="input-radio" type="radio" name="check_sizes"
-                                                                value="<?= $value ?>" title="<?= $value ?>" required
-                                                                <?= $checked.' '.$disabled ?>>
-                                                            <span class="radio-label"><?= $value ?></span>
-                                                        </label>
-                                                    </li>
-                                                    <?php
-                                     }
-                                    ?>
+                                                        <span class="control-label">Size</span>
+
+                                                            <?php
+                                                            $sizeExtract = explode(',', $ProductSizes);
+                                                            foreach ($sizeExtract as $key => $value) {
+                                                                // Hitting Check at inital Size 
+                                                                if ($key == 0) {
+                                                                    $checked = "checked='checked'";
+                                                                }else {
+                                                                    $checked = '';
+                                                                }
+                                                                ?>
+                                                                <li class="input-container float-xs-left instock">
+                                                                    <label>
+                                                                        <input class="input-radio" type="radio" name="check_sizes"
+                                                                            value="<?= $value ?>" title="<?= $value ?>" required
+                                                                            <?= $checked.' '.$disabled ?>>
+                                                                        <span class="radio-label"><?= $value ?></span>
+                                                                    </label>
+                                                                </li>
+                                                                <?php
+                                                                }
+                                                            }
+
+                                                        ?>
                                                 </ul>
                                             </div>
                                         </div>
@@ -574,7 +590,7 @@
                                             <p> </p>
                                         </div>
                                     </div>
-                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
                                         <p><?= $ProductDetails['product_desc_long'] ?></p>
                                     </div>
                                 </div>
@@ -1598,24 +1614,28 @@
                                     <?php
                                      $ProductSizes = $ProductDetails['product_size'];
                                      
-                                     $sizeExtract = explode(', ', $ProductSizes);
-                                     foreach ($sizeExtract as $key => $value) {
-                                         if ($key == 0) {
-                                             $checked = "checked='checked'";
-                                         }else {
-                                             $checked = '';
-                                         }
-                                         ?>
-                                    <li class="input-container float-xs-left instock">
-                                        <label>
-                                            <input class="input-radio" type="radio" data-product-attribute="4"
-                                                name="check_size" value="<?= $value ?>" title="<?= $value ?>" required
-                                                <?= $checked.' '.$disabled ?>>
-                                            <span class="radio-label"><?= $value ?></span>
-                                        </label>
-                                    </li>
-                                    <?php
-                                     }
+                                     $sizeExtract = explode(',', $ProductSizes);
+                                     if (empty($ProductSizes)) {
+                                         
+                                     }else{
+                                        foreach ($sizeExtract as $key => $value) {
+                                            if ($key == 0) {
+                                                $checked = "checked='checked'";
+                                            }else {
+                                                $checked = '';
+                                            }
+                                            ?>
+                                        <li class="input-container float-xs-left instock">
+                                            <label>
+                                                <input class="input-radio" type="radio" data-product-attribute="4"
+                                                    name="check_size" value="<?= $value ?>" title="<?= $value ?>" required
+                                                    <?= $checked.' '.$disabled ?>>
+                                                <span class="radio-label"><?= $value ?></span>
+                                            </label>
+                                        </li>
+                                        <?php
+                                        }
+                                    }
                                 ?>
                                 </ul>
                             </div>

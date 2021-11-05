@@ -177,7 +177,7 @@ function RemainingStock($id) {
 
 	$remaining_stock = $ProductDetails['total_stock'] - $ProductDetails['total_sold'];
 	
-	if($remaining_stock == 0) {
+	if($remaining_stock < 1) {
 		$remains = '<span style="color:red">Out of Stock</span>';
 	}
 	else if($remaining_stock < 10) {

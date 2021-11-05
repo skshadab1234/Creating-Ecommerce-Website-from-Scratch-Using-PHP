@@ -5,71 +5,19 @@
     
 ?>
 <style>
-.dark-mode .btn-secondary {
-    background-color: #161d31 !important;
-    border: none;
-}
-.dt-buttons{
-    display:none
-}
-
-.dark-mode .dropdown-menu,
-
-.dark-mode .page-item:not(.active) .page-link,
-.dark-mode .dropdown-item:hover,
-.dark-mode .page-item.disabled .page-link,
-.dark-mode .page-item.disabled a,
-.select2-container--default .select2-selection--multiple,
-.select2-container--default .select2-results>.select2-results__options,
-.bootstrap-tagsinput,
-.dropzone {
-    background-color: #161d31 !important;
-    border: none;
-}
-
-.dark-mode a:not(.btn):hover,
-.bootstrap-tagsinput input {
-    color: #fff;
-}
-
-.dark-mode .dropdown-item:focus,
-.dropdown-item.active,
-.select2-container--default .select2-selection--multiple .select2-selection__choice,
-.dark-mode .select2-results__option[aria-selected=true] {
-    background-color: #283046;
-}
-
-.form-control,
-.dark-mode .select2-dropdown {
-    background-color: #161d31 !important;
-}
-
-.select2-container--default .select2-selection--single {
-    height: 36px;
-    border: none;
-    background-color: #161d31;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #fff;
-}
-
-.bootstrap-tagsinput .badge {
-    background-color: #283046;
-    border: 1px solid #283046;
-}
-
-.dropzone .dz-preview.dz-image-preview {
-    background: none;
-}
+ .dt-buttons{
+            display:none
+        }
 </style>
 
 <?php
     if (isset($_GET['operation']) && $_GET['operation'] != '') {
-        
+        $ProductDetails = ProductDetails();
+        $id = end($ProductDetails)['id'] + 1;
         $head_title = 'Add New Product';
         $product_name = '';
         $category = '';
+        $product_subCategories = '';
         $product_brand = '';
         $total_stock = '';
         $product_size = '';
@@ -98,7 +46,7 @@
                 $ProductDetails = $ProductDetails[0];
                 $product_name = $ProductDetails['product_name'];
                 $category = $ProductDetails['product_categories'];
-                $category   = explode(' / ',$category);
+                $product_subCategories = $ProductDetails['product_subCategories'];
                 $product_brand = $ProductDetails['product_brand'];
                 $total_stock = $ProductDetails['total_stock'];
                 $product_size = $ProductDetails['product_size'];
@@ -156,35 +104,44 @@
                                 <input type="text" class="form-control" id="product_name" name="product_name"
                                     placeholder="Enter Product Name" value="<?= $product_name ?>">
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                    <label>Category</label>
-                                    <div class="select2-purple">
-                                        <select class="select2 multiselect select2-hidden-accessible" name='category[]'
-                                            id="category" multiple="multiple" data-placeholder="Select a Category"
-                                            data-dropdown-css-class="select2-purple" style="width: 100%;"
-                                            data-select2-id="15" tabindex="-1" aria-hidden="true" required="">
-                                            <?php
-                                            foreach($Category_data as $key => $val) {
-                                                if(in_array($val['category_name'], $category)){
+
+                            <div class="form-group col-md-6">
+                                <label>Category</label>
+                                <select name="category" id='product_category_121'
+                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;"
+                                    required onchange="product_category_Change()">
+                                    <option selected="selected" disabled>Select Category</option>
+                                    <?php
+                                        foreach($Category_data as $key => $val) {
+                                            if ($category == '') {
+                                                $selected = '';
+                                            }else{
+                                                if($val['cat_id'] == $category){
                                                     $selected = 'selected';
                                                 }else{
                                                     $selected = '';
                                                 }
-
-                                                ?>
-                                            <option <?= $selected ?>
-                                                data-select2-id="<?= $val['category_name'].'-'.$key ?>">
-                                                <?= $val['category_name'] ?></option>
-                                            <?php
-                                                }
+                                            }
+                                            
                                             ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- /.form-group -->
+                                        <option <?= $selected ?> value="<?= $val['cat_id'] ?>"><?= $val['category_name'] ?></option>
+                                    </option>
+                                    <?php
+                                        }
+                                    ?>
+                                </select>
                             </div>
-                            <!-- /.col -->
+
+                            <div class="form-group col-md-6">
+                                <label>Sub Category</label>
+                                <select name="sub_category_data" id='sub_category_data'
+                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;"
+                                    required>
+                                    <option selected="selected" disabled>Sub Category</option>
+                                   
+                                </select>
+                                <input type="hidden" id="sub_cat_recive_from_Db" value="<?= $product_subCategories ?>">
+                            </div>
 
                             <div class="form-group col-md-6">
                                 <label>Brand</label>
@@ -208,11 +165,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-6">
-                                <label for="total_stock">Total Stock</label>
-                                <input type="text" class="form-control" name="total_stock" value="<?= $total_stock ?>"
-                                    placeholder="Enter Total Stock">
-                            </div>
+                            
 
                             <div class="form-group col-md-6">
                                 <label for="product_size">Product Size</label>
@@ -261,9 +214,64 @@
                                 <input type="text" class="form-control" name="product_oldPrice"
                                     value="<?= $product_oldPrice ?>" placeholder="Enter Product Old Price">
                             </div>
+                            
+                            <div class="form-group col-md-6">
+                                <label for="total_stock">Total Stock</label>
+                                <input type="text" class="form-control" name="total_stock" value="<?= $total_stock ?>"
+                                    placeholder="Enter Total Stock">
+                            </div>
 
                         </div>
 
+                        <!-- /.row -->
+                    </div>
+                </div>
+
+                <div class="card_box card-default mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Product Data Sheet</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row" id="cloneNodeDataSheet">
+                            <?php
+                                $ProductDataSheetById = ProductDataSheetById($id);
+                                if (empty($ProductDataSheetById)) {
+                                    $data_sheet_name = '';
+                                    $data_sheet_desc = '';
+                                }else{
+                                    $lastid = array();
+                                    foreach ($ProductDataSheetById as $key => $value) {
+                                        $data_sheet_name = $value['data_sheet_name'];
+                                        $data_sheet_desc = $value['data_sheet_desc'];
+                                        $lastid[] = $value['id'];
+                                    ?>
+                                        <div class="row" style="width:100%;margin: 2px 0;" id="removeDataSheetFromDB_<?= $value['id'] ?>">
+                                            <div class="form-group col-md-6">
+                                                <label for="data_sheet_name">Product Data Sheet Name</label>
+                                                <input type="text" class="form-control" name="data_sheet_name[]"
+                                                    value="<?= $data_sheet_name ?>" placeholder="Enter Product Price">
+                                            </div>
+
+                                            <div class="form-group col-md-4">
+                                                <label for="data_sheet_desc">Product Data Sheet Description</label>
+                                                <input type="text" class="form-control" name="data_sheet_desc[]"
+                                                    value="<?= $data_sheet_desc ?>" placeholder="Enter Product Old Price">
+                                            </div>
+
+                                            <div class="col-md-2" style="display: flex;width: 100%;height: 85px;justify-content: center;align-items: center;">
+                                                <a class="btn btn-danger" onclick = "removeDataSheetFromDB(<?= $value['id'] ?>)">Remove</a>
+                                            </div>
+                                        </div>
+                                    <?php
+                                    }
+                                }
+                            ?>
+                            <input type="hidden" id="getLastElementDataSheet" value="<?= end($lastid) ?>">
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-primary float-right" id="add_more_product_data_sheeet_field"><i class="fa fa-plus"></i>  Add More</button>
+                        </div>
                         <!-- /.row -->
                     </div>
                 </div>
@@ -292,17 +300,6 @@
                                 <input type="text" name="product_tags" data-role="tagsinput"
                                     value="<?= $product_tags ?>">
                             </div>
-
-                            <!-- <div class="form-group col-md-6">
-                                <h5 for="product_tags"><strong>Status</strong></h5>
-                                <div class="icheck-success d-inline">
-                                    <input type="checkbox" name="status" value="1"  id="checkboxDanger3">
-                                    <label for="checkboxDanger3">
-                                    Active
-                                    </label>
-                                </div>
-                                </div>
-                            </div> -->
 
                         </div>
                         <!-- /.row -->
@@ -471,6 +468,10 @@
                                                             <th class="sorting" tabindex="0" aria-controls="example1"
                                                                 rowspan="1" colspan="1"
                                                                 aria-label="CSS grade: activate to sort column ascending">
+                                                                SUB CATEGORIES</th>                                                                
+                                                            <th class="sorting" tabindex="0" aria-controls="example1"
+                                                                rowspan="1" colspan="1"
+                                                                aria-label="CSS grade: activate to sort column ascending">
                                                                 STATUS</th>
                                                             <th class="sorting" tabindex="0" aria-controls="example1"
                                                                 rowspan="1" colspan="1"
@@ -481,7 +482,7 @@
                                                     </thead>
                                                     <tbody id="product_listing_td">
                                                         <?php
-                                                                    $ProductDetails = ProductDetails('left join brands on product_details.product_brand = brands.bid');
+                                                                    $ProductDetails = ProductDetails('left join shop_category on product_details.product_categories =  shop_category.cat_id left join brands on product_details.product_brand = brands.bid');
                                                                     foreach($ProductDetails as $key => $val) {
                                                                         $ProductImageById = ProductImageById($val['id'], 'limit 1');
                                                                         array_unshift($ProductImageById,"");
@@ -504,11 +505,11 @@
                                                                         }
                                                                     ?>
                                                         <tr class="odd" id="delete_box_<?= $val['id'] ?>">
-                                                            <td><input type="checkbox" name="checked_product_delete[]" onclick="get_total_selected()"
+                                                            <td class="dtr-control sorting_1" tabindex="0"><input type="checkbox" name="checked_product_delete[]" onclick="get_total_selected()"
                                                                     id="<?= $val['id']?>"
                                                                     value="<?= $val['id'] ?>"></td>
                                                             <td style=""><img class="img-reponsive img-fluid"
-                                                                    width="60px" height="80px" style="border-radius:50%"
+                                                                    width="80px" height="80px" style="border-radius:50%;width:80px;height:80px"
                                                                     src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById['1']['product_img'] ?>"
                                                                     alt=""></td>
                                                             <td style=""><a
@@ -524,7 +525,8 @@
                                                             <td style="color: <?= $color ?>">
                                                                 <?= $val['total_stock'] - $val['total_sold'] ?></td>
                                                             <td><?= $val['product_size'] ?></td>
-                                                            <td><?= $val['product_categories'] ?></td>
+                                                            <td><?= $val['category_name'] ?></td>
+                                                            <td><?= $val['product_subCategories'] ?></td>
                                                             <td><span class="btn <?= $bgColor ?>"><?= $text ?></span>
                                                             </td>
                                                             <td><?= date("d M,Y", strtotime($val['product_added_on'])) ?>
@@ -550,19 +552,13 @@
                 <?php
     }
 ?>
-
-
             </div>
 
 
             <?php
     require 'includes/footer.php';
 ?>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
-                integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-                crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
-            <script src="https://www.jqueryscript.net/demo/Bootstrap-4-Tag-Input-Plugin-jQuery/tagsinput.js"></script>
+            
             <script>
             $("#product_images").hide();
 
@@ -571,6 +567,26 @@
                 $("#product_data_form").show();
             })
 
+            product_category_Change();
+
+            function  product_category_Change() {
+                var id = $("#product_category_121").val();
+                var sub_cat_recive_from_Db = $("#sub_cat_recive_from_Db").val();
+                if (id == '-1') {
+                    jQuery('#sub_category_data').html('<option value="-1" disabled selected>Select Sub Category</option>');
+                }else{
+                    jQuery('#sub_category_data').html('<option value="-1" disabled selected>Select Sub Category</option>');
+                    jQuery.ajax({
+                        url : "admin_ajax_call.php",
+                        type : "post",
+                        data : "id="+id+'&change_category_load_sub_category=sub_category&sub_cat_recive_from_Db='+sub_cat_recive_from_Db,
+                        success: function(data){
+                            jQuery('#sub_category_data').append(data);
+                        }
+                    });
+                }
+            }
+            
             Dropzone.options.dropzoneFrom = {
                 autoProcessQueue: false,
                 acceptedFiles: ".png,.jpg,.jpeg",
@@ -660,7 +676,11 @@
                             url: "admin_ajax_call.php",
                             data: $(form).serialize(),
                             success: function(res) {
+                                console.log(res)
                                 var data = $.parseJSON(res);
+                                if (data.status == 'error_datasheet') {
+                                    swal(data.message, '', 'error');
+                                }
 
                                 if (data.status == 'error') {
                                     swal(data.message, '', 'error');
@@ -674,6 +694,7 @@
                                 if (data.status == 'update_success') {
                                     swal({
                                         title: "Would  you like to Update Images Also?",
+                                        text: data.message,
                                         icon: "warning",
                                         buttons: [
                                             'No',
