@@ -8,12 +8,6 @@ require 'session.php';
 
 $getCartTotal = getCartTotal();
 
-
-if (isset($_SESSION['UID'])) {
-    # code...
-}else{
-    
-}
 $page_url =  'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 
 $body_name = 'product';

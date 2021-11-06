@@ -187,9 +187,7 @@
                                     </div>
                                 </div>
 
-
-
-                                <div id="order-details" class="col-md-4">
+                                <div id="order-details" class="col-md-12">
                                     <h3 class="h3 card-title">Order details:</h3>
                                     <ul>
                                         <li>Order reference: <?= $row['fingerprint'] ?></li>
@@ -203,10 +201,9 @@
                                         </li>
                                         <li>Receipt : <a href="<?= $row['receipt_url'] ?>" download target="_blank">View
                                                 Receipt From Stripe</a></li>
+                                        <li><a class="btn btn-primary float-right" href="download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download Invoice</a></li>
                                     </ul>
                                 </div>
-
-
                             </div>
                         </div>
                     </section>

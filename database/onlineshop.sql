@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 05, 2021 at 04:06 PM
+-- Generation Time: Nov 06, 2021 at 12:10 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -86,13 +86,6 @@ CREATE TABLE `cart` (
   `cart_added_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `cart`
---
-
-INSERT INTO `cart` (`id`, `user_id`, `product_id`, `qty`, `size`, `prod_price`, `cart_status`, `cart_added_on`) VALUES
-(77, 8, 95, 4, 'SMALL', 19996, 1, '2021-11-05');
-
 -- --------------------------------------------------------
 
 --
@@ -119,17 +112,17 @@ CREATE TABLE `payment_details` (
   `currency` varchar(255) NOT NULL,
   `created` varchar(255) NOT NULL,
   `added_on` date NOT NULL,
-  `card_id` text NOT NULL
+  `card_id` text NOT NULL,
+  `tracking_id` varchar(1000) NOT NULL,
+  `invoice_file` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `payment_details`
 --
 
-INSERT INTO `payment_details` (`id`, `Order_Id`, `payment_user_id`, `product_id`, `product_varient`, `product_qty`, `delivery_charge`, `delivery_address_id`, `card_brand`, `payment_country`, `payment_id`, `payment_status`, `receipt_url`, `amount_captured`, `payment_method`, `fingerprint`, `currency`, `created`, `added_on`, `card_id`) VALUES
-(1, 'ORD-1558', 8, '96,95', 'S,', '17,3', 'Free', 5, 'Visa', 'US', 'ch_3JsIcESFNgPd2Zme0eQAW8k9', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JsIcESFNgPd2Zme0eQAW8k9/rcpt_KXNMzBmbKgJbg5HMOHCivAZJ3tBDbdq', 35601, 'card_1JsIcASFNgPd2ZmeOxq8ipvh', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-05 08:27:18', '2021-11-05', 'card_1JsIcASFNgPd2ZmeOxq8ipvh'),
-(2, 'ORD-8423', 8, '96,96,96,95', 'XXL,S,XL,All', '1,100,100,1', 'Free', 5, 'Visa', 'US', 'ch_3JsMDnSFNgPd2Zme07enZ0ip', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JsMDnSFNgPd2Zme07enZ0ip/rcpt_KXR5coy4YduCXDDGigwmNvgrgBijjun', 248611, 'card_1JsMDjSFNgPd2ZmeIPEvMqok', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-05 12:18:19', '2021-11-05', 'card_1JsMDjSFNgPd2ZmeIPEvMqok'),
-(3, 'ORD-1607', 8, '95,96', 'All,XL', '1,600', 'Free', 5, 'Visa', 'US', 'ch_3JsO4XSFNgPd2Zme1CbrW4Ix', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JsO4XSFNgPd2Zme1CbrW4Ix/rcpt_KXT0jMKzi5xfJAkZPopxi42XcwnmqA4', 732199, 'card_1JsO4USFNgPd2Zme1M6KQh3H', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-05 02:16:53', '2021-11-05', 'card_1JsO4USFNgPd2Zme1M6KQh3H');
+INSERT INTO `payment_details` (`id`, `Order_Id`, `payment_user_id`, `product_id`, `product_varient`, `product_qty`, `delivery_charge`, `delivery_address_id`, `card_brand`, `payment_country`, `payment_id`, `payment_status`, `receipt_url`, `amount_captured`, `payment_method`, `fingerprint`, `currency`, `created`, `added_on`, `card_id`, `tracking_id`, `invoice_file`) VALUES
+(7, 'ORD-9320', 8, '95', 'XXL', '1', 'Free', 5, 'Visa', 'US', 'ch_3JsmNnSFNgPd2Zme1m2oV4gn', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JsmNnSFNgPd2Zme1m2oV4gn/rcpt_KXs8zVd4e0vxk8kGtHSeKbc1oO3xoqh', 4999, 'card_1JsmNjSFNgPd2Zmeswo0hCt8', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-06 04:14:23', '2021-11-06', 'card_1JsmNjSFNgPd2Zmeswo0hCt8', '376755185', 'Invoice-7-2021_11_06-041426-PS.pdf');
 
 -- --------------------------------------------------------
 
@@ -233,8 +226,8 @@ CREATE TABLE `product_details` (
 --
 
 INSERT INTO `product_details` (`id`, `product_name`, `product_price`, `product_oldPrice`, `product_brand`, `total_stock`, `total_sold`, `product_desc_short`, `product_size`, `product_categories`, `product_subCategories`, `product_tags`, `product_desc_long`, `product_waist`, `product_hips`, `product_weight`, `product_status`, `product_added_on`) VALUES
-(95, 'Three Piece Shervani For Wedding', '4999', 9999, 1, 400, 1, '<p>Special For Men. Gromming For Men</p>', 'S,M,L,XL,XXL', '1', ' Shirts', '', '<p><br></p><table class=\"table table-bordered\"><tbody><tr><td>Special Products</td><td>Special Products<br></td><td>Special Products<br></td></tr><tr><td>Special Products<br></td><td>Special Products Special Products Special Products<br></td><td>Special Products Special Products<br></td></tr><tr><td>Special Products Special Products<br></td><td>Special Products Special Products<br></td><td>Special Products Special Products<br></td></tr></tbody></table><p><br></p>', '', '', '1.5', 1, '2021-11-04'),
-(96, 'Black and White Cracker For Men', '1212', 12121, 1, 1200, 600, '<p>asad</p>', 'S,M,L,XL,XXL', '1', 'Shoes', '', '<p>asasa</p>', '', '', '2.5', 1, '2021-11-04');
+(95, 'Three Piece Shervani For Wedding', '4999', 9999, 1, 800, 7, '<p>Special For Men. Gromming For Men</p>', 'S,M,L,XL,XXL', '1', 'Wedding Special', '', '<p><br></p><table class=\"table table-bordered\"><tbody><tr><td>Special Products</td><td>Special Products<br></td><td>Special Products<br></td></tr><tr><td>Special Products<br></td><td>Special Products Special Products Special Products<br></td><td>Special Products Special Products<br></td></tr><tr><td>Special Products Special Products<br></td><td>Special Products Special Products<br></td><td>Special Products Special Products<br></td></tr></tbody></table><p><br></p>', '', '', '1.5', 1, '2021-11-04'),
+(96, 'Black and White Cracker For Men', '1212', 12121, 1, 1200, 602, '<p>asad</p>', 'S,M,L,XL,XXL', '1', 'Shoes', '', '<p>asasa</p>', '', '', '2.5', 1, '2021-11-04');
 
 -- --------------------------------------------------------
 
@@ -267,7 +260,7 @@ CREATE TABLE `shop_category` (
 --
 
 INSERT INTO `shop_category` (`cat_id`, `category_name`, `sub_category`, `status`) VALUES
-(1, 'Men', 'Shoes, Shirts, T-shirts', 1);
+(1, 'Men', 'Shoes, Shirts, T-shirts,Wedding Special', 1);
 
 -- --------------------------------------------------------
 
@@ -452,13 +445,13 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT for table `payment_details`
 --
 ALTER TABLE `payment_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `products_image`
@@ -488,7 +481,7 @@ ALTER TABLE `shop`
 -- AUTO_INCREMENT for table `shop_category`
 --
 ALTER TABLE `shop_category`
-  MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`

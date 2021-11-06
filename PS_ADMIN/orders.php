@@ -309,7 +309,7 @@
                                                                     <?= $text ?>
                                                                 </span>
                                                             </td>
-                                                            <td class="hidden-md-down"><a href="" style="color:#ddd">Download</a> / <a href="" style="color:#ddd">Print</a></td>
+                                                            <td class="hidden-md-down"><a href="" style="color:#ddd">Download</a> / <a href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].'&PrintData=print' ?>" style="color:#ddd">Print</a></td>
                                                             </tr>
                                                          <?php
                                                      }
@@ -329,6 +329,18 @@
             </div>
 
 
+        <?php
+    }
+
+    if (isset($_GET['PrintData']) && $_GET['PrintData'] != '') {
+        ?>
+        <script>
+                var printContents = document.getElementById("InvoiceDataToPrint").innerHTML;
+                var originalContents = document.body.innerHTML;
+                document.body.innerHTML = printContents;
+                window.print();
+                document.body.innerHTML = originalContents;
+        </script>
         <?php
     }
 ?>
