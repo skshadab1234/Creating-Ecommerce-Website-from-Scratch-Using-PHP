@@ -201,7 +201,7 @@
                                         </li>
                                         <li>Receipt : <a href="<?= $row['receipt_url'] ?>" download target="_blank">View
                                                 Receipt From Stripe</a></li>
-                                        <li><a class="btn btn-primary float-right" href="download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download Invoice</a></li>
+                                        <li><a class="btn btn-primary float-right" href="<?= FRONT_SITE_PATH ?>download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download Invoice</a></li>
                                     </ul>
                                 </div>
                             </div>

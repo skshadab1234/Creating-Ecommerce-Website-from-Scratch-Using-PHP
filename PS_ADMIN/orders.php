@@ -73,12 +73,7 @@
                         <div class="col-sm-4 invoice-col">
                         To
                         <address>
-                            <strong><?= $getAddressById['add_firstname'].' '.$getAddressById['add_lastname'] ?></strong><br>
-                            <?= $getAddressById['company'] ?><br>
-                            <?= $getAddressById['address'].', '.$getAddressById['addres_complement'] ?><br>
-                            <?= $getAddressById['city'].', '.$getAddressById['state'].'-'.$getAddressById['postal_code'] ?><br>
-                            <?= $getAddressById['country'] ?> <br>
-                            <?= $getAddressById['phone_number'] ?>
+                           <?= $row['delivery_address_id'] ?>
                         </address>
                         </div>
                         <!-- /.col -->
@@ -206,10 +201,10 @@
                     <!-- this row will not appear when printing -->
                     <div class="row no-print">
                         <div class="col-12">
-                        <button id="PrintInvoice" type="button" class="btn btn-default"><i class="fas fa-print"></i> Print</button>
-                        <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
-                            <i class="fas fa-download"></i> Generate PDF
-                        </button>
+                            <button id="PrintInvoice" type="button" class="btn btn-default"><i class="fas fa-print"></i> Print</button>
+                            <a class="btn btn-primary float-right" style="margin-right: 5px;" href="<?= FRONT_SITE_PATH ?>download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">
+                                <i class="fas fa-download"></i> Generate PDF
+                            </a>
                         </div>
                     </div>
                     </div>
@@ -290,7 +285,7 @@
                                                          ?>
                                                             <tr>
                                                                 <td><a href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'] ?>"><?= $value['Order_Id'] ?></a></td>
-                                                                <td><?= date("d M,Y h:i:s A", strtotime($value['created'])) ?></td>
+                                                                <td><?= date("d M,Y", strtotime($value['added_on'])) ?></td>
                                                                 <td class="text-xs-right">₹ <?= $value['amount_captured'] ?></td>
                                                                 <td class="hidden-md-down">By Card</td>
                                                                 <td>
@@ -309,7 +304,8 @@
                                                                     <?= $text ?>
                                                                 </span>
                                                             </td>
-                                                            <td class="hidden-md-down"><a href="" style="color:#ddd">Download</a> / <a href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].'&PrintData=print' ?>" style="color:#ddd">Print</a></td>
+                                                            <td class="hidden-md-down">
+                                                                <a style="color:#ddd" href="<?= FRONT_SITE_PATH.'Invoices?orderId='.$value['Order_Id'].'&redirect='.$page_url ?>">Generate</a> / <a href="<?= FRONT_SITE_PATH ?>download?filename=<?= $value['invoice_file'] ?>&redirect=<?= $page_url ?>" style="color:#ddd">Download</a> / <a href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].'&PrintData=print' ?>" style="color:#ddd">Print</a></td>
                                                             </tr>
                                                          <?php
                                                      }

@@ -230,6 +230,8 @@ fade in  -->
 </div>
 <div class="modal-backdrop" style="display:none"></div>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+
 <script type="text/javascript" src="<?= FRONT_SITE_PATH ?>script/bottom-60e2c725.js"></script>
 <script src="<?= FRONT_SITE_PATH ?>script/script.js"></script>
 

@@ -565,9 +565,56 @@ $("#update-password").submit( (e) =>  {
 })
 
 
+// Product Search Work 
+
+$("#Search_Product_mb").keyup( () => { // Searchng on Mobile Device
+    var search_val_mb = $("#Search_Product_mb").val()
+    $.ajax({
+        url : 'ajax_call.php',
+        method : 'post',
+        data : {search_val_mb:search_val_mb},
+        success : (res) => {
+            var data = $.parseJSON(res);
+            
+            if (data.status == 'error') {
+                $("#notfoundproducterror").html(data.message);
+                $("#Product_Getted_From_DB").html('');   
+            }
+            if (data.status == 'success') {
+                $("#notfoundproducterror").html('');
+                $("#Product_Getted_From_DB").html(data.message);    
+            }
+            
+        }
+    });
+})
+
+$("#Search_Product_For_Desktop").keyup( () => { // Seacrhing on Desktop Device
+    var search_val_mb = $("#Search_Product_For_Desktop").val();
+    $.ajax({
+        url : 'ajax_call.php',
+        method : 'post',
+        data : {search_val_mb:search_val_mb},
+        success : (res) => {
+            var data = $.parseJSON(res);
+            $("#Product_Getted_From_DB_Desktop").show();
+            if (data.status == 'error') {
+                $("#notfound_Product_Desktop").html(data.message);
+                $("#Product_Getted_From_DB_Desktop").html('');   
+            }
+            if (data.status == 'success') {
+                $("#notfound_Product_Desktop").html('');
+                $("#Product_Getted_From_DB_Desktop").html(data.message);    
+            }
+            
+        }
+    });
+})
 
 
-
-
-
+$("#Search_Product_For_Desktop").blur( () => {
+    setTimeout( () => {
+        $("#Product_Getted_From_DB_Desktop").hide();
+    }, 1000)
+})
 

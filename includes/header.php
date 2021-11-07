@@ -59,7 +59,6 @@ if ($page_url == FRONT_SITE_PATH || $page_url == FRONT_SITE_PATH.'index.php') {
     }
     
 }elseif ($page_url == FRONT_SITE_PATH.'wishlist.php') {
-    
     if (isset($_SESSION['UID'])) {
         $title = $user['firstname'].' '.$user['lastname'].' - Wishlist';
     }else{
@@ -78,6 +77,9 @@ if ($page_url == FRONT_SITE_PATH || $page_url == FRONT_SITE_PATH.'index.php') {
     }else{
         $title = 'Update Password';
     }
+}
+elseif ($page_url == FRONT_SITE_PATH.'product.php') {
+    $title = 'Shop';
 }
 $base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .  $_SERVER['HTTP_HOST'];
 $url = $base_url . $_SERVER["REQUEST_URI"];
@@ -101,12 +103,14 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
     <link rel="icon" type="image/vnd.microsoft.icon" href="<?= FRONT_SITE_PATH ?>logo.png">
     <link rel="shortcut icon" type="image/x-icon" href="<?= FRONT_SITE_PATH ?>logo.png">
 
-    <link rel="stylesheet" href="https://rubiktheme.com/demo/rb_evo_demo/themes/rb_evo/assets/cache/theme-3b594a31.css"
+    <link rel="stylesheet" href="https://rubiktheme.com/demo/rb_evo_demo/themes/rb_evo/assets/cache/theme-1bc8f531.css"
         type="text/css" media="all">
 
     <link rel="stylesheet" href="<?= FRONT_SITE_PATH ?>style/HomePage.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
 
 
 <script type="text/javascript">
@@ -1387,7 +1391,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                 <div class="search-box">
                                                     <div class="rb-search-widget">
                                                         <form method="get" action="">
-                                                            <input type="text" name="s" placeholder="Search"
+                                                            <input type="text" id="Search_Product_For_Desktop" placeholder="Search"
                                                                 class="rb-search" autocomplete="off">
                                                             <button class="rb-search-btn" type="submit">
                                                                 <i class="icon_search"></i>
@@ -1400,9 +1404,9 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                     </div>
 
                                                     <div class="resuilt-search">
-                                                        <div class="rb-resuilt"></div>
+                                                        <div class="rb-resuilt" id="Product_Getted_From_DB_Desktop"></div>
                                                     </div>
-                                                    <p class="rb-resuilt-error"></p>
+                                                    <p class="rb-resuilt-error" id="notfound_Product_Desktop"></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -2193,9 +2197,9 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                             </div>
                                             <div class="search-box">
                                                 <div class="rb-search-widget">
-                                                    <form method="get" action="">
-                                                        <input type="text" name="s" placeholder="Search"
-                                                            class="rb-search" autocomplete="off">
+                                                    <form method="post" action="">
+                                                        <input type="text" name="Search_Product_mb" placeholder="Search"
+                                                            class="rb-search" autocomplete="off" id="Search_Product_mb">
                                                         <button class="rb-search-btn" type="submit">
                                                             <i class="icon_search"></i>
                                                             <span class="hidden-xl-down">Search</span>
@@ -2207,9 +2211,9 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                 </div>
 
                                                 <div class="resuilt-search">
-                                                    <div class="rb-resuilt"></div>
+                                                    <div class="rb-resuilt" id="Product_Getted_From_DB"></div>
                                                 </div>
-                                                <p class="rb-resuilt-error"></p>
+                                                <p class="rb-resuilt-error" id="notfoundproducterror" style="position: absolute;top: 181px;z-index: 99999;"></p>
                                             </div>
                                         </div>
                                     </div>

@@ -175,9 +175,9 @@ function select_all(){
 
 function get_total_selected() {
     if ($('input[type=checkbox]:checked').length > 0) {
-        $("#product_delete_btn, #product_category_btn").show();
+        $("#product_delete_btn, #product_category_btn, #product_subcategory_btn").show();
     }else{
-        $("#product_delete_btn, #product_category_btn").hide();
+        $("#product_delete_btn, #product_category_btn, #product_subcategory_btn").hide();
     }
 
 }
@@ -301,6 +301,113 @@ $("#category_data_form").submit( (e) => {
                 });
             }
             // window.location = 'category';    
+        }
+    });
+})
+    
+product_category_Change();
+
+function  product_category_Change() {
+    var id = $("#product_category_121").val();
+    var sub_cat_recive_from_Db = $("#sub_cat_recive_from_Db").val();
+    if (id == '') {
+        jQuery('#sub_category_data').html('<option value=""  selected>Select Sub Category</option>');
+    }else{
+        jQuery('#sub_category_data').html('<option value=""  selected>Select Sub Category</option>');
+        jQuery.ajax({
+            url : "admin_ajax_call.php",
+            type : "post",
+            data : "id="+id+'&change_category_load_sub_category=sub_category&sub_cat_recive_from_Db='+sub_cat_recive_from_Db,
+            success: function(data){
+                jQuery('#sub_category_data').append(data);
+            }
+        });
+    }
+}
+
+$(document).ready( () => {
+    setTimeout( () => {
+        product_subcategory_Change();
+    }, 1000);
+})
+function product_subcategory_Change() {
+    var id = $("#sub_category_data").val();
+    var sub_catValue_recive_from_Db = $("#sub_catValue_recive_from_Db").val();
+    if (id == '') {
+        jQuery('#sub_category_value').html('<option value=""  selected>Select Sub Category Value</option>');
+    }else{
+        jQuery('#sub_category_value').html('<option value=""  selected>Select Sub Category Value</option>');
+        jQuery.ajax({
+            url : "admin_ajax_call.php",
+            type : "post",
+            data : "id="+id+'&change_subcategory_load_sub_category=sub_category&sub_catValue_recive_from_Db='+sub_catValue_recive_from_Db,
+            success: function(data){
+                jQuery('#sub_category_value').append(data);
+            }
+        });
+    }
+}
+
+
+// SUBCATEGORY FORM SUBMIT 
+$("#subcategory_data_form").submit( (e) => {
+    e.preventDefault();
+    var form_data = $("#subcategory_data_form").serialize();
+    jQuery.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:form_data,
+        success:function(result){
+            if (result == 'Updated') {
+                swal({
+                    title: "Sub Category Updated Successfully",
+                    text: "",
+                    type: "success"
+                }).then(function() {
+                    window.location = "subcategory";
+                });
+            }
+            if (result == 'insert') {
+                swal({
+                    title: "Sub Category Inserted Successfully",
+                    text: "",
+                    type: "success"
+                }).then(function() {
+                    window.location = "subcategory";
+                });
+            }
+        }
+    });
+})
+
+
+// Deleting Selected Subcategory value from Db 
+// Category Select All 
+function select_all_subcategory(){
+	if(jQuery('#delete_subcheck_category').prop("checked")){
+		jQuery('input[type=checkbox]').each(function(){
+			jQuery('#'+this.id).prop('checked',true);
+		});
+        $("#product_subcategory_btn").show();
+	}else{
+		jQuery('input[type=checkbox]').each(function(){
+			jQuery('#'+this.id).prop('checked',false);
+		});
+        $("#product_subcategory_btn").hide();
+	}
+}
+
+
+$("#delete_all_subcategory_checkbox_frm").submit( (e) => {
+    e.preventDefault();
+
+    var form_data = $("#delete_all_subcategory_checkbox_frm").serialize();
+    jQuery.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:form_data,
+        success:function(result){
+            window.location = window.location.href;
         }
     });
 })

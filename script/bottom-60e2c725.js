@@ -29015,39 +29015,6 @@ function changeCombi() {
 * to avoid any conflicts with others containers.
 */
 $(document).ready(function () {
-  $.widget("prestashop.psBlockSearchAutocomplete", $.ui.autocomplete, {});
-  $(".rb-search").psBlockSearchAutocomplete({
-      source: function (query, response) {
-          $(".rb-search-name .rb-ajax-loading").show();
-          $.post(url_ajax, { token: token, action1: "findProductByName", name: query.term, ajax: 1 }, null, "json")
-              .then(function (data) {
-                  $(".rb-search-name .rb-ajax-loading").hide();
-                  if (data.success == 1) {
-                      $(".rb-resuilt").html(data.message);
-                      $(".rb-resuilt").show();
-                      $(".rb-resuilt-error").hide();
-                      $("body").click(function () {
-                          $(".rb-resuilt").html("");
-                          $(".rb-resuilt").hide();
-                          $(".rb-resuilt-error").hide();
-                      });
-                  }
-                  if (data.success == 0) {
-                      $(".rb-resuilt").html("");
-                      $(".rb-resuilt").hide();
-                      $(".rb-resuilt-error").html(data.message);
-                      $(".rb-resuilt-error").show();
-                  }
-              })
-              .fail(response);
-      },
-      select: function (event, ui) {
-          var url = ui.item.url;
-          window.location.href = url;
-      },
-  });
-});
-$(document).ready(function () {
   prestashop.blockcart = prestashop.blockcart || {};
   var showModal = prestashop.blockcart.showModal || function (modal) {};
   $(document).ready(function () {

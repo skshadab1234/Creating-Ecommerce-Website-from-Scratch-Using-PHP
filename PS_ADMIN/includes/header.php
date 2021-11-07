@@ -22,13 +22,21 @@
         $category_active = 'active';
         $menu_open = 'menu-open';
     }
+    else if ($page_url == ADMIN_FRONT_SITE.'subcategory.php') {
+        $title = SITE_NAME.' - Sub Category';
+        $catalog_active = 'active';
+        $subcategory_active = 'active';
+        $menu_open = 'menu-open';
+    }
     else if ($page_url == ADMIN_FRONT_SITE.'orders.php') {
         $title = SITE_NAME.' - Orders';
         $order_active = 'active';
     }
 
     if(!isset($_SESSION['ADMIN_ID'])) redirect(ADMIN_FRONT_SITE.'login');
-
+    $base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .  $_SERVER['HTTP_HOST'];
+    $url = $base_url . $_SERVER["REQUEST_URI"];
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -275,6 +283,12 @@
                                     <a href="<?= urldecode('category') ?>" class="nav-link <?=  $category_active ?>">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Category</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?= urldecode('subcategory') ?>" class="nav-link <?=  $subcategory_active ?>">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Sub Category</p>
                                     </a>
                                 </li>
                             </ul>

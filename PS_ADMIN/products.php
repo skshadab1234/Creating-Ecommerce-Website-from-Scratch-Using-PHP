@@ -32,6 +32,7 @@
         $prodid = '';
         $product_added_on ='';
         $product_status = '';
+        $product_subCat_Values = '';
 
         $type = 'add';
 
@@ -47,6 +48,7 @@
                 $product_name = $ProductDetails['product_name'];
                 $category = $ProductDetails['product_categories'];
                 $product_subCategories = $ProductDetails['product_subCategories'];
+                $product_subCat_Values = $ProductDetails['product_subCat_Values'];
                 $product_brand = $ProductDetails['product_brand'];
                 $total_stock = $ProductDetails['total_stock'];
                 $product_size = $ProductDetails['product_size'];
@@ -94,6 +96,7 @@
                 <div class="card_box card-default" data-select2-id="40">
                     <div class="card-header">
                         <h3 class="card-title">Add Basic information </h3>
+                        <button type="submit" id="submit_data" class="btn btn-primary float-right">Next</button>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -136,11 +139,21 @@
                                 <label>Sub Category</label>
                                 <select name="sub_category_data" id='sub_category_data'
                                     class="form-control select2 select2-hidden-accessible" style="width: 100%;"
-                                    required>
-                                    <option selected="selected" disabled>Sub Category</option>
+                                    onchange="product_subcategory_Change()">
+                                    <option  value=""> Select Sub Category</option>
                                    
                                 </select>
                                 <input type="hidden" id="sub_cat_recive_from_Db" value="<?= $product_subCategories ?>">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Sub Category Value</label>
+                                <select name="sub_category_value" id='sub_category_value'
+                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;">
+                                    <option selected="selected" value="">Select Sub Category Value</option>
+                                   
+                                </select>
+                                <input type="hidden" id="sub_catValue_recive_from_Db" value="<?= $product_subCat_Values ?>">
                             </div>
 
                             <div class="form-group col-md-6">
@@ -173,11 +186,7 @@
                                     value="<?= $product_size ?>" name="product_size">
                             </div>
 
-                            <div class="form-group col-md-6">
-                                <label for="product_weight">Product Weight</label>
-                                <input type="text" class="form-control" name="product_weight"
-                                    value="<?= $product_weight ?>" placeholder="Enter Product Weight">
-                            </div>
+                           
 
                             <div class="form-group col-md-12">
                                 <label for="short_description">Short Description</label>
@@ -220,7 +229,12 @@
                                 <input type="text" class="form-control" name="total_stock" value="<?= $total_stock ?>"
                                     placeholder="Enter Total Stock">
                             </div>
-
+                            
+                            <div class="form-group col-md-6">
+                                <label for="product_weight">Product Weight</label>
+                                <input type="text" class="form-control" name="product_weight"
+                                    value="<?= $product_weight ?>" placeholder="Enter Product Weight">
+                            </div>
                         </div>
 
                         <!-- /.row -->
@@ -464,11 +478,7 @@
                                                             <th class="sorting" tabindex="0" aria-controls="example1"
                                                                 rowspan="1" colspan="1"
                                                                 aria-label="CSS grade: activate to sort column ascending">
-                                                                CATEGORIES</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="CSS grade: activate to sort column ascending">
-                                                                SUB CATEGORIES</th>                                                                
+                                                                BreadCrump</th>
                                                             <th class="sorting" tabindex="0" aria-controls="example1"
                                                                 rowspan="1" colspan="1"
                                                                 aria-label="CSS grade: activate to sort column ascending">
@@ -503,6 +513,12 @@
                                                                             $text = 'Active';
                                                                             $bgColor = 'bg-success';
                                                                         }
+
+                                                                        if ($val['product_subCat_Values'] != '') {
+                                                                            $product_subCat_Values = ' - '.$val['product_subCat_Values'];
+                                                                        }else{
+                                                                            $product_subCat_Values = '';
+                                                                        }
                                                                     ?>
                                                         <tr class="odd" id="delete_box_<?= $val['id'] ?>">
                                                             <td class="dtr-control sorting_1" tabindex="0"><input type="checkbox" name="checked_product_delete[]" onclick="get_total_selected()"
@@ -525,12 +541,9 @@
                                                             <td style="color: <?= $color ?>">
                                                                 <?= $val['total_stock'] - $val['total_sold'] ?></td>
                                                             <td><?= $val['product_size'] ?></td>
-                                                            <td><?= $val['category_name'] ?></td>
-                                                            <td><?= $val['product_subCategories'] ?></td>
-                                                            <td><span class="btn <?= $bgColor ?>"><?= $text ?></span>
-                                                            </td>
-                                                            <td><?= date("d M,Y", strtotime($val['product_added_on'])) ?>
-                                                            </td>
+                                                            <td><?= $val['category_name'].' - '.$val['product_subCategories'].''.$product_subCat_Values ?></td>
+                                                            <td><span class="btn <?= $bgColor ?>"><?= $text ?></span></td>
+                                                            <td><?= date("d M,Y", strtotime($val['product_added_on'])) ?></td>
                                                         </tr>
                                                         <?php
                                                             }
@@ -567,25 +580,7 @@
                 $("#product_data_form").show();
             })
 
-            product_category_Change();
-
-            function  product_category_Change() {
-                var id = $("#product_category_121").val();
-                var sub_cat_recive_from_Db = $("#sub_cat_recive_from_Db").val();
-                if (id == '-1') {
-                    jQuery('#sub_category_data').html('<option value="-1" disabled selected>Select Sub Category</option>');
-                }else{
-                    jQuery('#sub_category_data').html('<option value="-1" disabled selected>Select Sub Category</option>');
-                    jQuery.ajax({
-                        url : "admin_ajax_call.php",
-                        type : "post",
-                        data : "id="+id+'&change_category_load_sub_category=sub_category&sub_cat_recive_from_Db='+sub_cat_recive_from_Db,
-                        success: function(data){
-                            jQuery('#sub_category_data').append(data);
-                        }
-                    });
-                }
-            }
+            
             
             Dropzone.options.dropzoneFrom = {
                 autoProcessQueue: false,

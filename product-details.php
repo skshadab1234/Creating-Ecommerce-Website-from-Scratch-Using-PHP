@@ -70,14 +70,34 @@
                     }
                 ?>
 
-               
+                <?php
+                    if ($ProductDetails['product_subCategories'] != '') {
+                        ?>
+                         <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a itemprop="item" href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
+                                <span itemprop="name"><?=  $ProductDetails['product_subCategories'] ?></span>
+                            </a>
+                            <meta itemprop="position" content="2">
+                        </li>
 
-                <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a itemprop="item" href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
-                        <span itemprop="name"><?=  $ProductDetails['product_subCategories'] ?></span>
-                    </a>
-                    <meta itemprop="position" content="2">
-                </li>
+                        <?php
+                    }
+                  ?>
+
+
+               
+                <?php
+                    if ($ProductDetails['product_subCat_Values'] != '') {
+                        ?>
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a itemprop="item" href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
+                                <span itemprop="name"><?=  $ProductDetails['product_subCat_Values'] ?></span>
+                            </a>
+                            <meta itemprop="position" content="2">
+                        </li>
+                        <?php
+                    }
+                ?>
 
                 <li>
                     <span><?= $ProductDetails['product_name'] ?></span>

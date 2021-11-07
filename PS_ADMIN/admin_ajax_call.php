@@ -385,13 +385,24 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
 
     $category = get_safe_value($_POST['category']);
     $sub_category_data = get_safe_value($_POST['sub_category_data']);
+    
+    if (isset($_POST['sub_category_value'])) {
+        $product_subCat_Values = get_safe_value($_POST['sub_category_value']);
+    }else{
+        $product_subCat_Values = '';
+    }
 
     if (count(ProductDetails("WHERE product_name = '$product_name'")) > 0)
     {
         if ($product_opt == 'update')
         {
             $ProductDetails = ProductDetails("WHERE product_name = '$product_name'")[0];
-            $total_stock = $ProductDetails['total_stock'] + $total_stock;
+            if ($total_stock == $ProductDetails['total_stock']) {
+                $total_stock = $ProductDetails['total_stock'];
+            }else{
+                $total_stock = $ProductDetails['total_stock'] + $total_stock;
+            }
+            
             $_SESSION['product_name'] = $product_name;
             SqlQuery("UPDATE product_details set product_name = '$product_name', 
                                           product_brand = '$brand_data',
@@ -402,6 +413,7 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
                                           product_desc_long = '$long_description',
                                           product_categories = '$category',
                                           product_subCategories = '$sub_category_data',
+                                          product_subCat_Values = '$product_subCat_Values',
                                           product_price = '$product_price',
                                           product_oldPrice = '$product_oldPrice',
                                           product_waist = '$product_waist',
@@ -467,6 +479,7 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
                                     product_price,
                                     product_categories,
                                     product_subCategories,
+                                    product_subCat_Values,
                                     product_oldPrice,
                                     product_waist,
                                     product_hips, 
@@ -484,6 +497,7 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
                                         '$product_price', 
                                         '$category',
                                         '$sub_category_data',
+                                        '$product_subCat_Values',
                                         '$product_oldPrice', 
                                         '$product_waist', 
                                         '$product_hips', 
@@ -554,7 +568,11 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
         {
             $_SESSION['product_name'] = $product_name;
             $ProductDetails = ProductDetails("WHERE product_name = '$product_name'")[0];
-            $total_stock = $ProductDetails['total_stock'] + $total_stock;
+            if ($total_stock == $ProductDetails['total_stock']) {
+                $total_stock = $ProductDetails['total_stock'];
+            }else{
+                $total_stock = $ProductDetails['total_stock'] + $total_stock;
+            }
             SqlQuery("UPDATE product_details set product_name = '$product_name', 
                                               product_brand = '$brand_data',
                                               total_stock = '$total_stock',
@@ -564,6 +582,7 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
                                               product_desc_long = '$long_description',
                                               product_categories = '$category',
                                               product_subCategories = '$sub_category_data',
+                                              product_subCat_Values = '$product_subCat_Values',
                                               product_price = '$product_price',
                                               product_oldPrice = '$product_oldPrice',
                                               product_waist = '$product_waist',
@@ -692,6 +711,12 @@ elseif (isset($_POST['ProductListingAjax']))
             $text = 'Active';
             $bgColor = 'bg-success';
         }
+
+        if ($val['product_subCat_Values'] != '') {
+            $product_subCat_Values = ' - '.$val['product_subCat_Values'];
+        }else{
+            $product_subCat_Values = '';
+        }
   ?>
   <tr class="odd">
       <td class="dtr-control sorting_1" tabindex="0"><input type="checkbox" name="checked_product_delete[]"
@@ -712,8 +737,7 @@ elseif (isset($_POST['ProductListingAjax']))
       <td style="color: <?=$color ?>">
           <?=$val['total_stock'] - $val['total_sold'] ?></td>
       <td><?=$val['product_size'] ?></td>
-      <td><?=$val['category_name'] ?></td>
-      <td><?= $val['product_subCategories'] ?></td>
+      <td><?=$val['category_name'].' - '.$val['product_subCategories'].''.$product_subCat_Values ?></td>
       <td><span class="btn <?=$bgColor ?>"><?=$text ?></span>
       </td>
       <td><?=date("d M,Y", strtotime($val['product_added_on'])) ?>
@@ -797,4 +821,63 @@ elseif (isset($_POST['change_category_load_sub_category']) && $_POST['change_cat
     }
 
     echo $html;
+}
+
+elseif (isset($_POST['category_name']) && $_POST['category_name'] != '' && isset($_POST['sub_category_data']) && $_POST['sub_category_data'] != ''  && isset($_POST['subcat_value']) && $_POST['subcat_value'] != '' && isset($_POST['subcategory_type']) && $_POST['subcategory_type'] != '' && isset($_POST['subcategory_id'])) {
+    $category_type = get_safe_value($_POST['subcategory_type']);
+    
+    $category_name = get_safe_value($_POST['category_name']);
+    $sub_category = get_safe_value($_POST['sub_category_data']);
+    $subcat_value = get_safe_value($_POST['subcat_value']);
+    $category_status = get_safe_value($_POST['category_status']);
+    
+
+    if ($category_type == 'update') {
+        $subcategory_id = get_safe_value($_POST['subcategory_id']);
+        SqlQuery("update sub_category set category_id='$category_name', category_subcat_id='$sub_category', subcat_value= '$subcat_value', subcat_status='$category_status' WHERE subcat_id = '$subcategory_id'");
+        echo 'Updated';
+    }
+
+    elseif ($category_type == 'add') {
+        SqlQuery("INSERT into sub_category (category_id, category_subcat_id,subcat_value, subcat_status) VALUES('$category_name', '$sub_category', '$subcat_value' ,'$category_status')");
+        echo 'insert';
+    }
+}
+
+elseif (isset($_POST['change_subcategory_load_sub_category']) && $_POST['change_subcategory_load_sub_category'] != '' && isset($_POST['id']) && $_POST['id'] != '' && isset($_POST['sub_catValue_recive_from_Db'])){
+    $id = get_safe_value($_POST['id']);
+    $sub_catValue_recive_from_Db = get_safe_value($_POST['sub_catValue_recive_from_Db']);
+
+    $res = SqlQuery("Select * from sub_category WHERE category_subcat_id ='$id'");
+    $row =mysqli_fetch_assoc($res);
+    $subcat_value = explode(",", $row['subcat_value']);
+    $html = '';
+    if ($subcat_value[0] != '') {
+        foreach($subcat_value as $key => $list) {
+            if ($sub_catValue_recive_from_Db == '') {
+                $selected = '';
+            }else{
+                if ($list == $sub_catValue_recive_from_Db) {
+                    $selected = 'selected';
+                }else{
+                    $selected = '';
+                }
+            }
+            $html.='<option value="'.$list.'" '.$selected.'>'.$list.'</option>';
+        }
+    }else{
+        $html .= '';
+    }
+
+    echo $html;
+}
+
+else if (isset($_POST['checked_subcategory_delete'][0]))
+{
+    foreach ($_POST['checked_subcategory_delete'] as $list)
+    {
+        $id = get_safe_value($list);
+        SqlQuery("delete from sub_category where subcat_id='$id'");
+    }
+    
 }

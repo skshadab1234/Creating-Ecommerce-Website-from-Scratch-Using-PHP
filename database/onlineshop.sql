@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 06, 2021 at 12:10 PM
+-- Generation Time: Nov 07, 2021 at 07:56 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -50,6 +50,27 @@ INSERT INTO `admins` (`id`, `admin_full_name`, `admin_email`, `admin_password`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `banner`
+--
+
+CREATE TABLE `banner` (
+  `banner_id` int(11) NOT NULL,
+  `banner_img` varchar(255) NOT NULL,
+  `banner_link` varchar(255) NOT NULL,
+  `banner_status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `banner`
+--
+
+INSERT INTO `banner` (`banner_id`, `banner_img`, `banner_link`, `banner_status`) VALUES
+(1, '1.jpg', '', 1),
+(2, '2.jpg', '', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `brands`
 --
 
@@ -86,6 +107,14 @@ CREATE TABLE `cart` (
   `cart_added_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`id`, `user_id`, `product_id`, `qty`, `size`, `prod_price`, `cart_status`, `cart_added_on`) VALUES
+(5, 8, 97, 1, 'L', 299, 1, '2021-11-08'),
+(6, 8, 98, 1, 'L', 399, 1, '2021-11-08');
+
 -- --------------------------------------------------------
 
 --
@@ -100,7 +129,7 @@ CREATE TABLE `payment_details` (
   `product_varient` varchar(255) NOT NULL,
   `product_qty` varchar(255) NOT NULL,
   `delivery_charge` varchar(255) NOT NULL,
-  `delivery_address_id` int(11) NOT NULL,
+  `delivery_address_id` varchar(255) NOT NULL,
   `card_brand` text NOT NULL,
   `payment_country` varchar(255) NOT NULL,
   `payment_id` text NOT NULL,
@@ -122,7 +151,9 @@ CREATE TABLE `payment_details` (
 --
 
 INSERT INTO `payment_details` (`id`, `Order_Id`, `payment_user_id`, `product_id`, `product_varient`, `product_qty`, `delivery_charge`, `delivery_address_id`, `card_brand`, `payment_country`, `payment_id`, `payment_status`, `receipt_url`, `amount_captured`, `payment_method`, `fingerprint`, `currency`, `created`, `added_on`, `card_id`, `tracking_id`, `invoice_file`) VALUES
-(7, 'ORD-9320', 8, '95', 'XXL', '1', 'Free', 5, 'Visa', 'US', 'ch_3JsmNnSFNgPd2Zme1m2oV4gn', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3JsmNnSFNgPd2Zme1m2oV4gn/rcpt_KXs8zVd4e0vxk8kGtHSeKbc1oO3xoqh', 4999, 'card_1JsmNjSFNgPd2Zmeswo0hCt8', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-06 04:14:23', '2021-11-06', 'card_1JsmNjSFNgPd2Zmeswo0hCt8', '376755185', 'Invoice-7-2021_11_06-041426-PS.pdf');
+(11, 'ORD-2648', 8, '95', 'M', '10', 'Free', '<strong>Khan  Shadab</strong><br>\r\n    Infosys<br>\r\n    Sayeed Manzil, R 104, <br>\r\n    Dombivali, Maharashtra-400125<br>\r\n    India <br>\r\n    ', 'Visa', 'US', 'ch_3Jt6NGSFNgPd2Zme0Jrrjbw6', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3Jt6NGSFNgPd2Zme0Jrrjbw6/rcpt_KYCmyw9unMgsV1EIqXisMa6NYus3CDX', 49990, 'card_1Jt6NBSFNgPd2ZmevoKDS7tN', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-07 01:35:10', '2021-11-07', 'card_1Jt6NBSFNgPd2ZmevoKDS7tN', '612486772', 'Invoice-11-2021_11_07-015252-PS.pdf'),
+(12, 'ORD-3206', 8, '95', 'S', '1', 'Free', '<strong>Khan  Shadab</strong><br>\r\n    Sahil Pvt, ltd<br>\r\n    Sayeed Manzil, R 104, Kausa, Talao Pali<br>\r\n    Dombivali, Maharashtra-400612<br>\r\n    India <br>\r\n    9875484215', 'Visa', 'US', 'ch_3Jt6WMSFNgPd2Zme0ai8V0fC', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3Jt6WMSFNgPd2Zme0ai8V0fC/rcpt_KYCwa6AzrczLUlXgaOHPU3oK5gfvf5J', 4999, 'card_1Jt6WHSFNgPd2Zme9UWHoV1r', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-07 01:44:34', '2021-11-07', 'card_1Jt6WHSFNgPd2Zme9UWHoV1r', '333332118', 'Invoice-12-2021_11_07-014437-PS.pdf'),
+(13, 'ORD-9594', 8, '96', 'S', '480', 'Free', '<strong>Khan  Shadab</strong><br>\r\n    Sahil Pvt, ltd<br>\r\n    Sayeed Manzil, R 104, Kausa, Talao Pali<br>\r\n    Dombivali, Maharashtra-400612<br>\r\n    India <br>\r\n    9875484215', 'Visa', 'US', 'ch_3Jt7GSSFNgPd2Zme0BtGzmcD', 'succeeded', 'https://pay.stripe.com/receipts/acct_1JlSQwSFNgPd2Zme/ch_3Jt7GSSFNgPd2Zme0BtGzmcD/rcpt_KYDhXhk2KgDjsEJp9puvIZ0fopUMH9J', 581760, 'card_1Jt7GOSFNgPd2ZmeX3bGvExH', 'uxDgiVpbv4g7aFsy', 'inr', '2021-11-07 02:32:12', '2021-11-07', 'card_1Jt7GOSFNgPd2ZmeX3bGvExH', '416009987', 'Invoice-13-2021_11_07-023215-PS.pdf');
 
 -- --------------------------------------------------------
 
@@ -163,7 +194,15 @@ INSERT INTO `products_image` (`id`, `product_img`, `product_id`, `status`) VALUE
 (58, 'three-piece-shervani-for-wedding/3pc_s46whitesilkkp1_5_a5134f49.jpg', 95, 1),
 (59, 'three-piece-shervani-for-wedding/3pc_s46whitesilkkp1_6_f7ae6120.jpg', 95, 1),
 (64, 'asdasdasdsada/men5.jpg', 96, 1),
-(65, 'black-and-white-cracker-for-men/men4.jpg', 96, 1);
+(65, 'black-and-white-cracker-for-men/men4.jpg', 96, 1),
+(66, 'men-maroon-solid-round-neck-t-shirt/1636309329417.jpeg', 97, 1),
+(67, 'men-maroon-solid-round-neck-t-shirt/1636309472996.jpeg', 97, 1),
+(68, 'men-maroon-solid-round-neck-t-shirt/1636310301888.jpeg', 97, 1),
+(70, 'men-navy-solid-round-neck-t-shirt/ezgif.com-gif-maker.jpg', 98, 1),
+(71, 'men-navy-solid-round-neck-t-shirt/ezgif.com-gif-maker (1).jpg', 98, 1),
+(72, 'men-navy-solid-round-neck-t-shirt/ezgif.com-gif-maker (2).jpg', 98, 1),
+(73, 'men-navy-solid-round-neck-t-shirt/ezgif.com-gif-maker (3).jpg', 98, 1),
+(74, 'men-navy-solid-round-neck-t-shirt/ezgif.com-gif-maker (4).jpg', 98, 1);
 
 -- --------------------------------------------------------
 
@@ -192,7 +231,10 @@ INSERT INTO `product_data_sheet` (`id`, `data_sheet_name`, `data_sheet_desc`, `p
 (32, 'Cotton', 'Yes', 95, 1),
 (33, 'Dragon Slk', 'Office', 95, 1),
 (34, 'Material', 'Cotton', 95, 1),
-(35, 'Soft', 'yes', 95, 1);
+(35, 'Soft', 'yes', 95, 1),
+(36, 'Fabric', 'Cotton', 97, 1),
+(37, 'Fit', 'Regular Fit', 97, 1),
+(38, 'Length', 'Regular', 97, 1);
 
 -- --------------------------------------------------------
 
@@ -212,6 +254,7 @@ CREATE TABLE `product_details` (
   `product_size` varchar(255) NOT NULL,
   `product_categories` varchar(255) NOT NULL,
   `product_subCategories` varchar(255) NOT NULL,
+  `product_subCat_Values` varchar(255) NOT NULL,
   `product_tags` varchar(255) NOT NULL,
   `product_desc_long` text NOT NULL,
   `product_waist` varchar(255) NOT NULL,
@@ -225,22 +268,9 @@ CREATE TABLE `product_details` (
 -- Dumping data for table `product_details`
 --
 
-INSERT INTO `product_details` (`id`, `product_name`, `product_price`, `product_oldPrice`, `product_brand`, `total_stock`, `total_sold`, `product_desc_short`, `product_size`, `product_categories`, `product_subCategories`, `product_tags`, `product_desc_long`, `product_waist`, `product_hips`, `product_weight`, `product_status`, `product_added_on`) VALUES
-(95, 'Three Piece Shervani For Wedding', '4999', 9999, 1, 800, 7, '<p>Special For Men. Gromming For Men</p>', 'S,M,L,XL,XXL', '1', 'Wedding Special', '', '<p><br></p><table class=\"table table-bordered\"><tbody><tr><td>Special Products</td><td>Special Products<br></td><td>Special Products<br></td></tr><tr><td>Special Products<br></td><td>Special Products Special Products Special Products<br></td><td>Special Products Special Products<br></td></tr><tr><td>Special Products Special Products<br></td><td>Special Products Special Products<br></td><td>Special Products Special Products<br></td></tr></tbody></table><p><br></p>', '', '', '1.5', 1, '2021-11-04'),
-(96, 'Black and White Cracker For Men', '1212', 12121, 1, 1200, 602, '<p>asad</p>', 'S,M,L,XL,XXL', '1', 'Shoes', '', '<p>asasa</p>', '', '', '2.5', 1, '2021-11-04');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop`
---
-
-CREATE TABLE `shop` (
-  `id` int(11) NOT NULL,
-  `shop_name` varchar(255) NOT NULL,
-  `shop_category` int(11) NOT NULL,
-  `status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `product_details` (`id`, `product_name`, `product_price`, `product_oldPrice`, `product_brand`, `total_stock`, `total_sold`, `product_desc_short`, `product_size`, `product_categories`, `product_subCategories`, `product_subCat_Values`, `product_tags`, `product_desc_long`, `product_waist`, `product_hips`, `product_weight`, `product_status`, `product_added_on`) VALUES
+(97, 'Men Maroon Solid Round Neck T-shirt', '299', 399, 1, 1000, 0, '<div class=\"pdp-sizeFitDesc\" style=\"box-sizing: inherit; border: none; margin-top: 12px; font-family: Whitney, -apple-system, BlinkMacSystemFont, \" segoe=\"\" ui\",=\"\" roboto,=\"\" helvetica,=\"\" arial,=\"\" sans-serif;=\"\" font-size:=\"\" medium;\"=\"\"><h4 class=\"pdp-sizeFitDescTitle pdp-product-description-title\" style=\"box-sizing: inherit; font-size: 16px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; text-transform: capitalize; border: none; padding-bottom: 5px;\"><br></h4></div>', 'S,M,L,XL', '1', 'Topwear', 'T-Shirts', '', '<p>Its to good at this rate I bought it for 199rs Just a little loose fit but loose fitting is trending now so I have no regrates Go for it the product is totally same as shown if you go for photo review youll find ligh or very dark it is due to different camera quality and location the product is totally same as shown no need to worry go for it I orderd M size #LoveRoadister<br></p>', '', '', '1.2', 1, '2021-11-07'),
+(98, 'Men Navy Solid Round Neck T-shirt', '399', 479, 2, 100, 0, '<p>Navy blue solid T-shirt, has a round neck, and short sleeves</p><p><span style=\"font-weight: bolder;\">Size &amp; Fit</span></p><p>The model (height 6\') is wearing a size M </p><p><b>Material &amp; Care</b></p><p> 100% cotton</p><p>Machine-wash</p>', 'S,M,L', '1', 'Topwear', 'T-Shirts', '', '<p><br></p>', '', '', '.5', 1, '2021-11-08');
 
 -- --------------------------------------------------------
 
@@ -260,7 +290,54 @@ CREATE TABLE `shop_category` (
 --
 
 INSERT INTO `shop_category` (`cat_id`, `category_name`, `sub_category`, `status`) VALUES
-(1, 'Men', 'Shoes, Shirts, T-shirts,Wedding Special', 1);
+(1, 'Men', 'Topwear,Indian & Festive Wear,Bottomwear,Innerwear & Sleepwear,Plus Size,Footwear,Personal Care & Grooming,Sunglasses & Frames,Watches', 1),
+(2, 'Women', 'Indian & Fusion Wear,Watches & Wearables,Western Wear,Plus Size,Sunglasses & Frames,Footwear,Sports & Active Wear,Lingerie & Sleepwear,Beauty & Personal Care,Gadgets,Jewellery,Backpacks,Handbags, Bags & Wallets,Luggages & Trolleys,Belts; Scarves & More', 1),
+(3, 'Kids', 'Boys Clothing,Girls Clothing,Footwear,Toys,Personal Care', 1),
+(4, 'Home Living', 'Bed Linen & Furnishing,Flooring,Bath,Lamps & Lighting,Home DÃ©cor,Cushions & Cushion Covers,Curtains,Home Gift Sets,Kitchen & Table,Storage', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sub_category`
+--
+
+CREATE TABLE `sub_category` (
+  `subcat_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `category_subcat_id` varchar(255) NOT NULL,
+  `subcat_value` varchar(255) NOT NULL,
+  `subcat_status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `sub_category`
+--
+
+INSERT INTO `sub_category` (`subcat_id`, `category_id`, `category_subcat_id`, `subcat_value`, `subcat_status`) VALUES
+(4, 1, 'Topwear', 'T-Shirts,Casual Shirts,Formal Shirts,Sweatshirts,Sweaters,Jackets,Blazers & Coats,Suits,Rain Jackets', 1),
+(5, 1, 'Indian & Festive Wear', 'Kurtas & Kurta Sets,Sherwanis,Nehru Jackets,Dhotis', 1),
+(6, 1, 'Bottomwear', 'Jeans,Casual Trousers,Formal Trousers,Shorts,Track Pants & Joggers', 1),
+(7, 1, 'Innerwear & Sleepwear', 'Briefs & Trunks,Boxers,Vests,Sleepwear & Loungewear,Thermals', 1),
+(8, 1, 'Footwear', 'Casual Shoes,Sports Shoes,Formal Shoes,Sneakers,Sandals & Floaters,Flip Flops,Socks', 1),
+(9, 2, 'Indian & Fusion Wear', 'Kurtas & Suits,Kurtis Tunics & Tops,Ethnic Wear,Leggings; Salwars & Churidars,Skirts & Palazzos,Sarees,Dress Materials,Lehenga Cholis,Dupattas & Shawls,Jackets', 1),
+(10, 2, 'Western Wear', 'Dresses,Jumpsuits,Tops,Jeans,Trousers & Capris,Shorts & Skirts,Shrugs,Sweaters & Sweatshirts,Jackets & Coats,Blazers & Waistcoats', 1),
+(11, 2, 'Footwear', 'Flats,Casual Shoes,Heels,Boots,Sports Shoes & Floaters', 1),
+(12, 2, 'Sports & Active Wear', 'Clothing,Footwear,Sports Accessories,Sports Equipment', 1),
+(13, 2, 'Lingerie & Sleepwear', 'Bra,Briefs,Shapewear,Sleepwear & Loungewear,Swimwear,Camisoles & Thermals', 1),
+(14, 2, 'Beauty & Personal Care', 'Makeup,Skincare,Premium Beauty,Lipsticks,Fragrances', 1),
+(15, 2, 'Gadgets', 'Smart Wearables,Fitness Gadgets,Headphones,Speakers', 1),
+(16, 2, 'Jewellery', 'Fashion Jewellery,Fine Jewellery,Earrings', 1),
+(17, 3, 'Boys Clothing', 'Earrings,Shirts,Shorts,Jeans,Trousers,Clothing Sets,Ethnic Wear,Track Pants & Pyjamas,Jacket, Sweater & Sweatshirts,Party Wear,Innerwear & Thermals,Nightwear & Loungewear,Value Packs', 1),
+(18, 3, 'Girls Clothing', 'Dresses,Tops,Tshirts,Clothing Sets,Lehenga choli,Kurta Sets,Party wear,Dungarees & Jumpsuits,Skirts & shorts,Tights & Leggings,Jeans; Trousers & Capris,Jacket; Sweater & Sweatshirts,Innerwear & Thermals,Nightwear & Loungewear,Value Packs', 1),
+(19, 3, 'Footwear', 'Casual Shoes,Flipflops,Sports Shoes,Flats,Sandals,Heels,School Shoes,Socks', 1),
+(20, 3, 'Toys', 'Learning & Development,Activity Toys,Soft Toys,Action Figure / Play set', 1),
+(21, 4, 'Bed Linen & Furnishing', 'Bodysuits,Bedding Sets,Blankets; Quilts & Dohars,Pillows & Pillow Covers,Bed Covers', 1),
+(22, 4, 'Flooring', 'Carpets,Floor Mats & Dhurries,Door Mats', 1),
+(23, 4, 'Bath', 'Door Mats,Hand & Face Towels,Beach Towels,Towels Set,Bath Rugs,Bath Robes,Bathroom Accessories', 1),
+(24, 4, 'Lamps & Lighting', 'Floor Lamps,Ceiling Lamps,Table Lamps,Wall Lamps,Outdoor Lamps,String Lights', 1),
+(25, 4, 'Home DÃ©cor', 'Plants & Planters,Aromas & Candles,Clocks,Mirrors,Wall DÃ©cor,Wall Shelves,Fountains,Showpieces & Vases', 1),
+(26, 4, 'Kitchen & Table', 'Dinnerware & Serveware,Cups and Mugs,Bakeware & Cookware,Kitchen Storage & Tools,Bar & Drinkware,Table Covers & Furnishings', 1),
+(27, 4, 'Storage', 'Organisers,Hooks & Holders', 1);
 
 -- --------------------------------------------------------
 
@@ -324,7 +401,7 @@ CREATE TABLE `user_address` (
 
 INSERT INTO `user_address` (`id`, `user_id`, `add_firstname`, `add_lastname`, `company`, `address`, `addres_complement`, `city`, `state`, `postal_code`, `country`, `phone_number`, `status`, `default_address`) VALUES
 (4, 6, 'Khan', 'Shadab', 'Shadab DMART PVT. LTD', 'Subhash Nagar', 'Room No 104', 'Kanpur', 'Maharashtra', '400612', 'India', '7845123696', 1, 1),
-(5, 8, 'Khan ', 'Shadab', 'Infosys', 'Sayeed Makan, R 105, ', '', 'Dombivali', 'Maharashtra', '400125', 'India', '', 1, 0);
+(5, 8, 'Khan ', 'Shadab', 'Sahil Pvt, ltd', 'Sayeed Manzil, R 104, Kausa', 'Talao Pali', 'Dombivali', 'Maharashtra', '400612', 'India', '9875484215', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -358,6 +435,12 @@ INSERT INTO `wishlist` (`id`, `user_id`, `wishlist_name`, `wishlist_prod_id`, `w
 --
 ALTER TABLE `admins`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `banner`
+--
+ALTER TABLE `banner`
+  ADD PRIMARY KEY (`banner_id`);
 
 --
 -- Indexes for table `brands`
@@ -396,16 +479,16 @@ ALTER TABLE `product_details`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `shop`
---
-ALTER TABLE `shop`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `shop_category`
 --
 ALTER TABLE `shop_category`
   ADD PRIMARY KEY (`cat_id`);
+
+--
+-- Indexes for table `sub_category`
+--
+ALTER TABLE `sub_category`
+  ADD PRIMARY KEY (`subcat_id`);
 
 --
 -- Indexes for table `users`
@@ -436,6 +519,12 @@ ALTER TABLE `admins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `banner`
+--
+ALTER TABLE `banner`
+  MODIFY `banner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `brands`
 --
 ALTER TABLE `brands`
@@ -445,43 +534,43 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `payment_details`
 --
 ALTER TABLE `payment_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `products_image`
 --
 ALTER TABLE `products_image`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT for table `product_data_sheet`
 --
 ALTER TABLE `product_data_sheet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `product_details`
 --
 ALTER TABLE `product_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
-
---
--- AUTO_INCREMENT for table `shop`
---
-ALTER TABLE `shop`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT for table `shop_category`
 --
 ALTER TABLE `shop_category`
-  MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `sub_category`
+--
+ALTER TABLE `sub_category`
+  MODIFY `subcat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `users`

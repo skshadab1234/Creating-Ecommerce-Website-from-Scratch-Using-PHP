@@ -5,12 +5,64 @@
     $ProductDetails =  ProductDetails('where  product_status= 1');
     
 ?>
+<style>
+    .swiper {
+        width: 100%;
+        height: 100%;
+    }
 
+    @media only screen and (max-width:600px) {
+        /* .swiper {
+            width: 100%;
+            height: 400px;
+        } */
+
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+
+    .swiper-slide img {
+        display: block;
+        width: 100vw;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
 <div class="">
     <div class="row">
         <div id="content-wrapper" class="col-lg-12 col-xs-12">
             <section id="main">
+                <!-- Swiper -->
+                <!-- <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><a href=""><img src="media/banner/1.jpg" alt=""></a></div>
+                        <div class="swiper-slide"><a href=""><img src="media/banner/2.jpg" alt=""></a></div>
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div> -->
+
                 <section id="content" class="page-content card card-block">
+
                     <div id="rb" class="rb">
                         <div id="rb" class="rb">
                             <div id="rb-inner">
@@ -115,14 +167,23 @@
                                                                                                 <?php
                                                                                                     if(isset($_SESSION['UID'])) {
                                                                                                        ?>
-                                                                                                <div class="rb-wishlist">
+                                                                                                <div
+                                                                                                    class="rb-wishlist">
                                                                                                     <div
                                                                                                         class="dropdown rb-wishlist-dropdown ">
                                                                                                         <button
-                                                                                                            class="rb-wishlist-button rb-btn-product show-list btn-product btn rb_added" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                                                                            <span class="rb-wishlist-content">
-                                                                                                                <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
-                                                                                                                <span class="icon-title">Add to Wishlist</span>
+                                                                                                            class="rb-wishlist-button rb-btn-product show-list btn-product btn rb_added"
+                                                                                                            data-toggle="dropdown"
+                                                                                                            aria-haspopup="true"
+                                                                                                            aria-expanded="true">
+                                                                                                            <span
+                                                                                                                class="rb-wishlist-content">
+                                                                                                                <i
+                                                                                                                    class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                                                                                                                <span
+                                                                                                                    class="icon-title">Add
+                                                                                                                    to
+                                                                                                                    Wishlist</span>
                                                                                                             </span>
                                                                                                         </button>
                                                                                                         <div
@@ -145,28 +206,33 @@
                                                                                                                         $css_wish_id = '';
                                                                                                                     }
                                                                                                                     ?>
-                                                                                                                         <a href="javascript:void(0)"
-                                                                                                                            onclick = "AddtoWishList('<?= $val['id'] ?>', '<?= $productdata['id'] ?>', '<?= $sizes['0'] ?>')"
-                                                                                                                            class="rb-wishlist-link dropdown-item list-group-item list-group-item-action wishlist-item rb_added<?= $val['id'].'_'.$productdata['id'] ?> " 
-                                                                                                                            title="Remove from Wishlist" style= "<?= $css_wish_id ?>"> 
-                                                                                                                            <i class="<?= $icon ?>"></i>
-                                                                                                                            <?= $val['wishlist_name'] ?>
-                                                                                                                        </a>                 
-                                                                                                                    <?php
+                                                                                                            <a href="javascript:void(0)"
+                                                                                                                onclick="AddtoWishList('<?= $val['id'] ?>', '<?= $productdata['id'] ?>', '<?= $sizes['0'] ?>')"
+                                                                                                                class="rb-wishlist-link dropdown-item list-group-item list-group-item-action wishlist-item rb_added<?= $val['id'].'_'.$productdata['id'] ?> "
+                                                                                                                title="Remove from Wishlist"
+                                                                                                                style="<?= $css_wish_id ?>">
+                                                                                                                <i
+                                                                                                                    class="<?= $icon ?>"></i>
+                                                                                                                <?= $val['wishlist_name'] ?>
+                                                                                                            </a>
+                                                                                                            <?php
                                                                                                                 }
                                                                                                             ?>
-                                                                                                      
+
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                                 <?php
                                                                                                     }else{
                                                                                                         ?>
-                                                                                                    <div class="rb-wishlist"> 
-                                                                                                        <a href="javascript:void(0)"  class="no_login_wishlist_2"> 
-                                                                                                            <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
-                                                                                                        </a>
-                                                                                                    </div>
+                                                                                                <div
+                                                                                                    class="rb-wishlist">
+                                                                                                    <a href="javascript:void(0)"
+                                                                                                        class="no_login_wishlist_2">
+                                                                                                        <i
+                                                                                                            class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                                                                                                    </a>
+                                                                                                </div>
                                                                                                 <?php
                                                                                                     }
                                                                                                 ?>
@@ -194,8 +260,6 @@
                                                                                                                         class="btn rb-btn-product add-to-cart"
                                                                                                                         title="Add to cart"
                                                                                                                         onclick="addtoCart('<?= $productdata['id'] ?>', '<?= $user['id'] ?>', '1',  '<?= $productdata['product_price'] ?>', '<?= $sizes['0'] ?>')">
-                                                                                                                        <i
-                                                                                                                            class="icon-Ico_Cart"></i>
                                                                                                                         <span
                                                                                                                             class="icon-title">Add
                                                                                                                             To
@@ -475,7 +539,6 @@
                 </section>
 
 
-
                 <footer class="page-footer">
 
                     <!-- Footer content -->
@@ -484,16 +547,24 @@
 
 
             </section>
-
-
-
         </div>
-
-
-
     </div>
 
 </div>
 
 <?php
      require 'includes/footer.php';
+     ?>
+
+<script>
+var swiper = new Swiper(".mySwiper", {
+    pagination: {
+        el: ".swiper-pagination",
+        type: "progressbar",
+    },
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+});
+</script>

@@ -47,6 +47,14 @@ if(isset($_POST['stripeToken'])){
 	$product_varient = CalculateTotalProductBuying($user['id'])['product_varient'];
 	$qtys = CalculateTotalProductBuying($user['id'])['qtys'];
 	$delivery_address_id = $_SESSION['id_address_delivery'];
+    $getAddressById = getAddressById($delivery_address_id);
+    $address_html = '<strong>'.$getAddressById['add_firstname'].' '.$getAddressById['add_lastname'].'</strong><br>
+    '.$getAddressById['company'].'<br>
+    '.$getAddressById['address'].', '.$getAddressById['addres_complement'].'<br>
+    '.$getAddressById['city'].', '.$getAddressById['state'].'-'.$getAddressById['postal_code'].'<br>
+    '.$getAddressById['country'].' <br>
+    '.$getAddressById['phone_number'];
+
 	$card_brand  = $data['source']['brand'];
 	$payment_country = $data['source']['country'];
 	$payment_id = $data['id'];
@@ -105,7 +113,7 @@ if(isset($_POST['stripeToken'])){
 		'$product_varient', 
 		'$qtys',
         '$shipping_fee',
-		'$delivery_address_id',
+		'$address_html',
 		'$card_brand', 
 		'$payment_country',
 		'$payment_id',

@@ -1631,8 +1631,6 @@ elseif (isset($_POST['DeleteWishlist']) && $_POST['DeleteWishlist'] != '' && iss
     echo "done";
 }
 
-
-
 elseif (isset($_POST['AddtoWishList']) && $_POST['AddtoWishList'] != '' &&  isset($_POST['wishlist_id']) && $_POST['wishlist_id'] > 0 && isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['sizes']) && $_POST['sizes'] != '') {
     $wish_id = get_safe_value($_POST['wishlist_id']);
     $prod_id = get_safe_value($_POST['prod_id']);
@@ -1667,6 +1665,39 @@ elseif (isset($_POST['AddtoWishList']) && $_POST['AddtoWishList'] != '' &&  isse
         }
 
         
+    }
+
+    echo json_encode($arr);
+}
+
+// Searching Product 
+elseif (isset($_POST['search_val_mb'])) {
+    $search_term = get_safe_value($_POST['search_val_mb']);
+    $html = '';
+    $res = SqlQuery("SELECT * FROM product_details WHERE product_name LIKE '%$search_term%'");
+    if (mysqli_num_rows($res) > 0) {
+        while ($row = mysqli_fetch_assoc($res)) {
+            $ProductImageById = ProductImageById($row['id'],"limit 1");
+            array_unshift($ProductImageById,"");
+            unset($ProductImageById[0]);
+            $html .= '<div class="rb-item-product clearfix">
+                        <div class="rb-product-img clearfix col-md-3">
+                            <a class="image" href="'.FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name']).'" title="'.$row['product_name'].'">
+                                <img class="img img-thumbnail" src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'" title="'.$row['product_name'].'" alt="'.$row['product_name'].'" >
+                            </a>
+                        </div>
+
+                        <div class="rb-product-info col-md-9">
+                            <a class="rb-product-name" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis" href="'.FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name']).'" title="'.$row['product_name'].'">'.$row['product_name'].'</a>
+                            <p class="rb_product_price">₹ '.$row['product_price'].'</p>
+                        </div>
+                    </div>';    
+        }
+        
+        $arr = array("status" => 'success', 'message' => $html);
+    }else{
+        $html .= 'No Result Found';
+        $arr = array("status" => 'error', 'message' => $html);
     }
 
     echo json_encode($arr);

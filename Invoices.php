@@ -31,7 +31,7 @@ if (isset($_GET['orderId']) && $_GET['orderId'] != '') {
         $payment_status = "Not paid";
     }
 
-    $getAddressById = getAddressById($row['delivery_address_id']);
+    
     $html = '
         <!DOCTYPE html>
             <html lang="en">
@@ -172,10 +172,9 @@ if (isset($_GET['orderId']) && $_GET['orderId'] != '') {
                             <td></td>
                             <td></td>  
                             <td  width="40%">
-                            <p class="sub-heading"><strong>Full Name</strong>: '.$getAddressById['add_firstname'].' '.$getAddressById['add_lastname'].' </p>
-                            <p class="sub-heading"><strong>Company Name</strong>: '.$getAddressById['company'].' </p>
-                            <p class="sub-heading"><strong>Address</strong>: '.$getAddressById['address'].' '.$getAddressById['addres_complement'].', '.$getAddressById['city'].' '.$getAddressById['state'].' '.$getAddressById['postal_code'].' <br> '.$getAddressById['country'].' '.$getAddressById['phone_number'].'</p>
-                            <p class="sub-heading"><strong>Phone Number</strong>: '.$getAddressById['phone_number'].'  </p>
+                                <address>
+                                    '.$row['delivery_address_id'].'
+                                </address>
                             </td>
                         </tr>
                     </tbody>
@@ -279,5 +278,11 @@ if (isset($_GET['orderId']) && $_GET['orderId'] != '') {
     //F
     //S
     
-    redirect(FRONT_SITE_PATH.'order-confirmation?orderId='.$order_id);
+    if (isset($_GET['redirect']) && $_GET['redirect'] != '') {
+        $redriect = get_safe_value($_GET['redirect']);
+    }else{
+        $redriect = FRONT_SITE_PATH.'order-confirmation?orderId='.$order_id;
+    }
+
+    redirect($redriect);
 }

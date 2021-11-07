@@ -87,8 +87,8 @@
                                         </strong>
                                     </div>
                                     <div class="col-xs-3 text-xs-right">
-                                        <a href="#"
-                                            class="button-primary">Reorder</a>
+                                            <!-- <a href="#"
+                                                class="button-primary">Reorder</a> -->
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -144,16 +144,14 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <article id="delivery-address" class="box">
                                     <h4>Delivery address </h4>
-                                    <address><?= $getAddressById['add_firstname'].' '.$getAddressById['add_lastname'].', '.$getAddressById['company'].'<br>'.$getAddressById['address'].', '.$getAddressById['addres_complement'].'<br>'.$getAddressById['city'].' - '.$getAddressById['postal_code'].'<br>'.$getAddressById['state'].'<br>'.$getAddressById['country']
-                                .'<br>'.$getAddressById['phone_number']  ?></address>
+                                    <address><?= $row['delivery_address_id'] ?></address>
                                 </article>
                             </div>
 
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <article id="invoice-address" class="box">
                                     <h4>Invoice address </h4>
-                                    <address><?= $getAddressById['add_firstname'].' '.$getAddressById['add_lastname'].', '.$getAddressById['company'].'<br>'.$getAddressById['address'].', '.$getAddressById['addres_complement'].'<br>'.$getAddressById['city'].' - '.$getAddressById['postal_code'].'<br>'.$getAddressById['state'].'<br>'.$getAddressById['country']
-                                                 .'<br>'.$getAddressById['phone_number']  ?></address>
+                                    <address><?= $row['delivery_address_id'] ?></address>
                                   </article>
                             </div>
                             <div class="clearfix"></div>
@@ -467,7 +465,7 @@
                                         </span>
                                     </td>
                                     <td class="text-sm-center hidden-md-down">
-                                        <a href="">Download</a>
+                                        <a href="download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download</a>
                                     </td>
                                     <td class="text-sm-center order-actions">
                                         <a href="<?= FRONT_SITE_PATH.'order-history?orderDetails='.$row['Order_Id'] ?>"
@@ -510,7 +508,7 @@
                                         <a href="<?= FRONT_SITE_PATH.'order-history?orderDetails='.$row['Order_Id'] ?>">
                                             <h3><?= $row['Order_Id'] ?></h3>
                                         </a>
-                                        <div class="date"><?= date("d-m-Y", $row['created']) ?></div>
+                                        <div class="date"><?= date("d-m-Y", strtotime($row['created'])) ?></div>
                                         <div class="total">₹ <?= $row['amount_captured'] ?></div>
                                         <div class="status" style='height: 51px;margin-top: 10px;'>
                                             <span class="label label-pill bright"
@@ -523,7 +521,11 @@
                                         <div>
                                             <a href="<?= FRONT_SITE_PATH.'order-history?orderDetails='.$row['Order_Id'] ?>"
                                                 data-link-action="view-order-details" title="Details">
-                                                <i class="material-icons"></i>
+                                                <i class="material-icons"></i> 
+                                            </a>
+                                            <a href="download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>"
+                                                data-link-action="view-order-details" title="Download Invoice">
+                                                <i class="fa fa-download"></i> 
                                             </a>
                                         </div>
                                         <div>
