@@ -338,7 +338,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
     $user_id = get_safe_value($_POST['user_id']);
     
     $prod_qty = get_safe_value($_POST['qty']);
-    $prod_price = get_safe_value($_POST['prod_price']) * $prod_qty;
+    $prod_price = get_safe_value($_POST['prod_price']);
     $date = date("Y-m-d");
 
     $CartTotal = getCartTotal();
@@ -1047,14 +1047,14 @@ elseif (isset($_POST['value']) && $_POST['value'] > 0 && isset($_POST['id']) && 
 
         // Gettng Product Price 
         $prod_price = $Cartrow['product_price'];
-        $updated_price = $value * $prod_price;
-
+        $updated_price = $prod_price;
+        $to_show_on_web = $value * $prod_price;
         if ($value > $remaining_stock) {
             $arr =array('status' => 'error', 'message' => 'Only, '.$remaining_stock.' items remains');
         }else{
-            $UpdateSql = "Update cart set prod_price = '$updated_price', qty = '$value' where id = '$id'";
+            $UpdateSql = "Update cart set prod_price = '$to_show_on_web', qty = '$value' where id = '$id'";
             mysqli_query($con, $UpdateSql);
-            $arr =array('status' => 'success', 'message' => $updated_price);
+            $arr =array('status' => 'success', 'message' => $to_show_on_web);
         }
 
    }else {
@@ -1066,13 +1066,14 @@ elseif (isset($_POST['value']) && $_POST['value'] > 0 && isset($_POST['id']) && 
         
         $size = get_safe_value($_POST['size']);
         $curr_price = get_safe_value($_POST['curr_price']);
-        $updated_price = $value * $curr_price;
+        $updated_price = $curr_price;
+        $to_show_on_web = $value * $curr_price;
         if ($value > $remaining_stock) {
             $arr =array('status' => 'error', 'message' => 'Only, '.$remaining_stock.' items remains');
         }else{
             $_SESSION['cart'][$id.','.$size]['prod_qty'] = $value;
-            $_SESSION['cart'][$id.','.$size]['prod_price'] = $updated_price;
-            $arr = array('status' => 'success', 'message' => "$updated_price");
+            $_SESSION['cart'][$id.','.$size]['prod_price'] = $to_show_on_web;
+            $arr = array('status' => 'success', 'message' => "$to_show_on_web");
         }
    }
 
@@ -1701,4 +1702,90 @@ elseif (isset($_POST['search_val_mb'])) {
     }
 
     echo json_encode($arr);
+}
+
+// Profile Identity update 
+elseif (isset($_POST['id_gender']) && $_POST['id_gender'] != '' && isset($_POST['firstname']) && $_POST['firstname'] != ''
+        && isset($_POST['lastname']) && $_POST['lastname'] != ''
+        && isset($_POST['password']) && $_POST['password'] != ''
+        && isset($_POST['submitCreate']) && $_POST['submitCreate'] > 0) 
+{
+       $id_gender = get_safe_value($_POST['id_gender']);
+       $firstname = get_safe_value($_POST['firstname']);
+       $lastname = get_safe_value($_POST['lastname']);
+       $password = get_safe_value($_POST['password']);
+       $new_password = get_safe_value($_POST['new_password']);
+
+       if (isset($_POST['newsletter'])) {
+           $newsletter = 1;
+       }else{
+           $newsletter = 0;
+       }
+
+       if (password_verify($password, $user["password"])) {
+            // Password Correct
+            if ($new_password != '') {
+                $password = password_hash($password,PASSWORD_BCRYPT);
+                $message = 'Psssword also Changed';
+            } else{
+                $password = password_hash($password,PASSWORD_BCRYPT);
+                $message = '';
+            }
+            SqlQuery("Update users set social_title='$id_gender', firstname='$firstname', lastname='$lastname', password = '$password', newsletter='$newsletter' WHERE id = '".$user['id']."'");
+            $arr = array("status" => 'success', 'message' => 'Profile Updated Successfully', 'text' => $message);
+       }else{
+           // Current Password Wrong    
+           $arr = array("status"=>'error','message'=>'Current Password is wrong');
+       }
+
+       echo json_encode($arr);
+}
+
+elseif(!empty($_FILES['identity_image_front_end_site']['name'])){
+    
+    //File uplaod configuration
+    $result = 0;
+    $uploadDir = SERVER_USER_PROFILE;
+    $fileName = time().'_'.basename($_FILES['identity_image_front_end_site']['name']);
+    $targetPath = $uploadDir. $fileName;
+    $file_path = USER_PROFILE.$fileName;
+    $userId = $user['id'];
+
+    $res = SqlQuery("Select * from users Where id = '$userId'");
+    $row = mysqli_fetch_assoc($res);
+    unlink($uploadDir.$row['user_img']);
+    //Upload file to server
+    if(@move_uploaded_file($_FILES['identity_image_front_end_site']['tmp_name'], $targetPath)){
+        //Get current user ID from session
+        
+        //Update picture name in the database
+        $update = mysqli_query($con,"UPDATE users SET user_img = '".$fileName."' WHERE id = $userId");
+        
+        //Update status
+        if($update){
+            $result = 1;
+            
+        }
+    }
+    
+    //Load JavaScript function to show the upload status
+    echo '<script type="text/javascript">window.top.window.completeUpload(' . $result . ',\'' . $file_path . '\');</script>  ';
+}
+
+elseif (isset($_POST['pincodeOfAddressToGetCityState']) ) {
+    $pincode=$_POST['pincodeOfAddressToGetCityState'];
+    $data=file_get_contents('http://postalpincode.in/api/pincode/'.$pincode);
+    $data=json_decode($data);
+    if(isset($data->PostOffice['0'])){
+        $arr['city']=$data->PostOffice['0']->Taluk;
+        $arr['state']=$data->PostOffice['0']->State;
+        $address_comple = '';
+        foreach ($data->PostOffice as $key => $value) {
+            $address_comple .= '<option value="'.$value->Name.'">'.$value->Name.'</option>';
+        }
+        $arr['address_complement'] = $address_comple;
+        echo json_encode($arr);
+    }else{
+        echo 'no';
+    }
 }

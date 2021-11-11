@@ -186,7 +186,7 @@ fade in  -->
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="height: 100vh;">
                 <div class="row" id="quickview_product">
                     
                 </div>

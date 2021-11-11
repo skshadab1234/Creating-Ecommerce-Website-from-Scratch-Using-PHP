@@ -9,7 +9,7 @@
             <ol itemscope="" itemtype="http://schema.org/BreadcrumbList" class="p-a-0">
 
                 <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
-                    <a itemprop="item" href="https://rubiktheme.com/demo/rb_evo_demo/en/">
+                    <a itemprop="item" href="<?= FRONT_SITE_PATH ?>">
                         <span itemprop="name">Home</span>
                     </a>
                     <meta itemprop="position" content="1">
@@ -17,7 +17,7 @@
 
 
                 <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
-                    <a itemprop="item" href="https://rubiktheme.com/demo/rb_evo_demo/en/my-account">
+                    <a itemprop="item" href="<?= FRONT_SITE_PATH.'identity' ?>">
                         <span itemprop="name">Your account</span>
                     </a>
                     <meta itemprop="position" content="2">
@@ -177,6 +177,7 @@
                                         foreach ($product_ids as $key => $value) {
                                             $Prdsql = "SELECT * from product_details where id = '$value'";
                                             $Prdres = mysqli_query($con , $Prdsql);
+                                            $track_id = explode(",",$row['tracking_id']);
                                             while ($Prdrow = mysqli_fetch_assoc($Prdres)) {
                                                 $ProductImageById = ProductImageById($Prdrow['id'],"limit 1");
                                                 array_unshift($ProductImageById,"");
@@ -190,6 +191,9 @@
                                                 array_unshift($product_qty,"");
                                                 unset($product_qty[0]);
                                                     
+                                                $payment_prod_price = explode(',', $row['payment_prod_price']);
+                                                array_unshift($payment_prod_price,"");
+                                                unset($payment_prod_price[0]);
                                                     ?>
 
                                     <tr>
@@ -205,13 +209,14 @@
                                                     <?= $Prdrow['product_name'] ?>
                                                 </a>
                                             </strong><br>
-                                            Size: <?= $product_varient[$key] ?><br>
+                                            Size: <?= $product_varient[$key] ?><br><br>
+                                            Tracking Id: <a href="<?= FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key - 1].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key - 1] ?></a>
                                         </td>
                                         <td>
                                             <?= $product_qty[$key] ?>
                                         </td>
-                                        <td class="text-xs-right">₹ <?= $Prdrow['product_price'] ?></td>
-                                        <td class="text-xs-right">₹ <?= $product_qty[$key] * $Prdrow['product_price'] ?></td>
+                                        <td class="text-xs-right">₹ <?= $payment_prod_price[$key]  ?></td>
+                                        <td class="text-xs-right">₹ <?= $product_qty[$key] * $payment_prod_price[$key] ?></td>
                                     </tr>
 
                                     <?php
@@ -269,6 +274,10 @@
                                 $product_qty = explode(',', $row['product_qty']);
                                 array_unshift($product_qty,"");
                                 unset($product_qty[0]);
+
+                                $payment_prod_price = explode(',', $row['payment_prod_price']);
+                                array_unshift($payment_prod_price,"");
+                                unset($payment_prod_price[0]);
                                     
                         ?>
                         <div class="order-items hidden-md-up box">
@@ -286,13 +295,13 @@
                                     <div class="col-sm-7 qty">
                                         <div class="row">
                                             <div class="col-xs-4 text-sm-left text-xs-left">
-                                                ₹ <?= $Prdrow['product_price'] ?>
+                                                ₹ <?= $payment_prod_price[$key] ?>
                                             </div>
                                             <div class="col-xs-4">
                                                 <?= $product_qty[$key] ?>
                                             </div>
                                             <div class="col-xs-4 text-xs-right">
-                                                ₹ <?= $product_qty[$key] * $Prdrow['product_price'] ?>
+                                                ₹ <?= $product_qty[$key] * $payment_prod_price[$key] ?>
                                             </div>
                                         </div>
                                     </div>
@@ -320,9 +329,6 @@
                             </div>
                         </div>
 
-
-
-
                         <div class="box">
                             <table class="table table-striped table-bordered hidden-sm-down">
                                 <thead class="thead-default">
@@ -330,7 +336,6 @@
                                         <th>Date</th>
                                         <th>Carrier</th>
                                         <th>Shipping cost</th>
-                                        <th>Tracking number</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -338,7 +343,7 @@
                                         <td><?= date("d-m-Y", strtotime("+1 day", strtotime($row['created']))); ?></td>
                                         <td>My carrier</td>
                                         <td><?= $shipping_fee ?></td>
-                                        <td>-</td>
+                                        
                                     </tr>
                                 </tbody>
                             </table>
@@ -472,8 +477,7 @@
                                             data-link-action="view-order-details">
                                             Details
                                         </a>
-                                        <!-- <a
-                                                                href="https://rubiktheme.com/demo/rb_evo_demo/en/order?submitReorder=&amp;id_order=8">Reorder</a> -->
+                                       
                                     </td>
                                 </tr>
                                 <?php

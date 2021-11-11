@@ -175,9 +175,9 @@ function select_all(){
 
 function get_total_selected() {
     if ($('input[type=checkbox]:checked').length > 0) {
-        $("#product_delete_btn, #product_category_btn, #product_subcategory_btn").show();
+        $("#product_delete_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn").show();
     }else{
-        $("#product_delete_btn, #product_category_btn, #product_subcategory_btn").hide();
+        $("#product_delete_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn").hide();
     }
 
 }
@@ -311,9 +311,9 @@ function  product_category_Change() {
     var id = $("#product_category_121").val();
     var sub_cat_recive_from_Db = $("#sub_cat_recive_from_Db").val();
     if (id == '') {
-        jQuery('#sub_category_data').html('<option value=""  selected>Select Sub Category</option>');
+        jQuery('#sub_category_data').html('<option value="-1"  selected>Select Sub Category</option>');
     }else{
-        jQuery('#sub_category_data').html('<option value=""  selected>Select Sub Category</option>');
+        jQuery('#sub_category_data').html('<option value="-1"  selected>Select Sub Category</option>');
         jQuery.ajax({
             url : "admin_ajax_call.php",
             type : "post",
@@ -411,3 +411,80 @@ $("#delete_all_subcategory_checkbox_frm").submit( (e) => {
         }
     });
 })
+
+
+// Brand Select All 
+function select_all_brand(){
+	if(jQuery('#delete_check_brand').prop("checked")){
+		jQuery('input[type=checkbox]').each(function(){
+			jQuery('#'+this.id).prop('checked',true);
+		});
+        $("#product_brand_btn").show();
+	}else{
+		jQuery('input[type=checkbox]').each(function(){
+			jQuery('#'+this.id).prop('checked',false);
+		});
+        $("#product_brand_btn").hide();
+	}
+}
+
+$("#delete_all_brand_checkbox_frm").submit( (e) => {
+    e.preventDefault();
+
+    var form_data = $("#delete_all_brand_checkbox_frm").serialize();
+
+    jQuery.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:form_data,
+        success:function(result){
+            window.location = window.location.href;
+        }
+    });
+})
+
+
+// Brand Adding to Db
+$("#brand_data_form").submit((e)=> {
+    e.preventDefault();
+    var form_data = $("#brand_data_form").serialize();
+    
+    jQuery.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:form_data,
+        success:function(result){
+            // window.location = window.location.href;
+            if (result == 'exist') {
+                swal("Brand Exist", 'Try to add another brand', 'error');
+            }else{
+                $("#brand_data_form").hide();
+                $("#brand_images").show();
+            }
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -881,3 +881,151 @@ else if (isset($_POST['checked_subcategory_delete'][0]))
     }
     
 }
+
+else if (isset($_POST['checked_brand_delete'][0]))
+{
+    foreach ($_POST['checked_brand_delete'] as $list)
+    {
+        $id = get_safe_value($list);
+        SqlQuery("delete from brands where bid = '$id'");
+    }
+    
+}
+
+elseif (isset($_POST['brand_type']) && $_POST['brand_type'] != '' && isset($_POST['brand_name']) && $_POST['brand_name'] != '' && isset($_POST['brand_status']) && $_POST['brand_status'] != '' && isset($_POST['brand_id'])) {
+    $brand_type = get_safe_value($_POST['brand_type']);
+    
+    $brand_name = get_safe_value($_POST['brand_name']);
+    $brand_status = get_safe_value($_POST['brand_status']);
+
+    if ($brand_type == 'update') {
+        $brand_id = get_safe_value($_POST['brand_id']);
+        $_SESSION['BRAND_ID_SESSION']  = $brand_id;
+        SqlQuery("update brands set brand_name='$brand_name', brand_status='$brand_status' WHERE bid = '$brand_id'");
+        echo 'Updated';
+    }
+
+    elseif ($brand_type == 'add') {
+        $brand_added_on = date("Y-m-d");
+        $res = SqlQuery("Select * from brands WHERE brand_name='$brand_name'");
+        if (mysqli_num_rows($res) > 0) {
+            echo 'exist';
+        }else{
+            $sql = "INSERT into brands (brand_name, brand_status,brand_added_on) VALUES('$brand_name', '$brand_status', '$brand_added_on')";
+            if (mysqli_query($con, $sql)) {
+                $last_id = mysqli_insert_id($con);
+                $_SESSION['BRAND_ID_SESSION']  = $last_id;
+            } 
+            echo 'insert';
+        }
+        
+    }
+}
+
+
+elseif (isset($_POST['social_title'])  && $_POST['social_title'] != '' 
+        && isset($_POST['firstname'])  && $_POST['firstname'] != ''
+        && isset($_POST['lastname'])  && $_POST['lastname'] != ''
+        && isset($_POST['email'])  && $_POST['email'] != ''
+        && isset($_POST['user_status'])  && $_POST['user_status'] != ''
+        && isset($_POST['newsletter'])  && $_POST['newsletter'] != '') 
+{
+    $social_title = get_safe_value($_POST['social_title']);
+    $firstname = get_safe_value($_POST['firstname']);
+    $lastname = get_safe_value($_POST['lastname']);
+    $user_status = get_safe_value($_POST['user_status']);
+    $email = get_safe_value($_POST['email']);
+    $newsletter = get_safe_value($_POST['newsletter']);
+    $user_type = get_safe_value($_POST['user_type']);
+    $user_id = get_safe_value($_POST['user_id']);
+
+    $res = SqlQuery("SELECT * FROM users WHERE id = '$user_id'");
+    $row = mysqli_fetch_assoc($res);
+    
+   
+    if ($user_type == 'update') {
+        if ($email != $row['email']) {
+            // EMAIL ID CHANGED
+            $email_changed = 'Please Confirm Your Mail';
+            if (mysqli_num_rows(SqlQuery("SELECT * FROM users WHERE email = '$email'")) > 0) {
+                $arr = array("status"=>'error', 'message' => 'Email id exist');
+            }else{
+                SqlQuery("Update users set social_title='$social_title', firstname='$firstname', lastname='$lastname', verify='$user_status', email ='$email', newsletter='$newsletter' WHERE id = '$user_id'");
+                $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$email.'&userLoginCode='.$row['userLoginCode'].'&redirect='.FRONT_SITE_PATH.">Click here to Verify</a>";
+                $emailresp = send_email($email, $html, 'Email id Changed Confirmation');
+                if ($emailresp == 'Sended')
+                {
+                    $arr = array(
+                        'status' => 'email_change_success',
+                        'message' => 'User Successfully Updated',
+                        'text' => 'Link Sended to ' . $email
+                    );
+                }
+            }
+        }else{
+            SqlQuery("Update users set social_title='$social_title', firstname='$firstname', lastname='$lastname', verify='$user_status', email ='$email', newsletter='$newsletter' WHERE id = '$user_id'");
+            $arr = array("status"=>'success', 'message' => 'User Successfully Updated', 'text' => '');
+        }
+    
+    }else{
+        if (mysqli_num_rows(SqlQuery("SELECT * FROM users WHERE email = '$email'")) > 0) {
+            $arr = array("status"=>'error', 'message' => 'Email id exist');
+        }else{
+            $date = date('Y-m-d');
+            $userloginCode = rand(11111,99999);
+            $password = str_replace(' ', '', $firstname.$lastname.rand(111,999));
+            $password_hash = password_hash($password, PASSWORD_BCRYPT);
+            $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$email.'&userLoginCode='.$userloginCode.'&redirect='.FRONT_SITE_PATH.">Click here to Verify</a>
+                    <p>Password : ".$password."</p>
+            ";
+            SqlQuery("INSERT into users(social_title,firstname,lastname,password,email,newsletter,verify,userLoginCode,userAdded_On)
+                      VALUES('$social_title', '$firstname', '$lastname', '$password_hash', '$email', '$newsletter', '$user_status', '$userloginCode', '$date')");
+
+            $emailresp = send_email($email, $html, 'Email id Changed Confirmation');
+            if ($emailresp == 'Sended')
+            {
+                $arr = array(
+                    'status' => 'success',
+                    'message' => 'Account Created Successfully',
+                    'text' => 'Confirmation Mail Sended Successfully to ' . $email
+                );
+            }
+        }
+    }
+    
+
+    echo json_encode($arr);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

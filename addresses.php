@@ -46,10 +46,8 @@
         <div class="row">
 
             <div id="content-wrapper" class="col-lg-12 col-xs-12">
-
                 <aside id="notifications">
                     <div class="container">
-
                     </div>
                 </aside>
                 <?php
@@ -202,21 +200,22 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label">
-                                                Address Complement
+                                            <label class="col-md-2 col-form-label required">
+                                                Zip/Postal Code
                                             </label>
                                             <div class="col-md-8">
-                                                <input class="form-control" name="addres_complement" type="text" value="<?= $addres_complement ?>"
-                                                    maxlength="128">
+
+                                                <input class="form-control" name="postal_code" placeholder="Enter zipcode to get state and city" type="number" value="<?= $postal_code ?>" required="" id="postal_code"
+                                                 onkeyup= "GetStateCity()">
 
                                             </div>
 
                                             <div class="col-md-2 form-control-comment">
 
-                                                Optional
-
                                             </div>
                                         </div>
+
+                                       
 
                                         <div class="form-group row align-items-center ">
                                             <label class="col-md-2 col-form-label required">
@@ -224,8 +223,9 @@
                                             </label>
                                             <div class="col-md-8">
 
-                                                <input class="form-control" name="city" type="text" value="<?= $city ?>"
-                                                    maxlength="64" required="">
+                                                <input class="form-control"  id="city_address" type="text" value="<?= $city ?>"
+                                                    maxlength="64" disabled="" required=''>
+                                                <input type="hidden" name="city" id="city_for_db" value="" required=''>
 
                                             </div>
 
@@ -240,64 +240,9 @@
                                             </label>
                                             <div class="col-md-8">
 
-                                                <div class="custom-select2">
-                                                    <select class="form-control form-control-select" name="state"
-                                                        required="">
-                                                        <option value="" disabled='' selected>Select State</option>
-                                                        <?php
-                                                            $indian_all_states  = array (
-                                                                'AP' => 'Andhra Pradesh',
-                                                                'AR' => 'Arunachal Pradesh',
-                                                                'AS' => 'Assam',
-                                                                'BR' => 'Bihar',
-                                                                'CT' => 'Chhattisgarh',
-                                                                'GA' => 'Goa',
-                                                                'GJ' => 'Gujarat',
-                                                                'HR' => 'Haryana',
-                                                                'HP' => 'Himachal Pradesh',
-                                                                'JK' => 'Jammu & Kashmir',
-                                                                'JH' => 'Jharkhand',
-                                                                'KA' => 'Karnataka',
-                                                                'KL' => 'Kerala',
-                                                                'MP' => 'Madhya Pradesh',
-                                                                'MH' => 'Maharashtra',
-                                                                'MN' => 'Manipur',
-                                                                'ML' => 'Meghalaya',
-                                                                'MZ' => 'Mizoram',
-                                                                'NL' => 'Nagaland',
-                                                                'OR' => 'Odisha',
-                                                                'PB' => 'Punjab',
-                                                                'RJ' => 'Rajasthan',
-                                                                'SK' => 'Sikkim',
-                                                                'TN' => 'Tamil Nadu',
-                                                                'TR' => 'Tripura',
-                                                                'UK' => 'Uttarakhand',
-                                                                'UP' => 'Uttar Pradesh',
-                                                                'WB' => 'West Bengal',
-                                                                'AN' => 'Andaman & Nicobar',
-                                                                'CH' => 'Chandigarh',
-                                                                'DN' => 'Dadra and Nagar Haveli',
-                                                                'DD' => 'Daman & Diu',
-                                                                'DL' => 'Delhi',
-                                                                'LD' => 'Lakshadweep',
-                                                                'PY' => 'Puducherry',
-                                                            );
-
-                                                            foreach ($indian_all_states as $key => $value) {
-                                                                if($state == $value) {
-                                                                    $checked = 'selected';
-                                                                }else {
-                                                                    $checked = '';
-                                                                }
-                                                                ?>
-                                                                    <option value='<?= $value ?>' <?= $checked ?>><?= $value ?></option>       
-                                                                <?php
-                                                            }
-                                        
-                                                        ?>
-                                                    </select>
-                                                </div>
-
+                                            <input class="form-control" name="state" id="state_address" type="text" value="<?= $state ?>"
+                                                    maxlength="64" disabled="" required=''>
+                                            <input type="hidden" name="state" id="state_for_db" value="" required=''>
                                             </div>
 
                                             <div class="col-md-2 form-control-comment">
@@ -305,14 +250,21 @@
                                             </div>
                                         </div>
 
+                                      
                                         <div class="form-group row align-items-center ">
                                             <label class="col-md-2 col-form-label required">
-                                                Zip/Postal Code
+                                                Address Complement
                                             </label>
                                             <div class="col-md-8">
 
-                                                <input class="form-control" name="postal_code" type="text" value="<?= $postal_code ?>"
-                                                    maxlength="12" required="">
+                                                <div class="custom-select2">
+                                                    <select class="form-control form-control-select "
+                                                        name="addres_complement" id="addres_complement" required="">
+                                                        <option value="<?= $addres_complement ?>" disabled="" selected=""><?= $addres_complement ?></option>
+                                                        
+                                                    </select>
+                                                </div>
+
 
                                             </div>
 
@@ -528,3 +480,53 @@
 <?php
             require 'includes/footer.php';
        ?>
+
+       <script>
+           function GetStateCity() {
+                var zip = $("#postal_code");
+                var city = $("#city");
+                var state = $("#state");
+
+                if(zip.val().length > 5){
+                    jQuery.ajax({
+                        url:'ajax_call.php',
+                        type:'post',
+                        data:'pincodeOfAddressToGetCityState='+zip.val(),
+                        success:function(data){
+                             
+                            if(data=='no'){
+                                alert('Wrong Pincode');
+                                jQuery('#city_address, #city_for_db').val('');
+                                jQuery('#state_address, #state_for_db').val('');
+                                $("#addres_complement").html('<option value=""  disabled>--please choose--</option>');
+                            }else{
+                                var getData=$.parseJSON(data);
+                                jQuery('#city_address, #city_for_db').val(getData.city);
+                                jQuery('#state_address, #state_for_db').val(getData.state);
+                                $("#addres_complement").html('<option value=""  disabled>--please choose--</option>');
+                                $("#addres_complement").append(getData.address_complement);
+                            }
+                        }
+                    });
+                }
+           }
+       </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

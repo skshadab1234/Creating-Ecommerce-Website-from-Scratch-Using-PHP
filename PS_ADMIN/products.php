@@ -5,9 +5,7 @@
     
 ?>
 <style>
- .dt-buttons{
-            display:none
-        }
+
 </style>
 
 <?php
@@ -111,8 +109,8 @@
                             <div class="form-group col-md-6">
                                 <label>Category</label>
                                 <select name="category" id='product_category_121'
-                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;"
-                                    required onchange="product_category_Change()">
+                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;" required
+                                    onchange="product_category_Change()">
                                     <option selected="selected" disabled>Select Category</option>
                                     <?php
                                         foreach($Category_data as $key => $val) {
@@ -127,7 +125,8 @@
                                             }
                                             
                                             ?>
-                                        <option <?= $selected ?> value="<?= $val['cat_id'] ?>"><?= $val['category_name'] ?></option>
+                                    <option <?= $selected ?> value="<?= $val['cat_id'] ?>"><?= $val['category_name'] ?>
+                                    </option>
                                     </option>
                                     <?php
                                         }
@@ -140,8 +139,8 @@
                                 <select name="sub_category_data" id='sub_category_data'
                                     class="form-control select2 select2-hidden-accessible" style="width: 100%;"
                                     onchange="product_subcategory_Change()">
-                                    <option  value=""> Select Sub Category</option>
-                                   
+                                    <option value=""> Select Sub Category</option>
+
                                 </select>
                                 <input type="hidden" id="sub_cat_recive_from_Db" value="<?= $product_subCategories ?>">
                             </div>
@@ -151,9 +150,10 @@
                                 <select name="sub_category_value" id='sub_category_value'
                                     class="form-control select2 select2-hidden-accessible" style="width: 100%;">
                                     <option selected="selected" value="">Select Sub Category Value</option>
-                                   
+
                                 </select>
-                                <input type="hidden" id="sub_catValue_recive_from_Db" value="<?= $product_subCat_Values ?>">
+                                <input type="hidden" id="sub_catValue_recive_from_Db"
+                                    value="<?= $product_subCat_Values ?>">
                             </div>
 
                             <div class="form-group col-md-6">
@@ -178,7 +178,7 @@
                                 </select>
                             </div>
 
-                            
+
 
                             <div class="form-group col-md-6">
                                 <label for="product_size">Product Size</label>
@@ -186,7 +186,7 @@
                                     value="<?= $product_size ?>" name="product_size">
                             </div>
 
-                           
+
 
                             <div class="form-group col-md-12">
                                 <label for="short_description">Short Description</label>
@@ -223,13 +223,13 @@
                                 <input type="text" class="form-control" name="product_oldPrice"
                                     value="<?= $product_oldPrice ?>" placeholder="Enter Product Old Price">
                             </div>
-                            
+
                             <div class="form-group col-md-6">
                                 <label for="total_stock">Total Stock</label>
                                 <input type="text" class="form-control" name="total_stock" value="<?= $total_stock ?>"
                                     placeholder="Enter Total Stock">
                             </div>
-                            
+
                             <div class="form-group col-md-6">
                                 <label for="product_weight">Product Weight</label>
                                 <input type="text" class="form-control" name="product_weight"
@@ -260,31 +260,35 @@
                                         $data_sheet_desc = $value['data_sheet_desc'];
                                         $lastid[] = $value['id'];
                                     ?>
-                                        <div class="row" style="width:100%;margin: 2px 0;" id="removeDataSheetFromDB_<?= $value['id'] ?>">
-                                            <div class="form-group col-md-6">
-                                                <label for="data_sheet_name">Product Data Sheet Name</label>
-                                                <input type="text" class="form-control" name="data_sheet_name[]"
-                                                    value="<?= $data_sheet_name ?>" placeholder="Enter Product Price">
-                                            </div>
+                            <div class="row" style="width:100%;margin: 2px 0;"
+                                id="removeDataSheetFromDB_<?= $value['id'] ?>">
+                                <div class="form-group col-md-6">
+                                    <label for="data_sheet_name">Product Data Sheet Name</label>
+                                    <input type="text" class="form-control" name="data_sheet_name[]"
+                                        value="<?= $data_sheet_name ?>" placeholder="Enter Product Price">
+                                </div>
 
-                                            <div class="form-group col-md-4">
-                                                <label for="data_sheet_desc">Product Data Sheet Description</label>
-                                                <input type="text" class="form-control" name="data_sheet_desc[]"
-                                                    value="<?= $data_sheet_desc ?>" placeholder="Enter Product Old Price">
-                                            </div>
+                                <div class="form-group col-md-4">
+                                    <label for="data_sheet_desc">Product Data Sheet Description</label>
+                                    <input type="text" class="form-control" name="data_sheet_desc[]"
+                                        value="<?= $data_sheet_desc ?>" placeholder="Enter Product Old Price">
+                                </div>
 
-                                            <div class="col-md-2" style="display: flex;width: 100%;height: 85px;justify-content: center;align-items: center;">
-                                                <a class="btn btn-danger" onclick = "removeDataSheetFromDB(<?= $value['id'] ?>)">Remove</a>
-                                            </div>
-                                        </div>
-                                    <?php
+                                <div class="col-md-2"
+                                    style="display: flex;width: 100%;height: 85px;justify-content: center;align-items: center;">
+                                    <a class="btn btn-danger"
+                                        onclick="removeDataSheetFromDB(<?= $value['id'] ?>)">Remove</a>
+                                </div>
+                            </div>
+                            <?php
                                     }
                                 }
                             ?>
                             <input type="hidden" id="getLastElementDataSheet" value="<?= end($lastid) ?>">
                         </div>
                         <div class="card-footer">
-                            <button type="button" class="btn btn-primary float-right" id="add_more_product_data_sheeet_field"><i class="fa fa-plus"></i>  Add More</button>
+                            <button type="button" class="btn btn-primary float-right"
+                                id="add_more_product_data_sheeet_field"><i class="fa fa-plus"></i> Add More</button>
                         </div>
                         <!-- /.row -->
                     </div>
@@ -428,7 +432,8 @@
                         <div class="container-fluid">
                             <div class="card_box">
                                 <div class="card-header">
-                                    <button type="submit" class="btn btn-danger float-left" id="product_delete_btn" style="display:none">Delete</button>
+                                    <button type="submit" class="btn btn-danger float-left" id="product_delete_btn"
+                                        style="display:none">Delete</button>
 
                                     <h3 class="card-title float-right">
 
@@ -521,11 +526,13 @@
                                                                         }
                                                                     ?>
                                                         <tr class="odd" id="delete_box_<?= $val['id'] ?>">
-                                                            <td class="dtr-control sorting_1" tabindex="0"><input type="checkbox" name="checked_product_delete[]" onclick="get_total_selected()"
-                                                                    id="<?= $val['id']?>"
+                                                            <td class="dtr-control sorting_1" tabindex="0"><input
+                                                                    type="checkbox" name="checked_product_delete[]"
+                                                                    onclick="get_total_selected()" id="<?= $val['id']?>"
                                                                     value="<?= $val['id'] ?>"></td>
                                                             <td style=""><img class="img-reponsive img-fluid"
-                                                                    width="80px" height="80px" style="border-radius:50%;width:80px;height:80px"
+                                                                    width="80px" height="80px"
+                                                                    style="border-radius:50%;width:80px;height:80px"
                                                                     src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById['1']['product_img'] ?>"
                                                                     alt=""></td>
                                                             <td style=""><a
@@ -541,9 +548,12 @@
                                                             <td style="color: <?= $color ?>">
                                                                 <?= $val['total_stock'] - $val['total_sold'] ?></td>
                                                             <td><?= $val['product_size'] ?></td>
-                                                            <td><?= $val['category_name'].' - '.$val['product_subCategories'].''.$product_subCat_Values ?></td>
-                                                            <td><span class="btn <?= $bgColor ?>"><?= $text ?></span></td>
-                                                            <td><?= date("d M,Y", strtotime($val['product_added_on'])) ?></td>
+                                                            <td><?= $val['category_name'].' - '.$val['product_subCategories'].''.$product_subCat_Values ?>
+                                                            </td>
+                                                            <td><span class="btn <?= $bgColor ?>"><?= $text ?></span>
+                                                            </td>
+                                                            <td><?= date("d M,Y", strtotime($val['product_added_on'])) ?>
+                                                            </td>
                                                         </tr>
                                                         <?php
                                                             }
@@ -571,7 +581,7 @@
             <?php
     require 'includes/footer.php';
 ?>
-            
+
             <script>
             $("#product_images").hide();
 
@@ -580,8 +590,8 @@
                 $("#product_data_form").show();
             })
 
-            
-            
+
+
             Dropzone.options.dropzoneFrom = {
                 autoProcessQueue: false,
                 acceptedFiles: ".png,.jpg,.jpeg",
@@ -627,7 +637,17 @@
                     "responsive": true,
                     "lengthChange": false,
                     "autoWidth": false,
-                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                    buttons: [{
+                        extend: 'print',
+                        exportOptions: {
+                            stripHtml: false,
+                            columns: [1, 2, 3,4,5,6,7,8,9]
+                            //specify which column you want to print
+
+                        }
+                    }
+
+                ]
                 }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
                 $('#example2').DataTable({
                     "paging": true,

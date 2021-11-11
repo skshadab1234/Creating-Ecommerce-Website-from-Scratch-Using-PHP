@@ -165,7 +165,6 @@ if (isset($_GET['orderId']) && $_GET['orderId'] != '') {
                         <tr>
                             <td  width="40%">
                             <h3 class="heading">Invoice No.: #'.$row['id'].'</h3>
-                            <p class="sub-heading">Tracking No. '.$row['tracking_id'].' </p>
                             <p class="sub-heading">Order Date: '.date("d M,Y", strtotime($row['created'])).' </p>
                             <p class="sub-heading">Email Address: '.COMPANY_EMAIL.' </p>
                             </td>

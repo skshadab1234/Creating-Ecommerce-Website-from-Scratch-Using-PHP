@@ -41,9 +41,9 @@ function send_email($email,$html,$subject){
 	$mail->Port=587;
 	$mail->SMTPSecure="tls";
 	$mail->SMTPAuth=true;
-	$mail->Username="ks615044@gmail.com";
-	$mail->Password="Password";
-	$mail->setFrom("ks615044@gmail.com");
+	$mail->Username="ks615044@gmail.com"; // Change My Email
+	$mail->Password="Enter your Password";
+	$mail->setFrom("ks615044@gmail.com");// Change My Email
 	$mail->addAddress($email);
 	$mail->IsHTML(true);
 	$mail->Subject=$subject;
@@ -59,7 +59,6 @@ function send_email($email,$html,$subject){
 		return 'Error_Occur';
 	}
 }
-
 
 
 function ProductDetails($query = '') {
@@ -159,9 +158,21 @@ function CalculateTotalProductBuying($uid){
 
 		$qty[] = $row['qty'];
 		$qtys = implode("," , $qty);
+
+		$track_id[] = rand(11111111,99999999);
+		$track_ids = implode("," , $track_id);
+
+		$product_price[] = $row['prod_price'];
+		$product_prices = implode("," , $product_price);
 	}
 
-	$data_arr = array("product_id" => $datas, 'product_varient' => $product_varient, 'qtys' => $qtys);
+	$data_arr = array(
+						"product_id" => $datas, 
+						'product_varient' => $product_varient, 
+						'qtys' => $qtys, 
+						'track_id' => $track_ids,
+						"product_price" => $product_prices
+					);
 	
 	return $data_arr;
 

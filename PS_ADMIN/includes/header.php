@@ -16,6 +16,12 @@
         $product_active = 'active';
         $menu_open = 'menu-open';
     }
+    else if ($page_url == ADMIN_FRONT_SITE.'brand.php') {
+        $title = SITE_NAME.' - Brand';
+        $brand_active = 'active';
+        $catalog_active = 'active';
+        $menu_open = 'menu-open';
+    }
     else if ($page_url == ADMIN_FRONT_SITE.'category.php') {
         $title = SITE_NAME.' - Category';
         $catalog_active = 'active';
@@ -28,6 +34,13 @@
         $subcategory_active = 'active';
         $menu_open = 'menu-open';
     }
+    else if ($page_url == ADMIN_FRONT_SITE.'users.php' || $page_url = ADMIN_FRONT_SITE.'cart.php') {
+        $title = SITE_NAME.' - Users';
+        $catalog_active = 'active';
+        $users_active = 'active';
+        $menu_open = 'menu-open';
+    }
+
     else if ($page_url == ADMIN_FRONT_SITE.'orders.php') {
         $title = SITE_NAME.' - Orders';
         $order_active = 'active';
@@ -74,8 +87,10 @@
 
   <link rel="stylesheet" href="https://www.jqueryscript.net/demo/Bootstrap-4-Tag-Input-Plugin-jQuery/tagsinput.css">
 
-  <!-- For FileUpload  -->
+  <!-- For Dropzone Csss  -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css" />
+<!-- Dropzone JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
 
     
     <!-- custom internal css includes  -->
@@ -274,9 +289,9 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="<?= urldecode('products') ?>" class="nav-link <?= $product_active ?>">
+                                    <a href="<?= urldecode('brand') ?>" class="nav-link <?=  $brand_active ?>">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Products</p>
+                                        <p>Brands</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -289,6 +304,18 @@
                                     <a href="<?= urldecode('subcategory') ?>" class="nav-link <?=  $subcategory_active ?>">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Sub Category</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?= urldecode('products') ?>" class="nav-link <?= $product_active ?>">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Products</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?= urldecode('users') ?>" class="nav-link <?= $users_active ?>">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Users</p>
                                     </a>
                                 </li>
                             </ul>

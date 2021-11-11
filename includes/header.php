@@ -81,6 +81,13 @@ if ($page_url == FRONT_SITE_PATH || $page_url == FRONT_SITE_PATH.'index.php') {
 elseif ($page_url == FRONT_SITE_PATH.'product.php') {
     $title = 'Shop';
 }
+elseif ($page_url == FRONT_SITE_PATH.'trackmyorder.php') {
+    if (isset($_SESSION['UID'])) {
+        $title = $user['firstname'].' '.$user['lastname'].' - Track Order';
+    }else{
+        redirect(FRONT_SITE_PATH);
+    }
+}
 $base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .  $_SERVER['HTTP_HOST'];
 $url = $base_url . $_SERVER["REQUEST_URI"];
 
@@ -980,7 +987,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                             </div>
                                                         </li>
                                                         <li class="rb_menus_li rb_sub_align_full rb_has_sub">
-                                                            <a href="" style="font-size:16px;">
+                                                            <a href="<?= FRONT_SITE_PATH.'product' ?>" style="font-size:16px;">
                                                                 <span class="rb_menu_content_title">
                                                                     Product
                                                                     <span class="rb_arrow"></span> </span>
@@ -1423,7 +1430,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                     $user_img = 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png';
                                                 }
                                                 ?>
-                                            <img src="<?= $user_img ?>" class="img-fluid"
+                                            <img id="header_preview_img_desktop" src="<?= $user_img ?>" class="img-fluid"
                                                 style='width:70px;border-radius:50%' alt="">
                                             <?php
                                             }else{
@@ -1447,18 +1454,13 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                             <?php
 
                                                 if(isset($_SESSION['UID']) && $_SESSION['UID'] > 0){
-                                                    if ($user['user_img'] != '') {
-                                                        $user_img = USER_PROFILE.$user['user_img'];
-                                                    }else {
-                                                        $user_img = 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png';
-                                                    }
                                                     ?>
                                             <!-- When User Login  -->
                                             <div class="indent rb-indent">
                                                 <div class="my-info">
                                                     <a class="rb-icon-account" href="" title="View My Account"
                                                         rel="nofollow">
-                                                        <img src="<?= $user_img ?>"
+                                                        <img id="header_preview_img" src="<?= $user_img ?>"
                                                             class='img-fluid'
                                                             style="width: 100px;height: 100px;border-radius: 50%;">
                                                     </a>
@@ -2239,7 +2241,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                             $user_img = 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png';
                                         }
                                         ?>
-                                    <img src="<?= $user_img ?>" class="img-fluid"
+                                    <img  id="header_bottom_mobile_image" src="<?= $user_img ?>" class="img-fluid"
                                         style='width:40px;border-radius:50%' alt="">
                                     <?php
                                     }else{

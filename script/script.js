@@ -123,9 +123,9 @@ function getCartTotal() {
 getCartTotal();
 
 setInterval(() => {
-    getCartTotal();
-    getCartDetails();
-    ShowAllWishlistData();
+    // getCartTotal();
+    // getCartDetails();
+    // ShowAllWishlistData();
 }, 1000);
 
 
@@ -157,6 +157,7 @@ function quickviewaction(prod_id) {
             $("#quickview_product").html(res);
             setTimeout( () => {
                 $(".modal-backdrop").addClass("fade in");
+                $("#blockcart-modal-wrap").show();
                 $(".modal-backdrop").show();
                 $("#quickview-modal-3-13").addClass("quickview in");
                 $("#quickview-modal-3-13").css({"display":"block"});
@@ -611,10 +612,35 @@ $("#Search_Product_For_Desktop").keyup( () => { // Seacrhing on Desktop Device
     });
 })
 
-
-$("#Search_Product_For_Desktop").blur( () => {
-    setTimeout( () => {
+// Prventing Dropdown Box When we Click on body it will hide but not hide when we click on dropdown box 
+$(document).on('click', function (event) {
+    if (!$(event.target).closest('#Product_Getted_From_DB_Desktop').length) {
         $("#Product_Getted_From_DB_Desktop").hide();
-    }, 1000)
-})
+    }else{
+        $("#Product_Getted_From_DB_Desktop").show();
+    }
+});
 
+
+
+// Profile Identity Update 
+$("#customer-form").submit( (e) => {
+    e.preventDefault();
+    var form_data = $("#customer-form").serialize();
+    $.ajax({
+        url : 'ajax_call.php',
+        method : 'post',
+        data : form_data,
+        success : (res) => {
+            var data = $.parseJSON(res);
+            if (data.status == 'success') {
+                 swal(data.message,data.text,data.status);
+            }
+
+            if (data.status == 'error') {
+                swal(data.message,'',data.status);
+           }
+           
+        }
+    });
+})

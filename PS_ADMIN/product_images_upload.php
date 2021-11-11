@@ -17,7 +17,7 @@ if(!empty($_FILES))
     }
 }   
 
-elseif (isset($_POST['list_image_files']) && isset($_POST['product_id']) && $_POST['product_id'] > 0) {
+elseif (isset($_POST['list_image_files']) && isset($_POST['product_id']) && $_POST['product_id'] != '') {
     $id = get_safe_value($_POST['product_id']);
     $ProductImageById = ProductImageById($id);
     array_unshift($ProductImageById,"");
