@@ -825,8 +825,7 @@
             /*------------------------------------------------------*/
 
         }
-
-        @media (min-width: 1200px) {
+        @media only screen and  (min-width: 1200px) {
             .header-v5 .search-widget .resuilt-search .rb-resuilt {
                 left: calc(300px - 100%);
                 box-shadow: 2px 21px 100px -43px;
@@ -834,7 +833,13 @@
             }
         }
 
+        @media only screen and (max-width: 500px){
+            #blockcart-modal .cart-content-btn{
+                flex-direction: column;
+            }
+        }
+
+        
         .quickview .modal-content{
-            min-height: 450px;border: none;height: calc(100vh- 15vh);overflow-y: auto;overflow-x: hidden;
-            
+            border: none;height: 780px;overflow-y: auto;overflow-x: hidden;
         }

@@ -66,11 +66,11 @@ if(isset($_POST['stripeToken'])){
 	$payment_method = $data['payment_method'];
 	$fingerprint = $data['source']['fingerprint'];
 	$currency = $data['currency'];
-	$created = date("Y-m-d h:i:s", $data['created']);
+	$created = date("Y-m-d H:i:s", $data['created']);
     $added_on = date("Y-m-d", $data['created']);
 	$card_id = $data['source']['id'];
 
-    // Increaing Total Sold Value in Product Details 
+    // Increasing Total Sold Value in Product Details 
     $product_ids = explode(",", $product_id);
     $qty = explode(",", $qtys);
     foreach($product_ids as $key => $val) {
@@ -82,8 +82,16 @@ if(isset($_POST['stripeToken'])){
         
         $UpdateSql = "UPDATE product_details set total_sold = '$total_sold' where id = ".$row['id']."";
         mysqli_query($con,$UpdateSql);
-        
     }
+
+    $tracking_ids = explode(",", $tracking_id);
+    foreach ($tracking_ids as $key => $value) {
+        $track_user_id = $user['id'];
+        $date= date("Y-m-d h:i:s");
+        SqlQuery("INSERT into ordertrackingdetails(track_id, track_type, product_user_id, Tracking_Name, Tracking_time, Current_Status) 
+                  VALUES('$value', 'Delivery','$track_user_id', 'Ordered,Shipped,Out for Delivery,Delivered', '$date', 'Ordered')");
+    }
+
 
 	$sql = "INSERT into payment_details(
 		Order_Id,

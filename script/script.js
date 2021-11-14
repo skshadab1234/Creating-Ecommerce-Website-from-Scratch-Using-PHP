@@ -123,9 +123,9 @@ function getCartTotal() {
 getCartTotal();
 
 setInterval(() => {
-    // getCartTotal();
-    // getCartDetails();
-    // ShowAllWishlistData();
+    getCartTotal();
+    getCartDetails();
+    ShowAllWishlistData();
 }, 1000);
 
 
@@ -243,7 +243,7 @@ $(".close").click(() => {
 })
 
 // Add to Cart For Singal Product in list of Product Like Home Page Product 
-function addtoCart(prod_id, user_id, qty, prod_price, check_size) {
+function addtoCart(prod_id, user_id, qty, prod_price, check_size, type='', wish_id = '') {
     $.ajax({
         url: 'ajax_call.php',
         type: 'post',
@@ -252,7 +252,9 @@ function addtoCart(prod_id, user_id, qty, prod_price, check_size) {
             user_id : user_id,
             qty : qty,
             prod_price : prod_price,
-            check_size : check_size
+            check_size : check_size,
+            type: type,
+            wish_id: wish_id
         },
         success: (res) => {
             // caliing getCartDetails function to get details when we click add to cart button 
@@ -268,6 +270,9 @@ function addtoCart(prod_id, user_id, qty, prod_price, check_size) {
                 $("#blockcart-modal .modal-content .modal-header .modal-title").html(json_arr.modal_title);
                 $("#blockcart-modal .modal-content .modal-body").html(json_arr.msg);
                 $(".cart-products-count-btn").html(json_arr.Cart_Total);
+                if (type != '') {
+                    $("#removeWishlstProduct_"+prod_id).remove();
+                }
             }else{
                 $("#blockcart-modal .modal-content .modal-body").html(json_arr.msg);
                 $(".cart-products-count-btn").html(json_arr.Cart_Total);
@@ -644,3 +649,74 @@ $("#customer-form").submit( (e) => {
         }
     });
 })
+
+
+function shopProductListing() {
+    $.ajax({
+        url: 'ajax_call.php',
+        type: 'post',
+        data: {
+            "shopProductListing" : "shopProductListing"
+        },
+        success: (res) => {
+            $("#shopProductListing").html(res);
+        }
+    });  
+}
+shopProductListing();
+
+
+
+// Add Comment For Your Order 
+$("#addcommentforyourOrder").submit( (e) => {
+    e.preventDefault();
+    var form_data = $("#addcommentforyourOrder").serialize();
+    $.ajax({
+        url: 'ajax_call.php',
+        type: 'post',
+        data: form_data,
+        success: (res) => {
+            var data = $.parseJSON(res);
+            if (data.prod_num_id == 1) {
+                var id =  data.prod_num_id;
+            }else{
+                var id = data.prod_num_id - 1;
+            }
+           
+            $('html, body').animate({
+                scrollTop: $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).offset().top - 400
+            }, 1000);
+        
+            $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).hide();
+            setTimeout(()=>{
+                $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).show();
+                $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).html(data.msgText);
+            }, 1300)
+        }
+    });  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

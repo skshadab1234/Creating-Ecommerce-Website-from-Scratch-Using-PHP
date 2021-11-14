@@ -1,3 +1,24 @@
+<!-- Modals for Track Orders -->
+<div class="modal fade " id="modal-xl" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background-color: #283046;">
+            <div class="modal-header">
+                <h4 class="modal-title">Track Order </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>One fine body…</p>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+
 <input type="hidden" id="date" value="<?= $date ?>">
 <!-- Main Footer -->
 <footer class="main-footer">

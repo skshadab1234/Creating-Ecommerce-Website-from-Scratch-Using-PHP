@@ -13,7 +13,7 @@
         $Sql = "SELECT * FROM payment_details WHERE Order_Id = '$orderDetails'";
         $res = mysqli_query($con, $Sql);
         $row = mysqli_fetch_assoc($res);
-
+        $track_id = explode(",",$row['tracking_id']);
         $getAddressById = getAddressById($row['delivery_address_id']);
         
         ?>
@@ -105,6 +105,7 @@
                                         foreach ($product_ids as $key => $value) {
                                             $Prdsql = "SELECT * from product_details where id = '$value'";
                                             $Prdres = mysqli_query($con , $Prdsql);
+                                            
                                             while ($Prdrow = mysqli_fetch_assoc($Prdres)) {
                                                 $ProductImageById = ProductImageById($Prdrow['id'],"limit 1");
                                                 array_unshift($ProductImageById,"");
@@ -117,12 +118,30 @@
                                                 $product_qty = explode(',', $row['product_qty']);
                                                 array_unshift($product_qty,"");
                                                 unset($product_qty[0]);
-                                                    
+                                                
+                                                $product_message = explode(",PSFASHIONSTORE,",$row['product_message']);
+                                                array_unshift($product_message,"");
+                                                unset($product_message[0]);
+
+                                                $message_display = '';
+                                                if(!empty($product_message[$key])){
+                                                    $message_display .= '<div class="card_box mt-3">
+                                                                            <div class="card-header">
+                                                                                <h3 class="card-title">
+                                                                                    Message for Order
+                                                                                </h3>
+                                                                            </div>
+                                                                            <div class="card-body">
+                                                                                <p class="text-success"> '.$product_message[$key].'</p>
+                                                                            </div>
+                                                                            
+                                                                        </div>';
+                                                }
                                                     ?>
 
                                     <tr>
                                         <td>
-                                        <img class="img-fluid" width="200px" height="200px"
+                                        <img class="img-fluid" width="100px" height="100px"
                                                     src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'] ?>" alt=""
                                                     title="" itemprop="image">
                                         </td>
@@ -134,6 +153,11 @@
                                                 </a>
                                             </strong><br>
                                             Size: <?= $product_varient[$key] ?><br>
+                                            Tracking Id: <a href="<?= ADMIN_FRONT_SITE.'TrackOrders?track_id='.$track_id[$key - 1].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key - 1] ?></a>
+
+                                            <div id="mesage_display_order_<?= $key ?>">
+                                                <?= $message_display ?>
+                                            </div>
                                         </td>
                                         <td>
                                             <?= $product_qty[$key] ?>

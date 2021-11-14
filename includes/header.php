@@ -993,7 +993,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                                     <span class="rb_arrow"></span> </span>
                                                             </a>
                                                             <span class="arrow closed"></span>
-                                                            <ul class="rb_columns_ul"
+                                                            <!-- <ul class="rb_columns_ul"
                                                                 style=" width:100%; font-size:14px;">
                                                                 <li class="rb_columns_li column_size_4  rb_has_sub">
                                                                     <ul class="rb_blocks_ul">
@@ -1323,18 +1323,11 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                                         </li>
                                                                     </ul>
                                                                 </li>
-                                                            </ul>
+                                                            </ul> -->
 
                                                         </li>
-                                                        <li class="rb_menus_li rb_sub_align_full">
-                                                            <a href="" style="font-size:16px;">
-                                                                <span class="rb_menu_content_title">
-                                                                    Blog
-                                                                </span>
-                                                            </a>
-
-                                                        </li>
-                                                        <li class="rb_menus_li rb_sub_align_left rb_has_sub">
+                                                       
+                                                        <!-- <li class="rb_menus_li rb_sub_align_left rb_has_sub">
                                                             <a href="" style="font-size:16px;">
                                                                 <span class="rb_menu_content_title">
                                                                     Page
@@ -1364,15 +1357,14 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                                 </li>
                                                             </ul>
 
-                                                        </li>
-                                                        <li class="rb_menus_li rb_sub_align_full">
+                                                        </li> -->
+                                                        <!-- <li class="rb_menus_li rb_sub_align_full">
                                                             <a href="" style="font-size:16px;">
                                                                 <span class="rb_menu_content_title">
                                                                     Contact
                                                                 </span>
                                                             </a>
-
-                                                        </li>
+                                                        </li> -->
                                                     </ul>
 
 
@@ -1821,18 +1813,12 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                         </div>
                     </div>
                 </div>
+
                 <div class="header-mobile navbar-head hidden-lg-up">
                     <div class="container">
                         <div class="row header-flex">
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-xs-3 megamenu header-left">
-                                <div class="rb_megamenu 
-      layout_layout1 
-       show_icon_in_mobile 
-        
-      transition_fade   
-      transition_floating 
-               
-      rb-dir-ltr        hook-default        single_layout         disable_sticky_mobile         "
+                                <div class="rb_megamenu  layout_layout1  show_icon_in_mobile transition_fade transition_floating rb-dir-ltr hook-default single_layout disable_sticky_mobile"
                                     data-bggray="bg_gray">
                                     <div class="rb_megamenu_content">
                                         <div class="container">
@@ -1861,7 +1847,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                         </div>
                                                     </li>
 
-                                                    <li class="rb_menus_li rb_sub_align_full rb_has_sub">
+                                                    <!-- <li class="rb_menus_li rb_sub_align_full rb_has_sub">
                                                         <a href="" style="font-size:16px;">
                                                             <span class="rb_menu_content_title">
                                                                 Product
@@ -2122,15 +2108,8 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
 
                                                         </ul>
 
-                                                    </li>
-                                                    <li class="rb_menus_li rb_sub_align_full">
-                                                        <a href="" style="font-size:16px;">
-                                                            <span class="rb_menu_content_title">
-                                                                Blog
-                                                            </span>
-                                                        </a>
-
-                                                    </li>
+                                                    </li> -->
+<!--                                                     
                                                     <li class="rb_menus_li rb_sub_align_left rb_has_sub">
                                                         <a href="" style="font-size:16px;">
                                                             <span class="rb_menu_content_title">
@@ -2169,7 +2148,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                             </span>
                                                         </a>
 
-                                                    </li>
+                                                    </li> -->
                                                 </ul>
 
                                             </div>

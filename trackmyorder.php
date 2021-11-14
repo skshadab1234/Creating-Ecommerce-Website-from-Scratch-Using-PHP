@@ -38,111 +38,111 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
     redirect(FRONT_SITE_PATH);
 }
 ?>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"> -->
 <style>
-.wrappers_progress {
-    width: 100%;
-    font-family: 'Helvetica';
-    font-size: 14px;
-    border: 1px solid #CCC;
-    padding: 20px;
-}
+    .wrappers_progress {
+        width: 100%;
+        font-family: 'Helvetica';
+        font-size: 14px;
+        border: 1px solid #CCC;
+        padding: 20px;
+    }
 
-.StepProgress {
-    position: relative;
-    padding-left: 45px;
-    list-style: none;
-}
+    .StepProgress {
+        position: relative;
+        padding-left: 45px;
+        list-style: none;
+    }
 
-.StepProgress::before {
-    display: inline-block;
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 15px;
-    width: 10px;
-    height: 100%;
-    border-left: 2px solid #CCC;
-}
+    .StepProgress::before {
+        display: inline-block;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 15px;
+        width: 10px;
+        height: 100%;
+        border-left: 2px solid #CCC;
+    }
 
-.StepProgress-item {
-    position: relative;
-    counter-increment: list;
-}
+    .StepProgress-item {
+        position: relative;
+        counter-increment: list;
+    }
 
-.StepProgress-item:not(:last-child) {
-    padding-bottom: 20px;
-}
+    .StepProgress-item:not(:last-child) {
+        padding-bottom: 20px;
+    }
 
-.StepProgress-item::before {
-    display: inline-block;
-    content: '';
-    position: absolute;
-    left: -30px;
-    height: 100%;
-    width: 10px;
-}
+    .StepProgress-item::before {
+        display: inline-block;
+        content: '';
+        position: absolute;
+        left: -30px;
+        height: 100%;
+        width: 10px;
+    }
 
-.StepProgress-item::after {
-    content: '';
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: -39px;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #CCC;
-    border-radius: 50%;
-    background-color: #FFF;
-}
+    .StepProgress-item::after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        left: -39px;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #CCC;
+        border-radius: 50%;
+        background-color: #FFF;
+    }
 
-.StepProgress-item.is-done::before {
-    border-left: 2px solid green;
-}
+    .StepProgress-item.is-done::before {
+        border-left: 2px solid green;
+    }
 
-.StepProgress-item.is-done::after {
-    content: "✔";
-    font-size: 10px;
-    color: #FFF;
-    text-align: center;
-    border: 2px solid green;
-    background-color: green;
-}
+    .StepProgress-item.is-done::after {
+        content: "✔";
+        font-size: 10px;
+        color: #FFF;
+        text-align: center;
+        border: 2px solid green;
+        background-color: green;
+    }
 
-.StepProgress-item.is-cancel::before {
-    border-left: 2px solid red;
-}
+    .StepProgress-item.is-cancel::before {
+        border-left: 2px solid red;
+    }
 
-.StepProgress-item.is-cancel::after {
-    content: "X";
-    font-size: 10px;
-    color: #FFF;
-    text-align: center;
-    border: 2px solid red;
-    background-color: red;
-}
+    .StepProgress-item.is-cancel::after {
+        content: "X";
+        font-size: 10px;
+        color: #FFF;
+        text-align: center;
+        border: 2px solid red;
+        background-color: red;
+    }
 
-.StepProgress-item.current::before {
-    border-left: 2px solid green;
-}
+    .StepProgress-item.current::before {
+        border-left: 2px solid green;
+    }
 
-.StepProgress-item.current::after {
-    content: counter(list);
-    padding-top: 1px;
-    width: 20px;
-    height: 20px;
-    top: 0;
-    left: -40px;
-    font-size: 14px;
-    text-align: center;
-    color: green;
-    border: 2px solid green;
-    background-color: white;
-}
+    .StepProgress-item.current::after {
+        content: counter(list);
+        padding-top: 1px;
+        width: 20px;
+        height: 20px;
+        top: 0;
+        left: -40px;
+        font-size: 14px;
+        text-align: center;
+        color: green;
+        border: 2px solid green;
+        background-color: white;
+    }
 
-.StepProgress strong {
-    display: block;
-}
+    .StepProgress strong {
+        display: block;
+    }
 </style>
 
 <section id="wrapper">
@@ -231,7 +231,7 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
                                                     foreach($track_res as $track_res_key => $track_res_val) {
                                                         ?>
                                                     <div class="wrappers_progress mt-5">
-                                                        <ul class="StepProgress">
+                                                        <ul class="StepProgress mt-3">
                                                         <?php
                                                             foreach($Tracking_Name as $key => $val) {
                                                                $ordered_message = array();
@@ -241,25 +241,30 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
                                                                             $class_name = 'is-done';
                                                                         }else{
                                                                             $class_name = 'is-cancel';
+                                                                            $val = 'Canceled '.$val;
                                                                         }
                                                                }else{
                                                                    if (in_array($val,$current_status)) {
                                                                        $class_name= 'is-done';
                                                                    }else{
                                                                        $class_name = '';
+                                                                       $val = $val;
                                                                    }
                                                                }
                                                                 if (isset(array($track_rows['Tracking_Details'])[$track_res_key])) {
-                                                                    $ordered_message = explode(";", array($track_rows['Tracking_Details'])[$track_res_key]);
+                                                                    $ordered_message = explode(",PS_FASHION_STORE,", array($track_rows['Tracking_Details'])[$track_res_key]);
                                                                 }
                                                                 ?>
-                                                                    <li class="StepProgress-item <?= $class_name ?>">
+                                                                    <li class="StepProgress-item <?= $class_name ?>" >
                                                                         <strong><?= $val ?> </strong>
-                                                                            <i><?php
+                                                                        <div class="mt-1" style="line-height:1px">
+                                                                            <?php
                                                                                 if (isset($ordered_message[$key]) ) {
                                                                                     echo $ordered_message[$key];
+                                                                                    
                                                                                 } 
-                                                                              ?></i><br>
+                                                                            ?>
+                                                                        </div>
                                                                     </li>            
                                                                 <?php
                                                             }
@@ -312,6 +317,5 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
 
 
 <?php
-
 require 'includes/footer.php';
 ?>

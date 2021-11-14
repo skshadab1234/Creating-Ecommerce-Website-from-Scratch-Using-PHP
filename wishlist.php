@@ -19,7 +19,6 @@
             while ($rows = mysqli_fetch_assoc($EXCEPTONESQL)) {
                 $data[] = $rows;
             }
-            
 
             $otherlist = '';
 
@@ -97,7 +96,7 @@
                                             $ProductSizes = $ProductDetails['product_size'];
                                             $sizes = explode(",", $ProductSizes);
                                             ?>
-                                                <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12 product-miniature js-product-miniature rb-wishlistproduct-item rb-wishlistproduct-item-6 product-4"
+                                                <div id="removeWishlstProduct_<?= $ProductDetails['id'] ?>" class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12 product-miniature js-product-miniature rb-wishlistproduct-item rb-wishlistproduct-item-6 product-4"
                                                     data-id-product="4" data-id-product-attribute="16" itemscope=""
                                                     itemtype="http://schema.org/Product">
                                                     <div class="thumbnail-container clearfix">
@@ -128,14 +127,16 @@
                                                             <div class="product-add-to-cart-rb">
                                                                 <div class="product-quantity">
                                                                     <div class="add">
-                                                                        <button class="btn rb-btn-product add-to-cart"
+                                                                    <input type="hidden" id="wishlist_id_toRemoveFromDb" value="<?= $row['id'] ?>">
+                                                                        <input type="hidden" id="productId_toRemoveFromDb" value="<?= $ProductDetails['id'] ?>">
+                                                                        
+                                                                        <button class="btn rb-btn-product add-to-cart" id="RemoveWishlistFromDb_<?= $ProductDetails['id'] ?>"
                                                                             title="Add to cart" data-button-action="add-to-cart"
-                                                                            onclick="addtoCart('<?= $ProductDetails['id'] ?>', '<?= $user['id'] ?>', '1',  '<?= $ProductDetails['product_price'] ?>', '<?= $sizes['0'] ?>')"
-                                                                            type="submit">
+                                                                            onclick="addtoCart('<?= $ProductDetails['id'] ?>', '<?= $user['id'] ?>', '1',  '<?= $ProductDetails['product_price'] ?>', '<?= $sizes['0'] ?>','Wishlist_Remove','<?= $row['id'] ?>')"
+                                                                            >
                                                                             <i class="icon-Ico_Cart"></i>
                                                                             <span class="icon-title">Add To Cart</span>
                                                                         </button>
-
 
                                                                         <span class="product-availability hidden">
                                                                         </span>
@@ -143,7 +144,7 @@
                                                                     </div>
                                                                 </div>
 
-
+                                                              
 
                                                                 <p class="product-minimal-quantity hidden">
                                                                 </p>

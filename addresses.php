@@ -225,7 +225,7 @@
 
                                                 <input class="form-control"  id="city_address" type="text" value="<?= $city ?>"
                                                     maxlength="64" disabled="" required=''>
-                                                <input type="hidden" name="city" id="city_for_db" value="" required=''>
+                                                <input type="hidden" name="city" id="city_for_db" value="<?= $city ?>" required=''>
 
                                             </div>
 
@@ -242,7 +242,7 @@
 
                                             <input class="form-control" name="state" id="state_address" type="text" value="<?= $state ?>"
                                                     maxlength="64" disabled="" required=''>
-                                            <input type="hidden" name="state" id="state_for_db" value="" required=''>
+                                            <input type="hidden" name="state" id="state_for_db" value="<?= $state ?>" required=''>
                                             </div>
 
                                             <div class="col-md-2 form-control-comment">
@@ -260,7 +260,7 @@
                                                 <div class="custom-select2">
                                                     <select class="form-control form-control-select "
                                                         name="addres_complement" id="addres_complement" required="">
-                                                        <option value="<?= $addres_complement ?>" disabled="" selected=""><?= $addres_complement ?></option>
+                                                        <option value="<?= $addres_complement ?>"  selected=""><?= $addres_complement ?></option>
                                                         
                                                     </select>
                                                 </div>

@@ -339,9 +339,28 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
     
     $prod_qty = get_safe_value($_POST['qty']);
     $prod_price = get_safe_value($_POST['prod_price']);
+    
     $date = date("Y-m-d");
 
     $CartTotal = getCartTotal();
+
+    // Removing Item From Wishlist when added to cart
+    if (isset($_POST['type']) && isset($_POST['wish_id'])) {
+        $type = get_safe_value($_POST['type']);
+        $wish_id = get_safe_value($_POST['wish_id']);
+    }else{
+        $type = '';
+        $wish_id = '';
+    }
+    if ($type != '') {
+        $wish_res = SqlQuery("SELECT * FROM wishlist WHERE id ='$wish_id'");
+        $wish_row = mysqli_fetch_assoc($wish_res);
+        $wish_prod_id = explode(",",$wish_row['wishlist_prod_id']);
+        $to_remove = array($prod_id);
+        $result = implode(",",array_diff($wish_prod_id, $to_remove));
+        
+        SqlQuery("UPDATE wishlist set wishlist_prod_id='$result' WHERE id = '$wish_id'");
+    }
 
     if(isset($_POST['check_size'])) {
         $prod_size = get_safe_value($_POST['check_size']);
@@ -409,7 +428,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
                 $html .= '
                     <div class="modal-body">
                         <div class="box-cart-modal">
-                            <div class=" col-sm-4 col-xs-12 divide-right">
+                            <div class=" col-sm-4 col-xs-4 divide-right">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col-6 text-center">
                                             <img src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
@@ -417,7 +436,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-8 col-xs-12">
+                            <div class="col-sm-8 col-xs-8">
                                 <div class="cart-info">
                                     <div class="pb-1">
                                         <span class="product-name"><a href="">'.$row['product_name'].'</a></span>
@@ -465,7 +484,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
                 $html .= '
                     <div class="modal-body">
                         <div class="box-cart-modal">
-                            <div class=" col-sm-4 col-xs-12 divide-right">
+                            <div class=" col-sm-4 col-xs-2 divide-right">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col-6 text-center">
                                             <img src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
@@ -473,7 +492,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-8 col-xs-12">
+                            <div class="col-sm-8 col-xs-10">
                                 <div class="cart-info">
                                     <div class="pb-1">
                                         <span class="product-name"><a href="">'.$ProductDetails['product_name'].'</a></span>
@@ -966,17 +985,17 @@ function onChangeFunction(value, id, prod_id) {
         data: {
             value: value,
             id: id,
-            prod_id:prod_id
+            prod_id: prod_id
         },
         success: (res) => {
             var json_arr = $.parseJSON(res);
-            
-            if(json_arr.status == 'success') {
+
+            if (json_arr.status == 'success') {
                 getCartDetails();
                 $("#product" + id).html("₹ " + json_arr.message)
             }
 
-            if(json_arr.status == 'error') {
+            if (json_arr.status == 'error') {
                 swal("No Data", json_arr.message, 'error');
             }
         }
@@ -996,12 +1015,12 @@ function onChangeFunctionNoLogin(value, id, size, curr_price) {
         },
         success: (res) => {
             var json_arr = $.parseJSON(res);
-            if(json_arr.status == 'success') {
+            if (json_arr.status == 'success') {
                 getCartDetails();
                 $("#product" + id + "" + size + " strong").html("₹ " + json_arr.message)
             }
 
-            if(json_arr.status == 'error') {
+            if (json_arr.status == 'error') {
                 swal("No Data", json_arr.message, 'error');
             }
 
@@ -1158,19 +1177,19 @@ elseif (isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['quick
             <div class="images-container">
                 <div class="product-cover product-img-slick">
                     <?php
-                            $ProductImageById = ProductImageById($prod_id);
-                            array_unshift($ProductImageById,"");
-                            unset($ProductImageById[0]);
-                            foreach ($ProductImageById as $key => $value) {
-                                ?>
+                                $ProductImageById = ProductImageById($prod_id);
+                                array_unshift($ProductImageById,"");
+                                unset($ProductImageById[0]);
+                                foreach ($ProductImageById as $key => $value) {
+                                    ?>
 
                     <img class="images-zoom" data-zoom-image="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
                         data-src="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
                         data-zoom="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
                         src="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>" style="width:100%">
                     <?php
-                        }
-                    ?>
+                            }
+                        ?>
                 </div>
 
 
@@ -1178,8 +1197,8 @@ elseif (isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['quick
                 <div id="rb_gallery" class="product-img-slick">
 
                     <?php
-                            foreach ($ProductImageById as $key => $value) {
-                                ?>
+                                foreach ($ProductImageById as $key => $value) {
+                                    ?>
                     <a class="thumb-container" href="javascript:void(0)"
                         data-image="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
                         data-zoom-image="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>">
@@ -1187,8 +1206,8 @@ elseif (isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['quick
                             src="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>" />
                     </a>
                     <?php 
-                            }
-                            ?>
+                                }
+                                ?>
 
                 </div>
 
@@ -1268,31 +1287,31 @@ elseif (isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['quick
                         <span class="control-label">Size</span>
                         <ul id="group_3">
                             <?php
-                                    $ProductSizes = $ProductDetails['product_size'];
-                                    
-                                    $sizeExtract = explode(',', $ProductSizes);
-                                    if(empty($ProductSizes)){
+                                        $ProductSizes = $ProductDetails['product_size'];
+                                        
+                                        $sizeExtract = explode(',', $ProductSizes);
+                                        if(empty($ProductSizes)){
 
-                                    }else{
-                                        foreach ($sizeExtract as $key => $value) {
-                                            // Hitting Check at inital Size 
-                                            if ($key == 0) {
-                                                $checked = "checked='checked'";
-                                            }else {
-                                                $checked = '';
+                                        }else{
+                                            foreach ($sizeExtract as $key => $value) {
+                                                // Hitting Check at inital Size 
+                                                if ($key == 0) {
+                                                    $checked = "checked='checked'";
+                                                }else {
+                                                    $checked = '';
+                                                }
+                                                    ?>
+                            <li class="input-container float-xs-left instock">
+                                <label>
+                                    <input class="input-radio" type="radio" name="check_sizes" value="<?= $value ?>"
+                                        title="<?= $value ?>" required <?= $checked ?>>
+                                    <span class="radio-label"><?= $value ?></span>
+                                </label>
+                            </li>
+                            <?php
+                                                }
                                             }
-                                                ?>
-                                            <li class="input-container float-xs-left instock">
-                                                <label>
-                                                    <input class="input-radio" type="radio" name="check_sizes" value="<?= $value ?>"
-                                                        title="<?= $value ?>" required <?= $checked ?>>
-                                                    <span class="radio-label"><?= $value ?></span>
-                                                </label>
-                                            </li>
-                                            <?php
-                                            }
-                                        }
-                                                ?>
+                                                    ?>
                         </ul>
                     </div>
                 </div>
@@ -1331,46 +1350,46 @@ elseif (isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['quick
             <div class="compare-wishlist-button">
                 <div class="rb-wishlist">
                     <div class="dropdown rb-wishlist-dropdown">
-                
-                    <button class="rb-wishlist-button rb-btn-product show-list btn-product btn rb_added"
+
+                        <button class="rb-wishlist-button rb-btn-product show-list btn-product btn rb_added"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-id-wishlist="9"
                             data-id-product="4" data-id-product-attribute="16">
                             <span class="rb-wishlist-content">
                                 <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
                                 <span class="icon-title">Add to Wishlist</span>
                             </span>
-                    </button>
-                    <div class="dropdown-menu rb-list-wishlist rb-list-wishlist-4">
-                    <?php
-                        $WishlistData = WishlistData($user['id']);
-                        
-                        foreach($WishlistData as $key => $val){
-                            $ProductSizes = $ProductDetails['product_size'];
-                            $sizes = explode(",", $ProductSizes);
+                        </button>
+                        <div class="dropdown-menu rb-list-wishlist rb-list-wishlist-4">
+                            <?php
+                            $WishlistData = WishlistData($user['id']);
                             
-                            // Convert Product from string to array 
-                            $productFromWishlist = explode(",", $val['wishlist_prod_id']);
-                            
-                            if (in_array($ProductDetails['id'], $productFromWishlist)) {
-                                $icon = 'fa fa-check';
-                                $css_wish_id = 'color:green;pointer-events:none';
-                            }else{
-                                $icon = 'icon-btn-product icon-wishlist icon-Icon_Wishlist';
-                                $css_wish_id = '';
-                            }
-                        ?>
-                
-                        
+                            foreach($WishlistData as $key => $val){
+                                $ProductSizes = $ProductDetails['product_size'];
+                                $sizes = explode(",", $ProductSizes);
+                                
+                                // Convert Product from string to array 
+                                $productFromWishlist = explode(",", $val['wishlist_prod_id']);
+                                
+                                if (in_array($ProductDetails['id'], $productFromWishlist)) {
+                                    $icon = 'fa fa-check';
+                                    $css_wish_id = 'color:green;pointer-events:none';
+                                }else{
+                                    $icon = 'icon-btn-product icon-wishlist icon-Icon_Wishlist';
+                                    $css_wish_id = '';
+                                }
+                            ?>
+
+
                             <a href="javascript:void(0)"
-                                onclick = "AddtoWishList('<?= $val['id'] ?>', '<?= $ProductDetails['id'] ?>', '<?= $sizes['0'] ?>')"
-                                class="rb-wishlist-link dropdown-item list-group-item list-group-item-action wishlist-item rb_added<?= $val['id'].'_'.$ProductDetails['id'] ?> " 
-                                title="Remove from Wishlist" style= "<?= $css_wish_id ?>"> 
+                                onclick="AddtoWishList('<?= $val['id'] ?>', '<?= $ProductDetails['id'] ?>', '<?= $sizes['0'] ?>')"
+                                class="rb-wishlist-link dropdown-item list-group-item list-group-item-action wishlist-item rb_added<?= $val['id'].'_'.$ProductDetails['id'] ?> "
+                                title="Remove from Wishlist" style="<?= $css_wish_id ?>">
                                 <i class="<?= $icon ?>"></i>
                                 <?= $val['wishlist_name'] ?>
                             </a>
-                        <?php
-                        }
-                        ?>
+                            <?php
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -1454,131 +1473,131 @@ elseif (isset($_POST['show_wishlist'])) {
             $res = mysqli_query($con, $SQL);
             
             ?>
-        <div class="rb-list-wishlist">
-            <table class="table table-striped">
-                <thead class="wishlist-table-head">
-                    <tr>
-                        <th>Name</th>
-                        <th>Quantity</th>
-                        <th class="wishlist-datecreate-head">Created</th>
-                        <th>View Link</th>
-                        <th>Default</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
+    <div class="rb-list-wishlist">
+        <table class="table table-striped">
+            <thead class="wishlist-table-head">
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th class="wishlist-datecreate-head">Created</th>
+                    <th>View Link</th>
+                    <th>Default</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
 
-                <tbody>
+            <tbody>
 
-                    <?php
-                            if (mysqli_num_rows($res) > 0) {
-                                while ($row = mysqli_fetch_assoc($res)) {
-                                    $products = explode(",",  $row['wishlist_prod_id']);
-                                    if(empty($products['0'])){
-                                        $count = 0;
-                                    }else{
-                                        $count = count($products);
-                                    }
+                <?php
+                                if (mysqli_num_rows($res) > 0) {
+                                    while ($row = mysqli_fetch_assoc($res)) {
+                                        $products = explode(",",  $row['wishlist_prod_id']);
+                                        if(empty($products['0'])){
+                                            $count = 0;
+                                        }else{
+                                            $count = count($products);
+                                        }
 
-                                    if($row['default_id'] == 1) {
-                                        $checked = 'checked="checked" disabled';
-                                        $message = 'Default Wishlist Cannot be deleted';
-                                    }else{
-                                        $checked = ' ';
-                                        $message = '<a class="delete-wishlist" href="javascript:void(0)" onclick="DeleteWishlist('.$row['id'].')" title="Delete"><i class="material-icons">&#xE872;</i></a>';
-                                    }
+                                        if($row['default_id'] == 1) {
+                                            $checked = 'checked="checked" disabled';
+                                            $message = 'Default Wishlist Cannot be deleted';
+                                        }else{
+                                            $checked = ' ';
+                                            $message = '<a class="delete-wishlist" href="javascript:void(0)" onclick="DeleteWishlist('.$row['id'].')" title="Delete"><i class="material-icons">&#xE872;</i></a>';
+                                        }
+                                ?>
+
+                <tr>
+                    <td>
+                        <!-- begin /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
+                        <div class="cssload-container rb-ajax-loading">
+                            <div class="cssload-double-torus"></div>
+                        </div>
+                        <!-- end /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
+                        <a href="javascript:void(0)" class="view-wishlist-product" data-name-wishlist="My wishlist"><i
+                                class="material-icons">&#xE8EF;</i><?= $row['wishlist_name'] ?></a>
+                    </td>
+
+                    <td class="wishlist-numberproduct wishlist-numberproduct-5">
+                        <?=  $count   ?>
+                    </td>
+
+                    <td class="wishlist-datecreate"><?= date("d M, Y h:i A", strtotime($row['added_on'])) ?></td>
+
+                    <td>
+                        <a class="view-wishlist" target="_blank"
+                            href="<?= FRONT_SITE_PATH."wishlist?viewList=".$row['id']."" ?>" title="View">View</a>
+                    </td>
+
+                    <td>
+                        <label class="form-check-label">
+                            <input class="default-wishlist form-check-input" <?= $checked ?>
+                                onclick="DefaultWishlist('<?= $row['id'] ?>')" type="checkbox">
+                        </label>
+
+                    </td>
+
+                    <td>
+                        <?= $message ?>
+                    </td>
+                </tr>
+
+
+
+                <?php
+                        }
+                    }
                             ?>
 
-                    <tr>
-                        <td>
-                            <!-- begin /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
-                            <div class="cssload-container rb-ajax-loading">
-                                <div class="cssload-double-torus"></div>
-                            </div>
-                            <!-- end /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
-                            <a href="javascript:void(0)" class="view-wishlist-product" data-name-wishlist="My wishlist"><i
-                                    class="material-icons">&#xE8EF;</i><?= $row['wishlist_name'] ?></a>
-                        </td>
-
-                        <td class="wishlist-numberproduct wishlist-numberproduct-5">
-                            <?=  $count   ?>
-                        </td>
-
-                        <td class="wishlist-datecreate"><?= date("d M, Y h:i A", strtotime($row['added_on'])) ?></td>
-
-                        <td>
-                            <a class="view-wishlist" target="_blank"
-                                href="<?= FRONT_SITE_PATH."wishlist?viewList=".$row['id']."" ?>" title="View">View</a>
-                        </td>
-
-                        <td>
-                            <label class="form-check-label">
-                                <input class="default-wishlist form-check-input" <?= $checked ?>
-                                    onclick="DefaultWishlist('<?= $row['id'] ?>')" type="checkbox">
-                            </label>
-
-                        </td>
-
-                        <td>
-                            <?= $message ?>
-                        </td>
-                    </tr>
-
-
-
-                    <?php
-                    }
+                <script>
+                function DefaultWishlist(wish_id) {
+                    var setDefaultWishlist = 'setDefaultWishlist';
+                    $.ajax({
+                        url: 'ajax_call.php',
+                        type: "post",
+                        data: {
+                            setDefaultWishlist: setDefaultWishlist,
+                            wish_id: wish_id
+                        },
+                    })
                 }
-                        ?>
 
-                    <script>
-                    function DefaultWishlist(wish_id) {
-                        var setDefaultWishlist = 'setDefaultWishlist';
-                        $.ajax({
-                            url: 'ajax_call.php',
-                            type: "post",
-                            data: {
-                                setDefaultWishlist: setDefaultWishlist,
-                                wish_id: wish_id
-                            },
-                        })
-                    }
+                // Delete Wishlist 
+                function DeleteWishlist(wish_id) {
+                    var DeleteWishlist = 'DeleteWishlist';
+                    swal({
+                        title: "Are you sure?",
+                        icon: "warning",
+                        buttons: [
+                            'No, cancel it!',
+                            'Yes, I am sure!'
+                        ],
+                        dangerMode: true,
+                    }).then(function(isConfirm) {
+                        if (isConfirm) {
+                            $.ajax({
+                                url: 'ajax_call.php',
+                                type: "post",
+                                data: {
+                                    DeleteWishlist: DeleteWishlist,
+                                    wish_id: wish_id
+                                },
+                                success: (res) => {
+                                    swal("Deleted", "Your Wishlist Deleted Successfully", "success");
 
-                    // Delete Wishlist 
-                    function DeleteWishlist(wish_id) {
-                        var DeleteWishlist = 'DeleteWishlist';
-                        swal({
-                            title: "Are you sure?",
-                            icon: "warning",
-                            buttons: [
-                                'No, cancel it!',
-                                'Yes, I am sure!'
-                            ],
-                            dangerMode: true,
-                        }).then(function(isConfirm) {
-                            if (isConfirm) {
-                                $.ajax({
-                                    url: 'ajax_call.php',
-                                    type: "post",
-                                    data: {
-                                        DeleteWishlist: DeleteWishlist,
-                                        wish_id: wish_id
-                                    },
-                                    success: (res) => {
-                                        swal("Deleted", "Your Wishlist Deleted Successfully", "success");
+                                }
+                            })
+                        }
+                    });
 
-                                    }
-                                })
-                            }
-                        });
+                }
+                </script>
+            </tbody>
+        </table>
+    </div>
 
-                    }
-                    </script>
-                </tbody>
-            </table>
-        </div>
-
-        <?php
-    }
+    <?php
+        }
 
 }
 
@@ -1781,7 +1800,9 @@ elseif (isset($_POST['pincodeOfAddressToGetCityState']) ) {
         $arr['state']=$data->PostOffice['0']->State;
         $address_comple = '';
         foreach ($data->PostOffice as $key => $value) {
-            $address_comple .= '<option value="'.$value->Name.'">'.$value->Name.'</option>';
+            if($key == 0) $selected='selected';
+            else $selected = '';
+            $address_comple .= '<option value="'.$value->Name.'" '.$selected.'>'.$value->Name.'</option>';
         }
         $arr['address_complement'] = $address_comple;
         echo json_encode($arr);
@@ -1789,3 +1810,284 @@ elseif (isset($_POST['pincodeOfAddressToGetCityState']) ) {
         echo 'no';
     }
 }
+
+elseif (isset($_POST['shopProductListing'])) {
+    $ProductDetails = ProductDetails("WHERE product_status = 1");
+    foreach ($ProductDetails as $key => $value) {
+        $ProductImageById = ProductImageById($value['id'], 'limit 2');
+        array_unshift($ProductImageById,"");
+        unset($ProductImageById[0]);
+
+        $ProductSizes = $value['product_size'];
+        $sizes = explode(",", $ProductSizes);
+        ?>
+        <div class="product-style4" itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+            <meta itemprop="position" content="0">
+            <article class="js-product-miniature product-miniature col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 col-sp-4"
+                data-id-product="7" data-id-product-attribute="0" itemscope="" itemtype="http://schema.org/Product">
+                <div class="thumbnail-container">
+                    <div class="product-image">
+
+                        <a href="<?= FRONT_SITE_PATH.'product-details?productname='.urlencode($value['product_name']) ?>"
+                            class="thumbnail product-thumbnail">
+                            <img class="img-fluid rb-cover"
+                                src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'] ?>"
+                                alt="<?= $value['product_name'] ?>"
+                                data-full-size-image-url="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'] ?>">
+
+                            <div class="product-hover">
+                                <img class="img-fluid rb-image image-hover"
+                                    src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[2]['product_img'] ?>"
+                                    title="<?= $value['product_name'] ?>" width="600" height="686">
+                            </div>
+
+                        </a>
+
+
+
+                        <ul class="product-flags">
+                        </ul>
+
+
+                        <div class="rb-ajax-loading">
+                            <div class="cssload-container">
+                                <div class="cssload-speeding-wheel"></div>
+                            </div>
+                        </div>
+
+                        <?php
+                                                                                                                if(isset($_SESSION['UID'])) {
+                                                                                                                ?>
+                        <div class="rb-wishlist">
+                            <div class="dropdown rb-wishlist-dropdown ">
+                                <button class="rb-wishlist-button rb-btn-product show-list btn-product btn rb_added"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <span class="rb-wishlist-content">
+                                        <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                                        <span class="icon-title">Add
+                                            to
+                                            Wishlist</span>
+                                    </span>
+                                </button>
+                                <div class="dropdown-menu rb-list-wishlist rb-list-wishlist-4">
+                                    <?php
+                                                                                                                            $WishlistData = WishlistData($user['id']);
+                                                                                                                            
+                                                                                                                            foreach($WishlistData as $key => $val){
+                                                                                                                                
+                                                                                                                                
+                                                                                                                                // Convert Product from string to array 
+                                                                                                                                $productFromWishlist = explode(",", $val['wishlist_prod_id']);
+                                                                                                                                
+                                                                                                                                if (in_array($value['id'], $productFromWishlist)) {
+                                                                                                                                    $icon = 'fa fa-check';
+                                                                                                                                    $css_wish_id = 'color:green;pointer-events:none';
+                                                                                                                                }else{
+                                                                                                                                    $icon = 'icon-btn-product icon-wishlist icon-Icon_Wishlist';
+                                                                                                                                    $css_wish_id = '';
+                                                                                                                                }
+                                                                                                                                ?>
+                                    <a href="javascript:void(0)"
+                                        onclick="AddtoWishList('<?= $val['id'] ?>', '<?= $value['id'] ?>', '<?= $sizes['0'] ?>')"
+                                        class="rb-wishlist-link dropdown-item list-group-item list-group-item-action wishlist-item rb_added<?= $val['id'].'_'.$productdata['id'] ?> "
+                                        title="Remove from Wishlist" style="<?= $css_wish_id ?>">
+                                        <i class="<?= $icon ?>"></i>
+                                        <?= $val['wishlist_name'] ?>
+                                    </a>
+                                    <?php
+                                                                                                                            }
+                                                                                                                        ?>
+
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                                                                                                                }else{
+                                                                                                                    ?>
+                        <div class="rb-wishlist">
+                            <a href="javascript:void(0)" class="no_login_wishlist_2">
+                                <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                            </a>
+                        </div>
+                        <?php
+                                                                                                                }
+                                                                                                            ?>
+
+
+        <div
+                            class="functional-buttons clearfix">
+
+                            <?php
+                            if(RemainingStock($value['id']) == '<span style="color:red">Out of Stock</span>')   {
+                                
+                            }else{
+                                ?>
+                            <div
+                                class="product-add-cart">
+                                <!-- begin /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/rbthemefunction/views/templates/hook/rb-cart.tpl -->
+                                <div
+                                    class="product-add-to-cart-rb">
+
+                                    <div
+                                        class="product-quantity">
+                                        <div
+                                            class="add">
+                                            <button
+                                                class="btn rb-btn-product add-to-cart"
+                                                title="Add to cart"
+                                                onclick="addtoCart('<?= $value['id'] ?>', '<?= $user['id'] ?>', '1',  '<?= $value['product_price'] ?>', '<?= $sizes['0'] ?>')">
+                                                <span
+                                                    class="icon-title">Add
+                                                    To
+                                                    Cart</span>
+                                            </button>
+
+
+                                            <span
+                                                class="product-availability hidden">
+                                            </span>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div
+                                class="product-quickview hidden-sm-down">
+                                <a class="rb-quick-view rb-btn-product"
+                                    href="javascript:void(0)"
+                                    data-link-action="quickview"
+                                    onclick="quickviewaction('<?= $value['id'] ?>')">
+                                    <i
+                                        class="icon-Icon_Quick-view"></i>
+                                    <span
+                                        class="icon-title">Quick
+                                        view</span>
+                                </a>
+                            </div>
+
+                            <div class="product-quick-view"
+                                style="display:none;">
+                                <a class="quick-view rb-btn-product"
+                                    href="#"
+                                    data-link-action="quickview">
+                                    <i
+                                        class="icon-Icon_Quick-view search"></i>
+                                    <span
+                                        class="icon-title">Quick
+                                        view</span>
+                                </a>
+                            </div>
+                            <?php
+                            }
+                            ?>
+
+                        </div>
+
+
+
+
+                    </div>
+
+
+                    <div class="product-meta">
+
+
+                        <h2 class="h3 product-title" itemprop="name"><a
+                                href="<?= FRONT_SITE_PATH.'product-details?productname='.urlencode($value['product_name']) ?>"
+                                itemprop="url"
+                                content="<?= FRONT_SITE_PATH.'product-details?productname='.urlencode($value['product_name']) ?>"><?= $value['product_name'] ?></a></h2>
+
+
+
+                        <div class="product-price-and-shipping">
+
+
+
+                        <span
+                            class="regular-price"
+                            aria-label="Regular price">₹
+                            <?= $value['product_oldPrice'] ?></span>
+
+                        <span class="price"
+                            aria-label="Price">₹
+                            <?= $value['product_price'] ?></span>
+                        </div>
+
+                        <div class="list-buttons clearfix">
+
+                            <div class="product-add-cart">
+
+                                    <div class="product-add-to-cart-rb">
+
+                                        <div class="product-quantity">
+                                            <div class="add">
+                                                <button class="btn rb-btn-product add-to-cart" title="Add to cart"
+                                                    data-button-action="add-to-cart" 
+                                                    onclick="addtoCart('<?= $value['id'] ?>', '<?= $user['id'] ?>', '1',  '<?= $value['product_price'] ?>', '<?= $sizes['0'] ?>')">
+
+                                                    <span class="icon-title">Add To
+                                                        Cart</span>
+                                                </button>
+
+
+                                                <span class="product-availability hidden">
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+
+
+                                        <p class="product-minimal-quantity hidden">
+                                        </p>
+
+                                    </div>
+                            </div>
+
+                        </div>
+
+                        <div class="product-description-short" itemprop="description">
+                            <p><?= $value['product_desc_short'] ?></p>
+                        </div>
+
+                    </div>
+                </div>
+            </article>
+        </div>
+        <?php
+    }
+}
+
+elseif (isset($_POST['addcommentforyourOrder']) && $_POST['addcommentforyourOrder'] && isset($_POST['msgText']) && isset($_POST['order_id']) && $_POST['order_id'])  {
+    $addcommentforyourOrder = get_safe_value($_POST['addcommentforyourOrder']);
+    $msgText = get_safe_value($_POST['msgText']);
+    $order_id = get_safe_value($_POST['order_id']);
+
+    $message_text = '<div class="alert alert-success">
+                        '.trim($msgText).'
+                    </div>';
+    
+    $res = SqlQuery("Select * from payment_details Where Order_Id = '$order_id'");
+    $row = mysqli_fetch_assoc($res);
+
+    $prod_message_array = explode(',PSFASHIONSTORE,',$row['product_message']);
+    array_unshift($prod_message_array,"");
+    unset($prod_message_array[0]);
+
+    $prod_message_array[$addcommentforyourOrder] = $msgText;
+
+    $prod_message_string =  implode(",PSFASHIONSTORE,",$prod_message_array);
+
+
+
+    SqlQuery("UPDATE payment_details SET product_message = '$prod_message_string' WHERE  Order_Id = '$order_id'");
+
+    $arr = array("status"=>'success','prod_num_id'=>$addcommentforyourOrder,'msgText'=>$message_text);
+
+    echo json_encode($arr);
+}
+
+
+
+

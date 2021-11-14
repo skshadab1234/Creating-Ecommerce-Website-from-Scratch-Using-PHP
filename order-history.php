@@ -194,6 +194,16 @@
                                                 $payment_prod_price = explode(',', $row['payment_prod_price']);
                                                 array_unshift($payment_prod_price,"");
                                                 unset($payment_prod_price[0]);
+                                               
+                                                $product_message = explode(",PSFASHIONSTORE,",$row['product_message']);
+                                                array_unshift($product_message,"");
+                                                unset($product_message[0]);
+                                                $message_display = '';
+                                                if(!empty($product_message[$key])){
+                                                    $message_display .= ' <div class="alert alert-success">
+                                                                            '.$product_message[$key].'
+                                                                        </div>';
+                                                }
                                                     ?>
 
                                     <tr>
@@ -205,12 +215,16 @@
                                         <td>
                                             <strong>
                                                 <a>
-                                                
                                                     <?= $Prdrow['product_name'] ?>
                                                 </a>
                                             </strong><br>
+                                            
                                             Size: <?= $product_varient[$key] ?><br><br>
                                             Tracking Id: <a href="<?= FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key - 1].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key - 1] ?></a>
+
+                                            <div id="mesage_display_order_<?= $key ?>">
+                                                <?= $message_display ?>
+                                            </div>
                                         </td>
                                         <td>
                                             <?= $product_qty[$key] ?>
@@ -278,6 +292,16 @@
                                 $payment_prod_price = explode(',', $row['payment_prod_price']);
                                 array_unshift($payment_prod_price,"");
                                 unset($payment_prod_price[0]);
+                                
+                                $product_message = explode(",PSFASHIONSTORE,",$row['product_message']);
+                                array_unshift($product_message,"");
+                                unset($product_message[0]);
+                                $message_display = '';
+                                if(!empty($product_message[$key])){
+                                    $message_display .= ' <div class="alert alert-success">
+                                                            '.$product_message[$key].'
+                                                        </div>';
+                                }
                                     
                         ?>
                         <div class="order-items hidden-md-up box">
@@ -291,6 +315,7 @@
                                         </div>
                                         <div class="name" style="display: flex;justify-content: center;"><?= $Prdrow['product_name'] ?></div>
                                         <div class="ref" style="display: flex;justify-content: center;">Size: <?= $product_varient[$key] ?></div>
+                                        
                                     </div>
                                     <div class="col-sm-7 qty">
                                         <div class="row">
@@ -305,7 +330,14 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                 </div>
+
+                            </div>
+                            Tracking Id: <a href="<?= FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key - 1].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key - 1] ?></a>
+
+                            <div id="mesage_display_ordermobile_<?= $key ?>">
+                                <?= $message_display ?>
                             </div>
                         </div>
                         
@@ -369,9 +401,9 @@
                         </div>
 
                         <section class="order-message-form box">
-                            <form action="https://rubiktheme.com/demo/rb_evo_demo/en/index.php?controller=order-detail"
+                            <form action="" id="addcommentforyourOrder"
                                 method="post">
-
+                            <input type="hidden" name="order_id" value="<?= $orderDetails ?>"> 
                                 <header>
                                     <h3>Add a message</h3>
                                     <p>If you would like to add a comment about your order, please write it in
@@ -383,9 +415,21 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label">Product</label>
                                         <div class="col-md-5">
-                                            <select name="id_product" class="form-control form-control-select">
-                                                <option value="0">-- please choose --</option>
-                                                <option value="8">Cream Square Shirt</option>
+                                        <select name="addcommentforyourOrder" class="form-control form-control-select" required>
+                                            <option value="" disabled selected>-- please choose --</option>
+
+                                        <?php
+                                        foreach ($product_ids as $key => $value) {
+                                            $Prdsql = "SELECT * from product_details where id = '$value'";
+                                            $Prdres = mysqli_query($con , $Prdsql);
+                                            while ($Prdrow = mysqli_fetch_assoc($Prdres)) {
+                                                ?>
+                                                <option value="<?= $key ?>"><?= $Prdrow['product_name'] ?></option>
+                                                <?php
+                                            }
+                                        }
+                                            ?>
+                                                
                                             </select>
                                         </div>
                                     </div>
@@ -393,14 +437,13 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label"></label>
                                         <div class="col-md-9">
-                                            <textarea rows="3" name="msgText" class="form-control"></textarea>
+                                            <textarea rows="3" name="msgText" class="form-control" required></textarea>
                                         </div>
                                     </div>
 
                                 </section>
 
                                 <footer class="form-footer text-sm-center">
-                                    <input type="hidden" name="id_order" value="8">
                                     <button type="submit" name="submitMessage"
                                         class="btn btn-primary form-control-submit">
                                         Send

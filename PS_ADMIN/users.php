@@ -321,7 +321,7 @@
                         extend: 'print',
                         exportOptions: {
                             stripHtml: false,
-                            columns: [1, 2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4, 5]
                             //specify which column, you want to print
 
                         }
@@ -341,9 +341,7 @@
 
 
              $.validator.setDefaults({
-
                     submitHandler: function(form) {
-
                         $.ajax({
                             type: "POST",
                             url: "admin_ajax_call.php",

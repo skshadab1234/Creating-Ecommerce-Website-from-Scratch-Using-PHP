@@ -34,16 +34,20 @@
         $subcategory_active = 'active';
         $menu_open = 'menu-open';
     }
-    else if ($page_url == ADMIN_FRONT_SITE.'users.php' || $page_url = ADMIN_FRONT_SITE.'cart.php') {
+    else if ($page_url == ADMIN_FRONT_SITE.'users.php') {
         $title = SITE_NAME.' - Users';
         $catalog_active = 'active';
         $users_active = 'active';
         $menu_open = 'menu-open';
     }
-
     else if ($page_url == ADMIN_FRONT_SITE.'orders.php') {
         $title = SITE_NAME.' - Orders';
         $order_active = 'active';
+    }
+
+    else if ($page_url == ADMIN_FRONT_SITE.'TrackOrders.php') {
+        $title = SITE_NAME.' - Track';
+        $track_active = 'active';
     }
 
     if(!isset($_SESSION['ADMIN_ID'])) redirect(ADMIN_FRONT_SITE.'login');
@@ -95,6 +99,7 @@
     
     <!-- custom internal css includes  -->
     <style>
+        
         .dark-mode .navbar-dark{
             background-color: #283046;
             border-color: #283046;
@@ -279,6 +284,16 @@
                             </a>
                         </li>
 
+                        
+                        <li class="nav-item">
+                            <a href="orders" class="nav-link <?= $order_active ?>">
+                                <i class="nav-icon fab fa-first-order"></i>
+                                <p>
+                                    Orders
+                                </p>
+                            </a>
+                        </li>
+
                          <li class="nav-item <?= $menu_open ?>">
                             <a href="javascript:void(0)" class="nav-link <?= $catalog_active ?>">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -321,11 +336,12 @@
                             </ul>
                         </li> 
 
+
                         <li class="nav-item">
-                            <a href="orders" class="nav-link <?= $order_active ?>">
-                                <i class="nav-icon fab fa-first-order"></i>
+                            <a href="TrackOrders" class="nav-link <?= $track_active ?>">
+                                <i class="nav-icon fas fa-truck-moving"></i>
                                 <p>
-                                    Orders
+                                    Track Order 
                                 </p>
                             </a>
                         </li>
