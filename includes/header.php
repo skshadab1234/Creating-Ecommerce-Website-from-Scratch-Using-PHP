@@ -50,7 +50,7 @@ if ($page_url == FRONT_SITE_PATH || $page_url == FRONT_SITE_PATH.'index.php') {
    
     if (isset($_SESSION['UID'])) {
         if(isset($_GET['orderDetails'])){
-            $title = 'Detals';  
+            $title = 'Order Details - '.$_GET['orderDetails'];  
         }else{
             $title = $user['firstname'].' '.$user['lastname'].' - Order Hstory';
         }
@@ -110,7 +110,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
     <link rel="icon" type="image/vnd.microsoft.icon" href="<?= FRONT_SITE_PATH ?>logo.png">
     <link rel="shortcut icon" type="image/x-icon" href="<?= FRONT_SITE_PATH ?>logo.png">
 
-    <link rel="stylesheet" href="https://rubiktheme.com/demo/rb_evo_demo/themes/rb_evo/assets/cache/theme-1bc8f531.css"
+    <link rel="stylesheet" href="https://rubiktheme.com/demo/rb_evo_demo/themes/rb_evo/assets/cache/theme-8e39f832.css"
         type="text/css" media="all">
 
     <link rel="stylesheet" href="<?= FRONT_SITE_PATH ?>style/HomePage.css">
@@ -888,12 +888,6 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
         "type": "2",
         "scroll": "1"
     };
-    var text1 = "No Product";
-    var text2 = "You Can Not Delete Default Wishlist";
-    var token = "9e645ea2b011b9302f90d49f848c7122";
-    var url_ajax = "https:\/\/rubiktheme.com\/demo\/rb_evo_demo\/en\/module\/rbthemefunction\/ajax";
-    var url_compare = "https:\/\/rubiktheme.com\/demo\/rb_evo_demo\/en\/compare";
-    var url_wishlist = "https:\/\/rubiktheme.com\/demo\/rb_evo_demo\/en\/wishlist";
     </script>
 
 
@@ -943,8 +937,6 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
 
 
         <header id="header" class="rb-float-header">
-
-
             <div class="rb-header header-v5">
                 <div class="header-desktop hidden-md-down">
                     <div class="header-wrapper" data-sticky_header="0">
@@ -987,12 +979,12 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                             </div>
                                                         </li>
                                                         <li class="rb_menus_li rb_sub_align_full rb_has_sub">
-                                                            <a href="<?= FRONT_SITE_PATH.'product' ?>" style="font-size:16px;">
+                                                            <!-- <a href="<?= FRONT_SITE_PATH.'product' ?>" style="font-size:16px;">
                                                                 <span class="rb_menu_content_title">
                                                                     Product
                                                                     <span class="rb_arrow"></span> </span>
-                                                            </a>
-                                                            <span class="arrow closed"></span>
+                                                            </a> -->
+                                                            <!-- <span class="arrow closed"></span> -->
                                                             <!-- <ul class="rb_columns_ul"
                                                                 style=" width:100%; font-size:14px;">
                                                                 <li class="rb_columns_li column_size_4  rb_has_sub">

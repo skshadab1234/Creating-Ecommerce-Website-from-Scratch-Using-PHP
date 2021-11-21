@@ -23,6 +23,11 @@
     }else{
         $disabled = '';
     }
+
+    // For Rating 
+    $pro_res_modal =SqlQuery("SELECT * FROM product_rating WHERE rate_product_id='".$ProductDetails['id']."' order by id DESC");
+    // fOR Limited Review
+    $pro_res =SqlQuery("SELECT * FROM product_rating WHERE rate_product_id='".$ProductDetails['id']."' order by id DESC limit 5");
     ?>
 <style>
 .has-discount .discount {
@@ -33,6 +38,24 @@
 .has-discount .discount:before {
     border: 13px solid <?=$changeDiscountColor ?>;
     border-right-color: transparent;
+}
+
+#rb_review .modal-header{
+    padding: 30px;
+    text-align: left;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.modal-title{
+    position: absolute;
+    left: 17px;
+}
+
+.modal-header .close{
+    position: absolute;
+    right: 16px
 }
 </style>
 
@@ -60,42 +83,45 @@
 
                     }else{
                         ?>
-                         <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                            <a itemprop="item" href="<?= FRONT_SITE_PATH.'categories?cat_name='.urlencode($ProductDetails['category_name']) ?>">
-                                <span itemprop="name"><?=  $ProductDetails['category_name'] ?></span>
-                            </a>    
-                            <meta itemprop="position" content="2">
-                        </li>
-                        <?php
+                <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <a itemprop="item"
+                        href="<?= FRONT_SITE_PATH.'categories?cat_name='.urlencode($ProductDetails['category_name']) ?>">
+                        <span itemprop="name"><?=  $ProductDetails['category_name'] ?></span>
+                    </a>
+                    <meta itemprop="position" content="2">
+                </li>
+                <?php
                     }
                 ?>
 
                 <?php
                     if ($ProductDetails['product_subCategories'] != '') {
                         ?>
-                         <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                            <a itemprop="item" href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
-                                <span itemprop="name"><?=  $ProductDetails['product_subCategories'] ?></span>
-                            </a>
-                            <meta itemprop="position" content="2">
-                        </li>
+                <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <a itemprop="item"
+                        href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
+                        <span itemprop="name"><?=  $ProductDetails['product_subCategories'] ?></span>
+                    </a>
+                    <meta itemprop="position" content="2">
+                </li>
 
-                        <?php
+                <?php
                     }
                   ?>
 
 
-               
+
                 <?php
                     if ($ProductDetails['product_subCat_Values'] != '') {
                         ?>
-                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                            <a itemprop="item" href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
-                                <span itemprop="name"><?=  $ProductDetails['product_subCat_Values'] ?></span>
-                            </a>
-                            <meta itemprop="position" content="2">
-                        </li>
-                        <?php
+                <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <a itemprop="item"
+                        href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
+                        <span itemprop="name"><?=  $ProductDetails['product_subCat_Values'] ?></span>
+                    </a>
+                    <meta itemprop="position" content="2">
+                </li>
+                <?php
                     }
                 ?>
 
@@ -222,26 +248,32 @@
                                         </span>
                                     </div>
 
+                                    <?php
+                                            $avg_rate_prd = SqlQuery("SELECT AVG(rated_no) as avg_rate FROM product_rating WHERE rate_product_id = '".$ProductDetails['id']."'");
+                                            $avg_row = mysqli_fetch_assoc($avg_rate_prd);
+                                                
+                                            $star_rate = star_rate(number_format($avg_row['avg_rate'],1));
+
+                                            if ($avg_row['avg_rate'] != '') {
+                                                ?>
+                                                <div class="product-quantities mt-1">
+                                                    <label class="label">Average Rating</label>
+                                                    
+                                                    <span data-stock="278"
+                                                        data-allow-oosp="0"><?= $star_rate ?>
+                                                    </span>
+                                                </div>
+                                                <?php
+                                            }
+                                        ?>
+                                    
+
                                 </div>
 
                                 <div id="product-availability">
                                 </div>
 
                             </div>
-
-
-
-
-
-
-                            <div class="product_reviews">
-                                <a class="rb-open-review" href="#rb_li_review">
-                                    <i class="fa fa-pencil-square-o"></i>
-                                    Add Review
-                                </a>
-                            </div>
-
-
 
 
                             <div class="product-information">
@@ -278,9 +310,9 @@
                                                             
                                                         }else{
                                                             ?>
-                                                        <span class="control-label">Size</span>
+                                                    <span class="control-label">Size</span>
 
-                                                            <?php
+                                                    <?php
                                                             $sizeExtract = explode(',', $ProductSizes);
                                                             foreach ($sizeExtract as $key => $value) {
                                                                 // Hitting Check at inital Size 
@@ -290,15 +322,15 @@
                                                                     $checked = '';
                                                                 }
                                                                 ?>
-                                                                <li class="input-container float-xs-left instock">
-                                                                    <label>
-                                                                        <input class="input-radio" type="radio" name="check_sizes"
-                                                                            value="<?= $value ?>" title="<?= $value ?>" required
-                                                                            <?= $checked.' '.$disabled ?>>
-                                                                        <span class="radio-label"><?= $value ?></span>
-                                                                    </label>
-                                                                </li>
-                                                                <?php
+                                                    <li class="input-container float-xs-left instock">
+                                                        <label>
+                                                            <input class="input-radio" type="radio" name="check_sizes"
+                                                                value="<?= $value ?>" title="<?= $value ?>" required
+                                                                <?= $checked.' '.$disabled ?>>
+                                                            <span class="radio-label"><?= $value ?></span>
+                                                        </label>
+                                                    </li>
+                                                    <?php
                                                                 }
                                                             }
 
@@ -559,21 +591,11 @@
                             </a>
                         </li>
 
-
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#extra-0" role="tab"
-                                aria-controls="extra-0">Facebook Comments</a>
-                        </li>
-
                         <li class="nav-item" id="rb_li_review">
                             <a class="nav-link" data-toggle="tab" href="#rb_review" role="tab"
                                 aria-controls="rb_review">
                                 Review
-
-                                <span class="rb-number-review">(0)</span>
-
-
-
+                                <span class="rb-number-review">(<?= mysqli_num_rows($pro_res_modal) ?>)</span>
                             </a>
                         </li>
                     </ul>
@@ -672,102 +694,124 @@
 
                         </div>
 
-
-
-
-
-                        <div class="tab-pane fade in " id="extra-0" role="tabpanel" id="" class="">
-                            <div id="fcbc">
-                                <fb:comments
-                                    href="https://rubiktheme.com/demo/rb_evo_demo/en/women/3-13-the-best-is-yet-to-come-framed-poster.html"
-                                    colorscheme="light" width="100%"></fb:comments>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade in" id="rb_review" role="tabpanel">
-
-
-
-                            <div class="product_reviews_block_tab">
-                                <div class="rb-review-list">
-                                    <p class="alert alert-info">No comment at this time.</p>
-
-                                </div>
-
-                                <div class="rb-new-review-form">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title h2">
-                                            Write a review
-                                        </h4>
+                        <div class="tab-pane fade in "  id="rb_review" role="tabpanel">
+                            <?php
+                              
+                              if (mysqli_num_rows($pro_res) > 0) {
+                                  
+                                  while($pro_row = mysqli_fetch_assoc($pro_res)) {
+                                    $UsersDetails_rate = UsersDetails("WHERE id = '".$pro_row['rate_user_id']."'");
+                                    $UsersDetails_rate = $UsersDetails_rate[0];
+                                    ?>
+                                        <div class="product_reviews_block_tab">
+                                            <div class="rb-review-list">
+                                                <div id="product_reviews_block">
+                                                    <div class="review" itemprop="review" itemscope=""
+                                                        itemtype="https://schema.org/Review">
+                                                        <div class="review-info">
+                                                            <div class="author_image"> <img alt=""
+                                                                    src="<?= USER_PROFILE.$UsersDetails_rate['user_img'] ?>"
+                                                                    class="avatar avatar-60 photo" height="60" width="60"></div>
+                                                            <div class="comment-text">
+                                                                <div class="review_author">
+                                                                    <div class="review_author_infos"> <strong itemprop="author"><?= $UsersDetails_rate['firstname'].' '.$UsersDetails_rate['lastname'] ?></strong>
+                                                                        <meta itemprop="datePublished" content="<?= date("Y-m-d", strtotime($pro_row['rate_added_on']))  ?>"> <em>-
+                                                                            <?= date("D M d, Y  h:i A", strtotime($pro_row['rate_added_on'])) ?></em>
+                                                                    </div>
+                                                                    
+                                                                    <?= star_rate($pro_row['rated_no']) ?>
+                                                                </div>
+                                                                <div class="review-detail mt-2">
+                                                                    <p itemprop="reviewBody"><?= $pro_row['rate_comment'] ?></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                        </div>
+                                    <?php
+                                  }
+                              }
+                             
+                               
+                              else{
+                                  ?>
+                                    <div class="product_reviews_block_tab">
+                                        <div class="rb-review-list">
+                                            <p class="alert alert-info">No comment at this time.</p>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        <ul id="criterions_list">
-                                            <li>
-                                                <label>Quality:</label>
-                                                <div class="star_content">
-                                                    <input class="star not_uniform" type="radio" name="criterion"
-                                                        value="1">
-                                                    <input class="star not_uniform" type="radio" name="criterion"
-                                                        value="2">
-                                                    <input class="star not_uniform" type="radio" name="criterion"
-                                                        value="3">
-                                                    <input class="star not_uniform" type="radio" name="criterion"
-                                                        value="4" checked="checked">
-                                                    <input class="star not_uniform" type="radio" name="criterion"
-                                                        value="5">
-                                                </div>
-                                                <div class="clearfix"></div>
-                                            </li>
-                                        </ul>
+                            <?php
+                              }
 
-                                        <form class="form-new-review" action="" method="POST">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="new_review_title">
-                                                    Title <sup class="required">*</sup>
-                                                </label>
-                                                <input type="text" class="form-control" id="new_review_title"
-                                                    required="" name="new_review_title">
-                                            </div>
+                              if (mysqli_num_rows($pro_res_modal) > 5) {
+                                ?>
+                                  <!-- Button trigger modal -->
+                                  <div class="container  w-100" style="display:flex;justify-content:center">
+                                      <button type="button" class="btn btn-success " data-toggle="modal" data-target="#exampleModal">
+                                          Show more Review
+                                      </button>
+                                  </div>
 
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="new_review_content">
-                                                    Comment <sup class="required">*</sup>
-                                                </label>
-
-                                                <textarea type="text" class="form-control" id="rb_review_content"
-                                                    required="" name="rb_review_content"></textarea>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="form-control-label"><sup>*</sup>
-                                                    Required fields</label>
-                                                <input id="id_product_review" name="id_product_review" type="hidden"
-                                                    value="3" />
-                                            </div>
-
-                                            <!-- begin /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
-                                            <div class="cssload-container rb-ajax-loading">
-                                                <div class="cssload-double-torus"></div>
-                                            </div>
-                                            <!-- end /var/www/html/demo/rb_evo_demo/modules/rbthemefunction/views/templates/rb-ajax-loading.tpl -->
-                                            <button class="btn btn-primary rb-control-submit pull-xs-right"
-                                                type="submit">
-                                                Submit
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
+                                  <!-- Modal -->
+                                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLongTitle">Comments (<?= mysqli_num_rows($pro_res_modal) ?>)</h5>
+                                                  <button  class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <?php
+                                                      
+                                                      while($pro_row_modal = mysqli_fetch_assoc($pro_res_modal)) {
+                                                          ?>
+                                                              <div class="container">
+                                                                  <div class="product_reviews_block_tab">
+                                                                      <div class="rb-review-list">
+                                                                          <div id="product_reviews_block">
+                                                                              <div class="review" itemprop="review" itemscope=""
+                                                                                  itemtype="https://schema.org/Review">
+                                                                                  <div class="review-info">
+                                                                                      <div class="author_image"> <img alt=""
+                                                                                              src="<?= USER_PROFILE.$UsersDetails_rate['user_img'] ?>"
+                                                                                              class="avatar avatar-60 photo" height="60" width="60"></div>
+                                                                                      <div class="comment-text">
+                                                                                          <div class="review_author">
+                                                                                              <div class="review_author_infos"> <strong itemprop="author"><?= $UsersDetails_rate['firstname'].' '.$UsersDetails_rate['lastname'] ?></strong>
+                                                                                                  <meta itemprop="datePublished" content="<?= date("Y-m-d", strtotime($pro_row['rate_added_on']))  ?>"> <em>-
+                                                                                                      <?= date("D M d, Y  h:i A", strtotime($pro_row_modal['rate_added_on'])) ?></em>
+                                                                                              </div>
+                                                                                              <?= star_rate($pro_row_modal['rated_no']) ?>
+                                                                                          </div>
+                                                                                          <div class="review-detail mt-2">
+                                                                                              <p itemprop="reviewBody"><?= $pro_row_modal['rate_comment'] ?></p>
+                                                                                          </div>
+                                                                                      </div>
+                                                                                  </div>
+                                                                              </div>
+                                                                          </div>  
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          <?php
+                                                      }
+                                                  ?>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                <?php
+                            }
+                           ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
 
 
         <!-- begin /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/ps_categoryproducts/views/templates/hook/ps_categoryproducts.tpl -->
@@ -929,8 +973,8 @@
 
 
 
-                                    
-                                <span class="price" aria-label="Price">$12.90</span>
+
+                                    <span class="price" aria-label="Price">$12.90</span>
                                     <div itemprop="offers" itemscope itemtype="http://schema.org/Offer"
                                         class="invisible">
                                         <meta itemprop="priceCurrency" content="USD" />
@@ -1645,15 +1689,15 @@
                                                 $checked = '';
                                             }
                                             ?>
-                                        <li class="input-container float-xs-left instock">
-                                            <label>
-                                                <input class="input-radio" type="radio" data-product-attribute="4"
-                                                    name="check_size" value="<?= $value ?>" title="<?= $value ?>" required
-                                                    <?= $checked.' '.$disabled ?>>
-                                                <span class="radio-label"><?= $value ?></span>
-                                            </label>
-                                        </li>
-                                        <?php
+                                    <li class="input-container float-xs-left instock">
+                                        <label>
+                                            <input class="input-radio" type="radio" data-product-attribute="4"
+                                                name="check_size" value="<?= $value ?>" title="<?= $value ?>" required
+                                                <?= $checked.' '.$disabled ?>>
+                                            <span class="radio-label"><?= $value ?></span>
+                                        </label>
+                                    </li>
+                                    <?php
                                         }
                                     }
                                 ?>

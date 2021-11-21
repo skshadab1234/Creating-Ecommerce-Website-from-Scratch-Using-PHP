@@ -5,59 +5,16 @@
     $active = '';
 
     $page_url =  'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-    if ($page_url == ADMIN_FRONT_SITE || $page_url == ADMIN_FRONT_SITE.'index.php') {
+    if ($page_url == DELIVERY_FRONT_SITE || $page_url == DELIVERY_FRONT_SITE.'index.php') {
       $title = SITE_NAME.' - Dashboard';
       $active = 'active';
-
-    }
-    else if ($page_url == ADMIN_FRONT_SITE.'products.php') {
-        $title = SITE_NAME.' - Prodcts';
-        $catalog_active = 'active';
-        $product_active = 'active';
-        $menu_open = 'menu-open';
-    }
-    else if ($page_url == ADMIN_FRONT_SITE.'brand.php') {
-        $title = SITE_NAME.' - Brand';
-        $brand_active = 'active';
-        $catalog_active = 'active';
-        $menu_open = 'menu-open';
-    }
-    else if ($page_url == ADMIN_FRONT_SITE.'category.php') {
-        $title = SITE_NAME.' - Category';
-        $catalog_active = 'active';
-        $category_active = 'active';
-        $menu_open = 'menu-open';
-    }
-    else if ($page_url == ADMIN_FRONT_SITE.'subcategory.php') {
-        $title = SITE_NAME.' - Sub Category';
-        $catalog_active = 'active';
-        $subcategory_active = 'active';
-        $menu_open = 'menu-open';
-    }
-    else if ($page_url == ADMIN_FRONT_SITE.'users.php') {
-        $title = SITE_NAME.' - Users';
-        $catalog_active = 'active';
-        $users_active = 'active';
-        $menu_open = 'menu-open';
-    }
-    else if ($page_url == ADMIN_FRONT_SITE.'deliveryboy.php') {
-        $title = SITE_NAME.' - Delivery Boy';
-        $catalog_active = 'active';
-        $delivery_active = 'active';
-        $menu_open = 'menu-open';
-    }
-    else if ($page_url == ADMIN_FRONT_SITE.'orders.php') {
-        $title = SITE_NAME.' - Orders';
-        $order_active = 'active';
     }
 
-    else if ($page_url == ADMIN_FRONT_SITE.'TrackOrders.php') {
-        $title = SITE_NAME.' - Track';
-        $track_active = 'active';
+    else if ($page_url == DELIVERY_FRONT_SITE.'my-account.php') {
+        $title = $DELIVERYData['delivery_boy_name'].' - Profile';
     }
-
-
-    if(!isset($_SESSION['ADMIN_ID'])) redirect(ADMIN_FRONT_SITE.'login');
+    
+    if(!isset($_SESSION['DELIVERY_ID'])) redirect(DELIVERY_FRONT_SITE.'login');
     $base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .  $_SERVER['HTTP_HOST'];
     $url = $base_url . $_SERVER["REQUEST_URI"];
     
@@ -102,10 +59,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css" />
 <!-- Dropzone JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
-
     <!-- custom internal css includes  -->
     <style>
-        
+        .user-panel img {
+            height: 39px;
+            width: 40px;
+            object-fit: contain;
+        }
         .dark-mode .navbar-dark{
             background-color: #283046;
             border-color: #283046;
@@ -231,7 +191,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= ADMIN_FRONT_SITE.'logout.php' ?>">
+                    <a class="nav-link" href="<?= DELIVERY_FRONT_SITE.'logout.php' ?>">
                         <i class="fas fa-sign-out-alt"></i>
                     </a>
                 </li>
@@ -242,10 +202,10 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="<?= ADMIN_FRONT_SITE ?>" class="brand-link">
+            <a href="<?= DELIVERY_FRONT_SITE ?>" class="brand-link">
                 <img src="<?= FRONT_SITE_PATH.'logo.png' ?>" alt="<?= SITE_NAME ?>"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light"><?= SITE_NAME ?></span>
+                <span class="brand-text font-weight-light">Delivery Panel</span>
             </a>
 
             <!-- Sidebar -->
@@ -253,11 +213,11 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="<?= $adminImg ?>" class="img-circle elevation-2"
-                            alt="<?= $adminData['admin_full_name'] ?>">
+                        <img src="<?= $adminImg ?>" class="img-circle elevation-2" id="delivery_boy_profile"
+                            alt="<?= $DELIVERYData['delivery_boy_name'] ?>">
                     </div>
                     <div class="info">
-                        <a href="javacript:void(0)" class="d-block"><?= $adminData['admin_full_name'] ?></a>
+                        <a href="<?= DELIVERY_FRONT_SITE.'my-account' ?>" class="d-block" id="delivery_boy_name_link"><?= $DELIVERYData['delivery_boy_name'] ?></a>
                     </div>
                 </div>
 
@@ -290,73 +250,6 @@
                             </a>
                         </li>
 
-                        
-                        <li class="nav-item">
-                            <a href="orders" class="nav-link <?= $order_active ?>">
-                                <i class="nav-icon fab fa-first-order"></i>
-                                <p>
-                                    Orders
-                                </p>
-                            </a>
-                        </li>
-
-                         <li class="nav-item <?= $menu_open ?>">
-                            <a href="javascript:void(0)" class="nav-link <?= $catalog_active ?>">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Catalog
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="<?= urldecode('brand') ?>" class="nav-link <?=  $brand_active ?>">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Brands</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= urldecode('category') ?>" class="nav-link <?=  $category_active ?>">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Category</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= urldecode('subcategory') ?>" class="nav-link <?=  $subcategory_active ?>">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Sub Category</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= urldecode('products') ?>" class="nav-link <?= $product_active ?>">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Products</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= urldecode('users') ?>" class="nav-link <?= $users_active ?>">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Users</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?= urldecode('deliveryboy') ?>" class="nav-link <?= $delivery_active ?>">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Delivery Boy</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li> 
-
-
-                        <li class="nav-item">
-                            <a href="TrackOrders" class="nav-link <?= $track_active ?>">
-                                <i class="nav-icon fas fa-truck-moving"></i>
-                                <p>
-                                    Track Order 
-                                </p>
-                            </a>
-                        </li>
 
                     </ul>
                 </nav>

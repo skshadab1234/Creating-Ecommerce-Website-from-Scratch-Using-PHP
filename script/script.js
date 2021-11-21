@@ -105,6 +105,13 @@ $(document).ready(() => {
 });
 
 
+setInterval(() => {
+    getCartTotal();
+    getCartDetails();
+    ShowAllWishlistData();
+}, 1000);
+
+
 // Getting Cart Total to get real time cart total without refresing the page 
 function getCartTotal() {
     var CARTTOTALDAILY = 'CARTTOTALDAILY'
@@ -122,11 +129,7 @@ function getCartTotal() {
 
 getCartTotal();
 
-setInterval(() => {
-    getCartTotal();
-    getCartDetails();
-    ShowAllWishlistData();
-}, 1000);
+
 
 
 $('input[name=check_size], input[name=check_sizes]').change(function () {
@@ -271,7 +274,11 @@ function addtoCart(prod_id, user_id, qty, prod_price, check_size, type='', wish_
                 $("#blockcart-modal .modal-content .modal-body").html(json_arr.msg);
                 $(".cart-products-count-btn").html(json_arr.Cart_Total);
                 if (type != '') {
-                    $("#removeWishlstProduct_"+prod_id).remove();
+                    $('#removeWishlstProduct_'+prod_id).fadeTo(1000, 0.01, function(){ 
+                        $(this).slideUp(150, function() {
+                            $(this).remove(); 
+                        }); 
+                    });
                 }
             }else{
                 $("#blockcart-modal .modal-content .modal-body").html(json_arr.msg);
@@ -665,45 +672,103 @@ function shopProductListing() {
 }
 shopProductListing();
 
+function autoSizeTextArea(idname) {
+    var text = jQuery(idname).val(),
+    // look for any "\n" occurences
+    matches = text.match(/\n/g),
+    breaks = matches ? matches.length : 2;
+
+    jQuery(idname).attr('rows',breaks + 2);
+}
 
 
 // Add Comment For Your Order 
 $("#addcommentforyourOrder").submit( (e) => {
     e.preventDefault();
-    var form_data = $("#addcommentforyourOrder").serialize();
+    if (!$.trim($('.addcomentfororder').val())) {
+        swal("Add some message",'','error');
+    }else{
+        var form_data = $("#addcommentforyourOrder").serialize();
+        $.ajax({
+            url: 'ajax_call.php',
+            type: 'post',
+            data: form_data,
+            success: (res) => {
+                var data = $.parseJSON(res);
+                $('html, body').animate({
+                    scrollTop: $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).offset().top - 400
+                }, 1000);
+            
+                $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).hide();
+                setTimeout(()=>{
+                    $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).show();
+                    $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).html(data.msgText);
+                }, 1300)
+                
+                autoSizeTextArea("#textareacommentorder_"+data.Order_id);
+            }
+        }); 
+    }
+     
+})
+
+
+// After Delivery Add review 
+$("#product_review_submit").submit( e => {
+    e.preventDefault();
+    var form_data = $("#product_review_submit").serialize();
+    $(".rb-ajax-loading").show();
     $.ajax({
         url: 'ajax_call.php',
         type: 'post',
         data: form_data,
         success: (res) => {
             var data = $.parseJSON(res);
-            if (data.prod_num_id == 1) {
-                var id =  data.prod_num_id;
-            }else{
-                var id = data.prod_num_id - 1;
+
+            if (data.status == 'success') {
+                if (data.rate >= 2.5) {
+                    var color = 'green';
+                }else{
+                    var color = 'red';
+                }
+                setTimeout( () => {
+                    $(".rb-ajax-loading").hide();
+                    $("#rating_system_add").html('<div class="container-fluid mt-2"><header class="page-header"><h1>Thanks for Rating</h1></header><div class="card"><div class="row"><div class="col-sm-10"><p class="text-justify p-2">'+data.message+'</p></div><div class="col-sm-2 " style="display: flex;justify-content: center;align-items: center;padding: 20px"><h1 class="rating_class" style="background: '+color+'" >'+data.rate+'<span class="ml-1"><i class="fa fa-star"></i></span></h1></div></div></div></div>');
+                }, 1000);
             }
-           
-            $('html, body').animate({
-                scrollTop: $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).offset().top - 400
-            }, 1000);
-        
-            $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).hide();
-            setTimeout(()=>{
-                $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).show();
-                $("#mesage_display_order_"+data.prod_num_id+", #mesage_display_ordermobile_"+data.prod_num_id).html(data.msgText);
-            }, 1300)
+
+            if (data.status == 'error') {
+                swal("Already Rateed", '', 'error');
+            }
         }
-    });  
+    });
 })
 
 
+// Download Invoice 
+function DownloadInvoice(ProductOrderId,pid,qty_key,prd_varint_key,payment_prod_price, filename,redirect) {
+    // $("#DownloadInvoiceAtag_"+pid).hide();
+    $.ajax({
+        url: 'Invoices.php',
+        method:'post',
+        data: {
+            ProductOrderId : ProductOrderId,
+            pid : pid,
+            qty_key : qty_key,
+            prd_varint_key : prd_varint_key,
+            payment_prod_price: payment_prod_price,
+            filename  : filename,
+            redirect : redirect
+        },
+        success : (res) => {
+            var data = $.parseJSON(res);
 
-
-
-
-
-
-
+            window.location.href = data.sendto;
+            $("#DownloadInvoiceAtag_"+pid).show();
+        }
+    })
+    
+}
 
 
 

@@ -1071,7 +1071,7 @@ elseif (isset($_POST['value']) && $_POST['value'] > 0 && isset($_POST['id']) && 
         if ($value > $remaining_stock) {
             $arr =array('status' => 'error', 'message' => 'Only, '.$remaining_stock.' items remains');
         }else{
-            $UpdateSql = "Update cart set prod_price = '$to_show_on_web', qty = '$value' where id = '$id'";
+            $UpdateSql = "Update cart set prod_price = '$updated_price', qty = '$value' where id = '$id'";
             mysqli_query($con, $UpdateSql);
             $arr =array('status' => 'success', 'message' => $to_show_on_web);
         }
@@ -1091,7 +1091,7 @@ elseif (isset($_POST['value']) && $_POST['value'] > 0 && isset($_POST['id']) && 
             $arr =array('status' => 'error', 'message' => 'Only, '.$remaining_stock.' items remains');
         }else{
             $_SESSION['cart'][$id.','.$size]['prod_qty'] = $value;
-            $_SESSION['cart'][$id.','.$size]['prod_price'] = $to_show_on_web;
+            $_SESSION['cart'][$id.','.$size]['prod_price'] = $updated_price;
             $arr = array('status' => 'success', 'message' => "$to_show_on_web");
         }
    }
@@ -1744,7 +1744,7 @@ elseif (isset($_POST['id_gender']) && $_POST['id_gender'] != '' && isset($_POST[
        if (password_verify($password, $user["password"])) {
             // Password Correct
             if ($new_password != '') {
-                $password = password_hash($password,PASSWORD_BCRYPT);
+                $password = password_hash($new_password,PASSWORD_BCRYPT);
                 $message = 'Psssword also Changed';
             } else{
                 $password = password_hash($password,PASSWORD_BCRYPT);
@@ -2059,21 +2059,18 @@ elseif (isset($_POST['shopProductListing'])) {
     }
 }
 
-elseif (isset($_POST['addcommentforyourOrder']) && $_POST['addcommentforyourOrder'] && isset($_POST['msgText']) && isset($_POST['order_id']) && $_POST['order_id'])  {
+elseif (isset($_POST['addcommentforyourOrder']) && isset($_POST['msgText']) && isset($_POST['order_id']) && $_POST['order_id'])  {
     $addcommentforyourOrder = get_safe_value($_POST['addcommentforyourOrder']);
     $msgText = get_safe_value($_POST['msgText']);
     $order_id = get_safe_value($_POST['order_id']);
 
-    $message_text = '<div class="alert alert-success">
-                        '.trim($msgText).'
-                    </div>';
+    $converted_text = str_ireplace(array("\r","\n",'\r','\n'),' ', $msgText);
+    $message_text = ' <textarea class="form-control" rows="10" id="textareacommentorder_'.$order_id.'" disabled> '.$converted_text.'</textarea>';
     
     $res = SqlQuery("Select * from payment_details Where Order_Id = '$order_id'");
     $row = mysqli_fetch_assoc($res);
 
     $prod_message_array = explode(',PSFASHIONSTORE,',$row['product_message']);
-    array_unshift($prod_message_array,"");
-    unset($prod_message_array[0]);
 
     $prod_message_array[$addcommentforyourOrder] = $msgText;
 
@@ -2083,10 +2080,73 @@ elseif (isset($_POST['addcommentforyourOrder']) && $_POST['addcommentforyourOrde
 
     SqlQuery("UPDATE payment_details SET product_message = '$prod_message_string' WHERE  Order_Id = '$order_id'");
 
-    $arr = array("status"=>'success','prod_num_id'=>$addcommentforyourOrder,'msgText'=>$message_text);
+    $arr = array("status"=>'success','prod_num_id'=>$addcommentforyourOrder,'msgText'=>$message_text, 'Order_id' =>$order_id);
 
     echo json_encode($arr);
 }
+
+// Add Review for Delivered Product 
+elseif (isset($_POST['order_id_rate']) && isset($_POST['track_id_rate']) && isset($_POST['product_id_rate']) && isset($_POST['rating']) && isset($_POST['rb_review_content'])) {
+    $order_id_rate = get_safe_value($_POST['order_id_rate']);
+    $track_id_rate = get_safe_value($_POST['track_id_rate']);
+    $product_id_rate = get_safe_value($_POST['product_id_rate']);
+    $rated = get_safe_value($_POST['rating']);
+    $rb_review_content = get_safe_value($_POST['rb_review_content']);
+    $user_id = $user['id'];
+    $date = date("Y-m-d H:i:s");
+    $status = '1';
+
+    $rate_res = SqlQuery("SELECT * FROM product_rating WHERE Order_ID = '$order_id_rate' && Track_id='$track_id_rate'");
+
+    if (mysqli_num_rows($rate_res) > 0) {
+        $arr = array("status"=>"error");    
+    }else{
+        SqlQuery("INSERT into  product_rating (
+            rate_product_id	,
+            rate_comment,
+            rated_no,
+            rate_user_id,
+            rate_added_on,
+            rate_status,
+            Order_ID,
+            Track_id
+        ) 
+        VALUES(
+            '$product_id_rate',
+            '$rb_review_content',
+            '$rated',
+            '$user_id',
+            '$date',
+            '$status',
+            '$order_id_rate',
+            '$track_id_rate'
+        )");
+        $arr = array("status"=>"success", "rate"=> $rated, "message" =>$rb_review_content);    
+    }
+    
+        echo json_encode($arr);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,11 +1,13 @@
 <?php
 require 'includes/session.php';
 //upload.php
-if (!is_dir(SERVER_IMAGE_PRODUCT.slugify($_SESSION['product_name']))) {
-    mkdir(SERVER_IMAGE_PRODUCT.slugify($_SESSION['product_name']), 0777, true);
+if (isset($_SESSION['product_name'])) {
+    if (!is_dir(SERVER_IMAGE_PRODUCT.slugify($_SESSION['product_name']))) {
+        mkdir(SERVER_IMAGE_PRODUCT.slugify($_SESSION['product_name']), 0777, true);
+    }
+    $ProductDetails = ProductDetails("WHERE product_name = '".$_SESSION['product_name']."'");
+    $folder_name = SERVER_IMAGE_PRODUCT.slugify($_SESSION['product_name']).'/';
 }
-$ProductDetails = ProductDetails("WHERE product_name = '".$_SESSION['product_name']."'");
-$folder_name = SERVER_IMAGE_PRODUCT.slugify($_SESSION['product_name']).'/';
 if(!empty($_FILES))
 {
     for ($i=0; $i < count($_FILES['file']['name']); $i++) { 

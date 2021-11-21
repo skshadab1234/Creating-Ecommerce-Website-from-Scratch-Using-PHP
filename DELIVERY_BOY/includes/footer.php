@@ -20,7 +20,6 @@
 
 
 <input type="hidden" id="date" value="<?= $date ?>">
-<input type="hidden" id="Adming_front_side" value="<?= ADMIN_FRONT_SITE ?>">
 <!-- Main Footer -->
 <footer class="main-footer">
     <!-- To the right -->
@@ -77,7 +76,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
 <script src="https://www.jqueryscript.net/demo/Bootstrap-4-Tag-Input-Plugin-jQuery/tagsinput.js"></script>
 <!-- Custom Script  -->
-<script src="<?= ADMIN_FRONT_SITE.'admin_assets/js/script.js' ?>"></script>
+<script src="<?= DELIVERY_FRONT_SITE.'admin_assets/js/script.js' ?>"></script>
 </body>
 
 </html>

@@ -108,6 +108,15 @@
                                                 $product_qty = explode(',', $row['product_qty']);
                                                 array_unshift($product_qty,"");
                                                 unset($product_qty[0]);
+
+                                                
+                                                $payment_prod_price = explode(',', $row['payment_prod_price']);
+                                                array_unshift($payment_prod_price,"");
+                                                unset($payment_prod_price[0]);
+
+                                                $estimate_delivery_date = explode(',', $row['estimate_delivery_date']);
+                                                array_unshift($estimate_delivery_date,"");
+                                                unset($estimate_delivery_date[0]);
                                                     
                                                     ?>
 
@@ -120,16 +129,17 @@
                                             </div>
                                             <div class="col-sm-4 col-xs-9 details">
                                                 <span><?= $Prdrow['product_name']." (Size: ".$product_varient[$key].")" ?></span>
-
+                                                <br>
+                                                <p><strong>Estimated Delivery: </strong><?= date("D M d, Y", strtotime($estimate_delivery_date[$key])) ?></p>
                                             </div>
                                             <div class="col-sm-6 col-xs-12 qty">
                                                 <div class="row">
                                                     <div class="col-xs-4 text-sm-center text-xs-left">₹
-                                                        <?= $Prdrow['product_price'] ?>
+                                                        <?= $payment_prod_price[$key] ?>
                                                     </div>
                                                     <div class="col-xs-4 text-sm-center"><?= $product_qty[$key] ?></div>
                                                     <div class="col-xs-4 text-sm-center text-xs-right bold">
-                                                        ₹ <?= $product_qty[$key] * $Prdrow['product_price'] ?></div>
+                                                        ₹ <?= $product_qty[$key] * $payment_prod_price[$key] ?></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -191,14 +201,7 @@
                                     <h3 class="h3 card-title">Order details:</h3>
                                     <ul>
                                         <li>Order reference: <?= $row['fingerprint'] ?></li>
-                                        <li>Payment method: Payments by Stripe</li>
-                                        <li>
-                                            Shipping method: My carrier<br>
-                                            <em>Delivery next day!
-                                                <?php
-                                                echo date("d-m-Y h:i A", strtotime("+1 day", strtotime($row['created'])));
-                                            ?></em>
-                                        </li>
+                                        <li>Payment method: Stripe</li>
                                         <li>Receipt : <a href="<?= $row['receipt_url'] ?>" download target="_blank">View
                                                 Receipt From Stripe</a></li>
                                         <li><a class="btn btn-primary float-right" href="<?= FRONT_SITE_PATH ?>download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download Invoice</a></li>

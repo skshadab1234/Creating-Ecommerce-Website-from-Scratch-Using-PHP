@@ -14,8 +14,6 @@
         <section id="content">
             <div class="row">
                 <div class="cart-grid-body col-xs-12 col-lg-8">
-
-
                     <section id="checkout-personal-information-step"
                         class="checkout-step -reachable -complete -clickable">
                         <h1 class="step-title h3">
@@ -288,9 +286,6 @@
 
                             <div id="payment-confirmation">
                                 <div class="ps-shown-by-js">
-                                    <button type="submit" class="btn btn-primary center-block" id='place_order'>
-                                        Place order
-                                    </button>
                                     <?php
                                         $uid = $user['id'];
                                         $sql = "SELECT *, cart.id as cid FROM `cart` left join product_details on cart.product_id = product_details.id where cart.user_id = '$uid'";
@@ -313,7 +308,7 @@
                                         
                                     ?>
 
-                                    <div id="PayWithStripe" style='display:none'>
+                                    <div id="PayWithStripe" >
                                         <form action="submit.php" method="post">
                                             <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                                                 data-key="<?php echo $publishableKey?>"
@@ -327,8 +322,6 @@
                                         </form>
                                     </div>
 
-                                </div>
-                                <div class="ps-hidden-by-js" style="display: none;">
                                 </div>
                             </div>
 
@@ -472,17 +465,5 @@
 </section>
 
 <?php
-    require 'includes/footer.php';
-  ?>
-
-<script>
-$('input[name=payment-option]').click(function() {
-    if (this.id == "stripe_pay") {
-        $("#PayWithStripe").show();
-        $("#place_order").hide();
-    } else {
-        $("#PayWithStripe").hide();
-        $("#place_order").show();
-    }
-});
-</script>
+require 'includes/footer.php';
+?>

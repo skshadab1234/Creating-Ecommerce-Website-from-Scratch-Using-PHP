@@ -14,14 +14,22 @@ define('SERVER_USER_PROFILE',SERVER_IMAGE.'Ecomm/media/users_img/');
 define('FRONT_SITE_IMAGE_PRODUCT',FRONT_SITE_PATH.'media/product_img/');
 define('SERVER_IMAGE_PRODUCT',SERVER_IMAGE.'Ecomm/media/product_img/');
 
-
 define('FRONT_SITE_IMAGE_BRAND',FRONT_SITE_PATH.'media/Brand/');
 define('SERVER_IMAGE_BRAND',SERVER_IMAGE.'Ecomm/media/Brand/');
 
 define('INVOICE_SAVED_FILE',FRONT_SITE_PATH.'UserInvoice/');
+
 // For Admin 
 define('ADMIN_FRONT_SITE',FRONT_SITE_PATH.'PS_ADMIN/');
-
+define('SERVER_ADMIN',SERVER_IMAGE.'PS_ADMIN/');
 
 define('ADMIN_PROFILE',ADMIN_FRONT_SITE.'media/admin_profile/');
 define('SERVER_ADMIN_PROFILE',SERVER_IMAGE.'media/admin_profile/');
+
+
+// For Deliverys 
+define('DELIVERY_FRONT_SITE',FRONT_SITE_PATH.'DELIVERY_BOY/');
+
+
+define('DELIVERY_PROFILE',DELIVERY_FRONT_SITE.'media/delivery_boy_profile/');
+define('SERVER_DELIVERY_PROFILE',SERVER_IMAGE.'EComm/DELIVERY_BOY/media/delivery_boy_profile/');

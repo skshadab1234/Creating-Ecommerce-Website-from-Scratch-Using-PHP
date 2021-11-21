@@ -1,3 +1,4 @@
+var ADMIN_FRONT_SITE = $("#Adming_front_side").val();
 $(document).ready( () => {
     $("#Admin_Login_Form").submit( (e) => {
         e.preventDefault();
@@ -69,6 +70,17 @@ function DashboardData(date) {
                 $("#product_total").html(json.product_html);
                 $("#users_html").html(json.users_html);
                 $("#revenue_html").html(json.revenue_html);
+                $(".datatable_order_date").html(json.datatable_order_date)
+                // $("#today_order_date").html(json.today_orders_total);
+                $("#dailyNews").dataTable().fnDestroy()
+
+                $('#total_order_table').DataTable( {
+                        "destroy": true,
+                        "responsive": true,
+                        "autoWidth": false,
+                        "lengthMenu": [[5, 10, 25, 50, -1], [ 5, 10, 25, 50, "All"]],
+                        'ajax' : ADMIN_FRONT_SITE+'json/data.json',
+                } );
             }
         })
     }
@@ -466,14 +478,111 @@ $("#brand_data_form").submit((e)=> {
 });
 
 
+// Key up GetStateCity
+function GetStateCity() {
+    var zip = $("#postal_code");
+
+    if(zip.val().length > 5){
+        jQuery.ajax({
+            url:'../ajax_call.php',
+            type:'post',
+            data:'pincodeOfAddressToGetCityState='+zip.val(),
+            success:function(data){
+                    
+                if(data=='no'){
+                    alert('Wrong Pincode');
+                    jQuery('#city_address').val('');
+                    jQuery('#state_address').val('');
+                    $("#delivery_boy_landmark").html('<option value=""  disabled>--please choose--</option>');
+                }else{
+                    var getData=$.parseJSON(data);
+                    jQuery('#city_address, #city_for_db').val(getData.city);
+                    jQuery('#state_address, #state_for_db').val(getData.state);
+                    $("#delivery_boy_landmark").html('<option value=""  disabled>--please choose--</option>');
+                    $("#delivery_boy_landmark").append(getData.address_complement);
+                }
+            }
+        });
+    }
+}
 
 
+function getDeliveryBoyForAssigning(orderTrackId) {
+    $.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:"OrderTrackId="+orderTrackId,
+        success:function(data){
+            var res = $.parseJSON(data);
+            if (res.status == 'success') {
+                $("#listofdeliveryBoy_"+orderTrackId).html('<option value=""  selected disabled>--please choose--</option>');
+                $("#listofdeliveryBoy_"+orderTrackId).append(res.list);
+            }
+            else if (res.status == 'error') {
+                $("#listofdeliveryBoy_"+orderTrackId).html('<option value=""  selected disabled>--please choose--</option>');
+                // $('.modal').removeClass('show');
 
+                swal(res.message,'',res.status);
 
+            }
+        }
+    })
+}
 
+function SubmitAssignedDelivery(orderTrackId) {
+    var SubmitAssignedDelivery_id = $("#listofdeliveryBoy_"+orderTrackId).val();
 
+    if (SubmitAssignedDelivery_id == null) {
+        swal("Please Select Delivery Boy",'','error');
+    }else{
+        $.ajax({
+            url:'admin_ajax_call.php',
+            type:'post',
+            data:"SubmitAssignedDelivery_id="+SubmitAssignedDelivery_id+"&orderTrackId="+orderTrackId,
+            success:function(data){
+              $("#dumpAssignedDeliveryData_"+orderTrackId).html(data);
+              $(".modal-backdrop").remove();
+              $("body").removeClass("modal-open")
+            }
+        })
+    }
+}
 
+function RemoveAssignedDeliveryBoy(orderTrackid) {
+    $.ajax({
+        url:'admin_ajax_call.php',
+        type:'post',
+        data:"RemoveAssignedDeliveryBoy="+orderTrackid,
+        success:function(data){
+            $("#dumpAssignedDeliveryData_"+orderTrackid).html(data);
+        }
+    })
+}
 
+// Download Invoice 
+function DownloadInvoice(ProductOrderId,pid,qty_key,prd_varint_key,payment_prod_price, filename,redirect) {
+    // $("#DownloadInvoiceAtag_"+pid).hide();
+    $.ajax({
+        url: '../Invoices.php',
+        method:'post',
+        data: {
+            ProductOrderId : ProductOrderId,
+            pid : pid,
+            qty_key : qty_key,
+            prd_varint_key : prd_varint_key,
+            payment_prod_price: payment_prod_price,
+            filename  : filename,
+            redirect : redirect
+        },
+        success : (res) => {
+            var data = $.parseJSON(res);
+
+            window.location.href = data.sendto;
+            $("#DownloadInvoiceAtag_"+pid).show();
+        }
+    })
+    
+}
 
 
 

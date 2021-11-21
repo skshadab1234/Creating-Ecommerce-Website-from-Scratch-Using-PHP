@@ -2,18 +2,18 @@
 require '../includes/constant.inc.php';
 require '../includes/function.inc.php';
 require '../includes/database.inc.php';
-if (isset($_GET['admin_email']) && $_GET['admin_email'] != '' && isset($_GET['adminLoginCode']) && $_GET['adminLoginCode'] > 0) {
-    $email = get_safe_value($_GET['admin_email']);
-    $adminLoginCode = get_safe_value($_GET['adminLoginCode']);
-    $AdminDetails = AdminDetails("WHERE admin_email = '$email'");    
-    if($AdminDetails[0]['adminLoginCode'] != $adminLoginCode){
-        redirect(ADMIN_FRONT_SITE);
+if (isset($_GET['delivery_boy_email']) && $_GET['delivery_boy_email'] != '' && isset($_GET['deliveryLoginCode']) && $_GET['deliveryLoginCode'] > 0) {
+    $email = get_safe_value($_GET['delivery_boy_email']);
+    $deliveryLoginCode = get_safe_value($_GET['deliveryLoginCode']);
+    $DeliveryDetails = DeliveryDetails("WHERE delivery_boy_email = '$email'");    
+    if($DeliveryDetails[0]['deliveryLoginCode'] != $deliveryLoginCode){
+        redirect(DELIVERY_FRONT_SITE);
     }
     
     $rand = rand(11111,99999);
-    mysqli_query($con, "update admins set adminLoginCode='$rand' WHERE admin_email = '$email'");
+    // mysqli_query($con, "update delivery_boy set deliveryLoginCode='$rand' WHERE delivery_boy_email = '$email'");
 }else{
-    redirect(ADMIN_FRONT_SITE);
+    redirect(DELIVERY_FRONT_SITE);
 }
 
 ?>
@@ -45,8 +45,8 @@ if (isset($_GET['admin_email']) && $_GET['admin_email'] != '' && isset($_GET['ad
     </div>
     <div class="card-body">
       <p class="login-box-msg">You are only one step a way from your new password, recover your password now.</p>
-      <form action="" id='update-password-admin' method="post">
-      <input type="hidden" value='<?= $AdminDetails[0]['id'] ?>' name='admin_id_update_pass'> 
+      <form action="" id='update-password-delivery' method="post">
+      <input type="hidden" value='<?= $DeliveryDetails[0]['delivery_boy_id'] ?>' name='delivery_id_update_pass'> 
         <div class="input-group mb-3">
           <input type="password" class="form-control" name='new_password' placeholder="Password">
           <div class="input-group-append">
@@ -72,7 +72,7 @@ if (isset($_GET['admin_email']) && $_GET['admin_email'] != '' && isset($_GET['ad
       </form>
 
       <p class="mt-3 mb-1">
-      <a href="<?= ADMIN_FRONT_SITE.'login' ?>"> Login</a>
+      <a href="<?= DELIVERY_FRONT_SITE.'login' ?>"> Login</a>
       </p>
     </div>
     <!-- /.login-card-body -->
@@ -89,7 +89,7 @@ if (isset($_GET['admin_email']) && $_GET['admin_email'] != '' && isset($_GET['ad
 <script src="https://adminlte.io/themes/v3/dist/js/adminlte.min.js"></script>
 
 <!-- Custom Script  -->
-<script src= "<?= ADMIN_FRONT_SITE.'admin_assets/js/script.js' ?>"></script>
+<script src= "<?= DELIVERY_FRONT_SITE.'admin_assets/js/script.js' ?>"></script>
 
 <!-- Sweet Alert CDN  -->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

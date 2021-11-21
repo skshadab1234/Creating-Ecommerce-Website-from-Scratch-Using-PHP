@@ -48,6 +48,7 @@ if(isset($_POST['stripeToken'])){
 	$qtys = CalculateTotalProductBuying($user['id'])['qtys'];
     $tracking_id = CalculateTotalProductBuying($user['id'])['track_id'];
     $payment_prod_price = CalculateTotalProductBuying($user['id'])['product_price'];
+    $estimate_delivery_date = CalculateTotalProductBuying($user['id'])['estimate_dd'];
 	$delivery_address_id = $_SESSION['id_address_delivery'];
     $getAddressById = getAddressById($delivery_address_id);
     $address_html = '<strong>'.$getAddressById['add_firstname'].' '.$getAddressById['add_lastname'].'</strong><br>
@@ -56,6 +57,8 @@ if(isset($_POST['stripeToken'])){
     '.$getAddressById['city'].', '.$getAddressById['state'].'-'.$getAddressById['postal_code'].'<br>
     '.$getAddressById['country'].' <br>
     '.$getAddressById['phone_number'];
+
+    $pincode = $getAddressById['postal_code'];
 
 	$card_brand  = $data['source']['brand'];
 	$payment_country = $data['source']['country'];
@@ -70,77 +73,8 @@ if(isset($_POST['stripeToken'])){
     $added_on = date("Y-m-d", $data['created']);
 	$card_id = $data['source']['id'];
 
-    // Increasing Total Sold Value in Product Details 
-    $product_ids = explode(",", $product_id);
-    $qty = explode(",", $qtys);
-    foreach($product_ids as $key => $val) {
-        $Sql = "SELECT * FROM product_details WHERE id = '$val'"; // retrieving last stock from this query
-        $resultant = mysqli_query($con, $Sql);
-        $row = mysqli_fetch_assoc($resultant);
-        
-        $total_sold = $row['total_sold'] + $qty[$key];
-        
-        $UpdateSql = "UPDATE product_details set total_sold = '$total_sold' where id = ".$row['id']."";
-        mysqli_query($con,$UpdateSql);
-    }
-
-    $tracking_ids = explode(",", $tracking_id);
-    foreach ($tracking_ids as $key => $value) {
-        $track_user_id = $user['id'];
-        $date= date("Y-m-d h:i:s");
-        SqlQuery("INSERT into ordertrackingdetails(track_id, track_type, product_user_id, Tracking_Name, Tracking_time, Current_Status) 
-                  VALUES('$value', 'Delivery','$track_user_id', 'Ordered,Shipped,Out for Delivery,Delivered', '$date', 'Ordered')");
-    }
-
-
-	$sql = "INSERT into payment_details(
-		Order_Id,
-		payment_user_id,
-		product_id,
-		product_varient,
-		product_qty,
-        payment_prod_price,
-        delivery_charge,
-		delivery_address_id,
-		card_brand,
-		payment_country,
-		payment_id,
-		payment_status,
-		receipt_url,
-		amount_captured,
-		payment_method,
-		fingerprint,
-		currency,
-		created,
-        added_on,
-		card_id,
-        tracking_id) 
-	
-	VALUES(
-		'$order_id',
-		'$uid',
-		'$product_id', 
-		'$product_varient', 
-		'$qtys',
-        '$payment_prod_price',
-        '$shipping_fee',
-		'$address_html',
-		'$card_brand', 
-		'$payment_country',
-		'$payment_id',
-		'$payment_status',
-		'$receipt_url',
-		'$actual_price',
-		'$payment_method',
-		'$fingerprint',
-		'$currency', 
-		'$created',
-        '$added_on',
-		'$card_id',
-        '$tracking_id'
-		)";
-
-	mysqli_query($con, $sql);
+    
+    
 
 	$html = 
     '<!DOCTYPE HTML
@@ -1059,13 +993,94 @@ if(isset($_POST['stripeToken'])){
                 </body>
 
     </html>';
-	    send_email($user['email'], $html, 'Order Confirmation');
-		$DeleteCart = "DELETE FROM cart where user_id = '".$user['id']."'";
-		mysqli_query($con, $DeleteCart);
-		unset($_SESSION['id_address_delivery']);
+	    $response_mail = send_email($user['email'], $html, 'Order Confirmation');
+        if ($response_mail == 'Sended') {
+            // Increasing Total Sold Value in Product Details 
+            $product_ids = explode(",", $product_id);
+            $qty = explode(",", $qtys);
+            $per_product_invoice = '';
+            foreach($product_ids as $key => $val) {
+                $Sql = "SELECT * FROM product_details WHERE id = '$val'"; // retrieving last stock from this query
+                $resultant = mysqli_query($con, $Sql);
+                $row = mysqli_fetch_assoc($resultant);
+                
+                $total_sold = $row['total_sold'] + $qty[$key];
+                
+                $UpdateSql = "UPDATE product_details set total_sold = '$total_sold' where id = ".$row['id']."";
+                mysqli_query($con,$UpdateSql);
+
+                // Adding By Default Comma to explode the invoice and add on index nvoice 
+                $per_product_invoice .= ',';
+               
+            }
+
+            $tracking_ids = explode(",", $tracking_id);
+            foreach ($tracking_ids as $key => $value) {
+                $track_user_id = $user['id'];
+                $date= date("Y-m-d h:i:s");
+                SqlQuery("INSERT into ordertrackingdetails(track_Order_id, track_id, track_product_id, delivery_to_pincode, track_type, product_user_id, Tracking_Name, Tracking_time, Current_Status) 
+                          VALUES('$order_id','$value', '$product_ids[$key]','$pincode', 'Delivery','$track_user_id', 'Ordered,Shipped,Out for Delivery,Delivered', '$date', 'Ordered')");
+            }
+        
+            $sql = "INSERT into payment_details(
+                Order_Id,
+                payment_user_id,
+                product_id,
+                product_varient,
+                product_qty,
+                payment_prod_price,
+                estimate_delivery_date,
+                delivery_charge,
+                delivery_address_id,
+                card_brand,
+                payment_country,
+                payment_id,
+                payment_status,
+                receipt_url,
+                amount_captured,
+                payment_method,
+                fingerprint,
+                currency,
+                created,
+                added_on,
+                card_id,
+                tracking_id,
+                per_product_invoice) 
+            
+            VALUES(
+                '$order_id',
+                '$uid',
+                '$product_id', 
+                '$product_varient', 
+                '$qtys',
+                '$payment_prod_price',
+                '$estimate_delivery_date',
+                '$shipping_fee',
+                '$address_html',
+                '$card_brand', 
+                '$payment_country',
+                '$payment_id',
+                '$payment_status',
+                '$receipt_url',
+                '$actual_price',
+                '$payment_method',
+                '$fingerprint',
+                '$currency', 
+                '$created',
+                '$added_on',
+                '$card_id',
+                '$tracking_id',
+                '$per_product_invoice'
+                )";
+        
+            mysqli_query($con, $sql);
+            $DeleteCart = "DELETE FROM cart where user_id = '".$user['id']."'";
+            mysqli_query($con, $DeleteCart);
+            unset($_SESSION['id_address_delivery']);
+            redirect(FRONT_SITE_PATH.'Invoices?orderId='.$order_id);
+        }
 
         
-        redirect(FRONT_SITE_PATH.'Invoices?orderId='.$order_id);
 
   
     }else{

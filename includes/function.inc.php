@@ -42,7 +42,7 @@ function send_email($email,$html,$subject){
 	$mail->SMTPSecure="tls";
 	$mail->SMTPAuth=true;
 	$mail->Username="ks615044@gmail.com"; // Change My Email
-	$mail->Password="Enter Your Password@";
+	$mail->Password="@addPassword";
 	$mail->setFrom("ks615044@gmail.com"); // Change My Email
 	$mail->addAddress($email);
 	$mail->IsHTML(true);
@@ -164,14 +164,18 @@ function CalculateTotalProductBuying($uid){
 
 		$product_price[] = $row['prod_price'];
 		$product_prices = implode("," , $product_price);
+
+		$estimate_dd[] = randomDate(date("Y-m-d", strtotime("+5 days")), date("Y-m-d",strtotime("+8 days")));
+		$estimate_dds = implode(",",$estimate_dd);
 	}
 
 	$data_arr = array(
-						"product_id" => $datas, 
-						'product_varient' => $product_varient, 
-						'qtys' => $qtys, 
-						'track_id' => $track_ids,
-						"product_price" => $product_prices
+					"product_id" => $datas, 
+					'product_varient' => $product_varient, 
+					'qtys' => $qtys, 
+					'track_id' => $track_ids,
+					"product_price" => $product_prices,
+					'estimate_dd' => $estimate_dds
 					);
 	
 	return $data_arr;
@@ -279,6 +283,21 @@ function AdminDetails($query = ''){
 	return $data;
 }
 
+function DeliveryDetails($query = ''){
+	global $con;
+	$data = array();
+	$res = mysqli_query($con, "SELECT * FROM delivery_boy ".$query);
+
+	if (mysqli_num_rows($res) > 0)  {
+		while ($row = mysqli_fetch_assoc($res)) {
+			$data[] = $row;
+		}
+	}
+
+	return $data;
+}
+
+
 function ExecutedQuery($query){
 	global $con;
 	$data = array();
@@ -306,3 +325,93 @@ function slugify($text)
     $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
     return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $text));
 }
+
+// Find a randomDate between $start_date and $end_date
+function randomDate($start_date, $end_date)
+{
+    // Convert to timetamps
+    $min = strtotime($start_date);
+    $max = strtotime($end_date);
+
+    // Generate random number using above bounds
+    $val = rand($min, $max);
+
+    // Convert back to desired date format
+    return date('Y-m-d H:i:s', $val);
+}
+
+
+function star_rate($number) {
+	$whole = floor($number);      // 1
+	$fraction = $number - $whole; // .25
+	$reamin_emp_star = 5 - ceil($number);
+
+	if ($number <= 2.5) {
+		$color = 'danger';
+	}else{
+		$color = 'warning';
+	}
+	$arr = array();
+	$arr[] = str_repeat('<i class="fa fa-star  text-'.$color.'" aria-hidden="true"></i>', $whole);
+	$arr[] = str_repeat('<i class="fa fa-star-half-o text-'.$color.'" aria-hidden="true"></i>', ceil($fraction));
+	$arr[] = str_repeat('<i class="fa fa-star-o text-'.$color.'" aria-hidden="true"></i>', ceil($reamin_emp_star));
+
+	
+	return join($arr);
+}
+
+function GetAssignedDeliveryForDeliveryBoy($deliveryBoyId) {
+	global $con;
+
+	
+	$delivered= '';
+	$pending= '';	
+
+	$res = SqlQuery("SELECT * FROM ordertrackingdetails WHERE delivery_boy_id = '$deliveryBoyId'");
+	if (mysqli_num_rows($res) > 0) {
+		$row = mysqli_fetch_assoc($res);
+				
+		foreach ($res as $key => $value) {
+		$current_Status = explode(",", $value['Current_Status']);
+
+		
+			if (end($current_Status) == 'Delivered') {
+				$delivered .= $value['track_product_id'].',';
+			}
+
+			if (end($current_Status) != 'Delivered') {
+				$pending .= $value['track_product_id'].',';
+			}
+		}
+		$delivered = substr($delivered, 0, -1);
+		$pending = substr($pending, 0, -1);
+		$arr = array('Delivered' => $delivered, 'Pending' => $pending);
+	}else{
+		$delivered = '0';
+		$pending = '0';
+		$arr = array('Delivered' => $delivered, 'Pending' => $pending);
+	}
+
+	
+	
+	return $arr;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

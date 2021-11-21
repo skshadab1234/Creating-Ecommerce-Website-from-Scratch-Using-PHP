@@ -43,7 +43,7 @@
                     <?php
 
                             if(isset($_GET['orderDetails']) && $_GET['orderDetails'] != '') {
-                                $orderDetails = get_safe_value($_GET['orderDetails']);
+                                    $orderDetails = get_safe_value($_GET['orderDetails']);
 
                                 $Sql = "SELECT * FROM payment_details WHERE Order_Id = '$orderDetails'";
                                 $res = mysqli_query($con, $Sql);
@@ -87,7 +87,7 @@
                                         </strong>
                                     </div>
                                     <div class="col-xs-3 text-xs-right">
-                                            <!-- <a href="#"
+                                        <!-- <a href="#"
                                                 class="button-primary">Reorder</a> -->
                                     </div>
                                     <div class="clearfix"></div>
@@ -152,14 +152,14 @@
                                 <article id="invoice-address" class="box">
                                     <h4>Invoice address </h4>
                                     <address><?= $row['delivery_address_id'] ?></address>
-                                  </article>
+                                </article>
                             </div>
                             <div class="clearfix"></div>
                         </div>
 
 
-                        <div class="box hidden-sm-down">
-                            <table id="order-products" class="table table-bordered">
+                        <div class="box table-responsive">
+                            <table id="order-products" class="table table-bordered ">
                                 <thead class="thead-default">
                                     <tr>
                                         <th width="10%"></th>
@@ -170,47 +170,67 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <?php
+                                    <?php
                                         $product_ids = explode(',', $row['product_id']);
-                                        array_unshift($product_ids,"");
-                                        unset($product_ids[0]);
+                                        
+                                        $track_id = explode(",",$row['tracking_id']);
                                         foreach ($product_ids as $key => $value) {
                                             $Prdsql = "SELECT * from product_details where id = '$value'";
                                             $Prdres = mysqli_query($con , $Prdsql);
-                                            $track_id = explode(",",$row['tracking_id']);
+                                            
+                                            $track_res = SqlQuery("SELECT * FROM ordertrackingdetails WHERE track_id = '$track_id[$key]'");
+                                            $track_row = mysqli_fetch_assoc($track_res);
+                                            $current_status_track = explode(",",$track_row['Current_Status']);
+
+                                            if (in_array("Delivered",$current_status_track)) {
+                                                $rate_res = SqlQuery("SELECT * FROM product_rating where Track_id = '".$track_row['track_id']."'");
+                                                $rate_row = mysqli_fetch_assoc($rate_res);
+                                                
+                                                if ($rate_row != '') {
+                                                    $appen_table_head = '<th>Rated</th>';
+                                                    $star_rate = '<span class="float-right">
+                                                                '.star_rate($rate_row['rated_no']).'               
+                                                              </span>';    
+                                                    $appen_table_body = '<td>'.$star_rate.'</td>';
+                                                }else{
+                                                    $appen_table_head = '<th>Rate Now</th>';
+                                                    // rating_system_add
+                                                    $star_rate = "<a href=".FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key].'&Order_id='.$row['Order_Id'].'#rating_system_add'." target='_blank'>Rate this product</a>";
+                                                    $appen_table_body = '<td>'.$star_rate.'</td>';
+                                                }
+                                                
+                                            }else{
+                                                $star_rate = '';
+                                                $appen_table_head = '';
+                                                $appen_table_body = '';
+                                            }
+                
                                             while ($Prdrow = mysqli_fetch_assoc($Prdres)) {
                                                 $ProductImageById = ProductImageById($Prdrow['id'],"limit 1");
                                                 array_unshift($ProductImageById,"");
                                                 unset($ProductImageById[0]);
 
                                                 $product_varient = explode(',', $row['product_varient']);
-                                                array_unshift($product_varient,"");
-                                                unset($product_varient[0]);
 
                                                 $product_qty = explode(',', $row['product_qty']);
-                                                array_unshift($product_qty,"");
-                                                unset($product_qty[0]);
                                                     
                                                 $payment_prod_price = explode(',', $row['payment_prod_price']);
-                                                array_unshift($payment_prod_price,"");
-                                                unset($payment_prod_price[0]);
                                                
                                                 $product_message = explode(",PSFASHIONSTORE,",$row['product_message']);
-                                                array_unshift($product_message,"");
-                                                unset($product_message[0]);
+
+                                                $estimate_delivery_date = explode(',', $row['estimate_delivery_date']);
+
+                                                $per_product_invoice = explode(',', $row['per_product_invoice']);
+
                                                 $message_display = '';
                                                 if(!empty($product_message[$key])){
-                                                    $message_display .= ' <div class="alert alert-success">
-                                                                            '.$product_message[$key].'
-                                                                        </div>';
+                                                    $message_display .= ' <textarea class="form-control" rows="10" id="textareacommentorder_'.$orderDetails.'" disabled>'.$product_message[$key].'</textarea>';
                                                 }
-                                                    ?>
+                                            ?>
 
                                     <tr>
                                         <td>
-                                        <img class="img-fluid" width="200px" height="200px"
-                                                    src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'] ?>" alt=""
-                                                    title="" itemprop="image">
+                                            <img style="width:5rem;height:100%;max-width: 5rem;" src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'] ?>" >
                                         </td>
                                         <td>
                                             <strong>
@@ -218,19 +238,34 @@
                                                     <?= $Prdrow['product_name'] ?>
                                                 </a>
                                             </strong><br>
-                                            
-                                            Size: <?= $product_varient[$key] ?><br><br>
-                                            Tracking Id: <a href="<?= FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key - 1].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key - 1] ?></a>
 
-                                            <div id="mesage_display_order_<?= $key ?>">
+                                            Size: <?= $product_varient[$key] ?><br>
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <th>Estimate Delivery</th>
+                                                    <th>Tracking Id</th>
+                                                    <th>Current Status</th>
+                                                    <th>Download Invoice</th>
+                                                    <?= $appen_table_head ?>
+                                                </thead>
+                                                <tbody>
+                                                    <td><?= date("D M d, Y", strtotime($estimate_delivery_date[$key])) ?></td>
+                                                    <td><a href="<?= FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key] ?></a></td>
+                                                    <td><span style="color:green"><?= end($current_status_track) ?></td>
+                                                    <th><a href="javascript:void(0)" id='DownloadInvoiceAtag_<?= $Prdrow['id'] ?>' onclick="DownloadInvoice('<?= $orderDetails ?>', '<?= $Prdrow['id'] ?>', '<?= $product_qty[$key] ?>', '<?= $product_varient[$key] ?>', '<?= $payment_prod_price[$key] ?>', '<?= $per_product_invoice[$key] ?>','<?= $page_url ?>')">Download</a></th>
+                                                    <?= $appen_table_body ?>
+                                                </tbody>
+                                            </table>
+                                            <div id="mesage_display_order_<?= $key ?>"
+                                                class="callout callout-success mt-2">
                                                 <?= $message_display ?>
                                             </div>
                                         </td>
                                         <td>
                                             <?= $product_qty[$key] ?>
                                         </td>
-                                        <td class="text-xs-right">₹ <?= $payment_prod_price[$key]  ?></td>
-                                        <td class="text-xs-right">₹ <?= $product_qty[$key] * $payment_prod_price[$key] ?></td>
+                                        <td class="text-xs-right">₹ <?= number_format($payment_prod_price[$key])  ?></td>
+                                        <td class="text-xs-right">₹ <?= number_format($product_qty[$key] * $payment_prod_price[$key]) ?></td>
                                     </tr>
 
                                     <?php
@@ -262,103 +297,13 @@
                                         ?>
                                         <td><?= $shipping_fee ?></td>
                                     </tr>
-                                    
+
                                     <tr class="text-xs-right line-total">
                                         <td colspan="4">Total</td>
                                         <td>₹ <?= $row['amount_captured'] ?></td>
                                     </tr>
                                 </tfoot>
                             </table>
-                        </div>
-
-
-                        <?php
-                          foreach ($product_ids as $key => $value) {
-                            $Prdsql = "SELECT * from product_details where id = '$value'";
-                            $Prdres = mysqli_query($con , $Prdsql);
-                            while ($Prdrow = mysqli_fetch_assoc($Prdres)) {
-                                $ProductImageById = ProductImageById($Prdrow['id'],"limit 1");
-                                array_unshift($ProductImageById,"");
-                                unset($ProductImageById[0]);
-
-                                $product_varient = explode(',', $row['product_varient']);
-                                array_unshift($product_varient,"");
-                                unset($product_varient[0]);
-
-                                $product_qty = explode(',', $row['product_qty']);
-                                array_unshift($product_qty,"");
-                                unset($product_qty[0]);
-
-                                $payment_prod_price = explode(',', $row['payment_prod_price']);
-                                array_unshift($payment_prod_price,"");
-                                unset($payment_prod_price[0]);
-                                
-                                $product_message = explode(",PSFASHIONSTORE,",$row['product_message']);
-                                array_unshift($product_message,"");
-                                unset($product_message[0]);
-                                $message_display = '';
-                                if(!empty($product_message[$key])){
-                                    $message_display .= ' <div class="alert alert-success">
-                                                            '.$product_message[$key].'
-                                                        </div>';
-                                }
-                                    
-                        ?>
-                        <div class="order-items hidden-md-up box">
-                            <div class="order-item">
-                                <div class="row">
-                                    <div class="col-sm-5 desc">
-                                        <div style="display: flex;justify-content: center;">
-                                        <img class="img-fluid" width="50px" height="50px"
-                                                    src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'] ?>" alt=""
-                                                    title="" itemprop="image">
-                                        </div>
-                                        <div class="name" style="display: flex;justify-content: center;"><?= $Prdrow['product_name'] ?></div>
-                                        <div class="ref" style="display: flex;justify-content: center;">Size: <?= $product_varient[$key] ?></div>
-                                        
-                                    </div>
-                                    <div class="col-sm-7 qty">
-                                        <div class="row">
-                                            <div class="col-xs-4 text-sm-left text-xs-left">
-                                                ₹ <?= $payment_prod_price[$key] ?>
-                                            </div>
-                                            <div class="col-xs-4">
-                                                <?= $product_qty[$key] ?>
-                                            </div>
-                                            <div class="col-xs-4 text-xs-right">
-                                                ₹ <?= $product_qty[$key] * $payment_prod_price[$key] ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-
-                            </div>
-                            Tracking Id: <a href="<?= FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key - 1].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key - 1] ?></a>
-
-                            <div id="mesage_display_ordermobile_<?= $key ?>">
-                                <?= $message_display ?>
-                            </div>
-                        </div>
-                        
-                        <?php
-                                }
-                            }
-                        ?>
-                        <div class="order-totals hidden-md-up box">
-                            <div class="order-total row">
-                                <div class="col-xs-8"><strong>Subtotal</strong></div>
-                                <div class="col-xs-4 text-xs-right"><?= "₹ ".$subtotal ?></div>
-                            </div>
-                            <div class="order-total row">
-                                <div class="col-xs-8"><strong>Shipping and handling</strong></div>
-                                <div class="col-xs-4 text-xs-right"><?= $shipping_fee ?></div>
-                            </div>
-                            
-                            <div class="order-total row">
-                                <div class="col-xs-8"><strong>Total</strong></div>
-                                <div class="col-xs-4 text-xs-right">₹ <?= $row['amount_captured'] ?></div>
-                            </div>
                         </div>
 
                         <div class="box">
@@ -375,7 +320,7 @@
                                         <td><?= date("d-m-Y", strtotime("+1 day", strtotime($row['created']))); ?></td>
                                         <td>My carrier</td>
                                         <td><?= $shipping_fee ?></td>
-                                        
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -383,12 +328,13 @@
                                 <div class="shipping-line">
                                     <ul>
                                         <li>
-                                            <strong>Date</strong> <?=  date("d-m-Y", strtotime("+1 day", strtotime($row['created']))); ?>
+                                            <strong>Date</strong>
+                                            <?=  date("d-m-Y", strtotime("+1 day", strtotime($row['created']))); ?>
                                         </li>
                                         <li>
                                             <strong>Carrier</strong> My carrier
                                         </li>
-                                        
+
                                         <li>
                                             <strong>Shipping cost</strong> <?= $shipping_fee ?>
                                         </li>
@@ -401,35 +347,56 @@
                         </div>
 
                         <section class="order-message-form box">
-                            <form action="" id="addcommentforyourOrder"
-                                method="post">
-                            <input type="hidden" name="order_id" value="<?= $orderDetails ?>"> 
+                            <?php
+
+                                
+                            ?>
+                            <form action="" id="addcommentforyourOrder" method="post">
+                                <input type="hidden" name="order_id" value="<?= $orderDetails ?>">
                                 <header>
                                     <h3>Add a message</h3>
                                     <p>If you would like to add a comment about your order, please write it in
-                                        the field below.</p>
+                                        the field below before your product get Shipped</p>
                                 </header>
 
                                 <section class="form-fields">
-
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label">Product</label>
                                         <div class="col-md-5">
-                                        <select name="addcommentforyourOrder" class="form-control form-control-select" required>
-                                            <option value="" disabled selected>-- please choose --</option>
-
-                                        <?php
-                                        foreach ($product_ids as $key => $value) {
-                                            $Prdsql = "SELECT * from product_details where id = '$value'";
-                                            $Prdres = mysqli_query($con , $Prdsql);
-                                            while ($Prdrow = mysqli_fetch_assoc($Prdres)) {
-                                                ?>
-                                                <option value="<?= $key ?>"><?= $Prdrow['product_name'] ?></option>
+                                            <select name="addcommentforyourOrder" class="form-control form-control-select" required>
+                                                <option value="" disabled selected>-- please choose --</option>
                                                 <?php
-                                            }
-                                        }
+                                                $product_id_comment =explode(",", $row['product_id']);
+                                                foreach ($product_id_comment as $key => $value) {
+                                                    $Prdsql = "SELECT * from product_details where id = '$value'";
+                                                    $Prdres = mysqli_query($con , $Prdsql);
+                                                    $product_varient = explode(',', $row['product_varient']);
+                                                   
+                                                    $track_res = SqlQuery("SELECT * FROM ordertrackingdetails WHERE track_id = '$track_id[$key]'");
+                                                    $track_row = mysqli_fetch_assoc($track_res);
+
+                                                    $current_status = explode(",",$track_row['Current_Status']);
+                                                    if (in_array("Shipped",$current_status)) {
+                                                        $selected = 'disabled';
+                                                        $message = '- Product '.end($current_status);
+                                                        $color_opt = 'red';
+                                                    }else{
+                                                        $selected = '';
+                                                        $message = '';
+                                                        $color_opt = '';
+                                                    }
+
+                                                    foreach($Prdres as $prd_key => $Prdrow) {
+                                                        
+                                                            ?>
+                                                            <option style="color:<?= $color_opt ?>" value="<?= $key ?>" <?= $selected ?>><?= $Prdrow['product_name'].' - ('.$product_varient[$key].')'.' '.$message ?>
+                                                            </option>
+                                                            <?php
+                                                        
+                                                    }
+                                                 }
                                             ?>
-                                                
+
                                             </select>
                                         </div>
                                     </div>
@@ -437,7 +404,8 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label"></label>
                                         <div class="col-md-9">
-                                            <textarea rows="3" name="msgText" class="form-control" required></textarea>
+                                            <textarea rows="3" name="msgText" class="form-control addcomentfororder"
+                                                required></textarea>
                                         </div>
                                     </div>
 
@@ -492,7 +460,7 @@
                                                 while ($row = mysqli_fetch_assoc($res)) {
                                                     ?>
                                 <tr>
-                                    <th scope="row"><?= $row['Order_Id'] ?></th>
+                                    <th scope="row"><?= $row['Order_Id'].' - ('.count(explode(",",$row['product_id'])).' items)' ?></th>
                                     <td><?= date("d M,Y h:i:s A", strtotime($row['created'])) ?></td>
                                     <td class="text-xs-right">₹ <?= $row['amount_captured'] ?></td>
                                     <td class="hidden-md-down">By Card</td>
@@ -513,14 +481,15 @@
                                         </span>
                                     </td>
                                     <td class="text-sm-center hidden-md-down">
-                                        <a href="download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download</a>
+                                        <a
+                                            href="download?filename=<?= $row['invoice_file'] ?>&filepath=UserInvoice/<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download</a>
                                     </td>
                                     <td class="text-sm-center order-actions">
                                         <a href="<?= FRONT_SITE_PATH.'order-history?orderDetails='.$row['Order_Id'] ?>"
                                             data-link-action="view-order-details">
                                             Details
                                         </a>
-                                       
+
                                     </td>
                                 </tr>
                                 <?php
@@ -531,49 +500,45 @@
                             </tbody>
                         </table>
 
-                        <div class="orders hidden-md-up">
+                        <div class="orders hidden-md-up mt-2">
                             <div class="order">
                                 <div class="row">
                                     <?php
                                      $uid = $user['id'];
-                                     $Sql = "SELECT * FROM payment_details where payment_user_id = '$uid'";
+                                     $Sql = "SELECT * FROM payment_details where payment_user_id = '$uid'  order by id desc";
                                      $res = mysqli_query($con, $Sql);
                                                                
                                                             
                                          while ($row = mysqli_fetch_assoc($res)) {
                                             if($row['payment_status'] == 'succeeded') {
                                                 // Done 
-                                                $text = 'Success';
+                                                $text = '<i class="fa fa-check-circle text-success" aria-hidden="true"></i>';
                                                 $color = 'green';
                                             }else{
                                                 // Error 
-                                                $text = 'Error';
+                                                $text = '<i class="fa fa-times-circle text-danger"  aria-hidden="true"></i>';
                                                 $color = 'red';
                                             }
                                             ?>
-                                    <div class="col-xs-10">
+                                    <div class="col-xs-8 mt-2">
                                         <a href="<?= FRONT_SITE_PATH.'order-history?orderDetails='.$row['Order_Id'] ?>">
-                                            <h3><?= $row['Order_Id'] ?></h3>
+                                            <h3><?= $row['Order_Id'].' - ('.count(explode(",",$row['product_id'])).' items Ordered)' ?></h3>
                                         </a>
-                                        <div class="date"><?= date("d-m-Y", strtotime($row['created'])) ?></div>
+                                        <div class="date"><?= date("D M d, Y h:i A", strtotime($row['created'])) ?></div>
                                         <div class="total">₹ <?= $row['amount_captured'] ?></div>
-                                        <div class="status" style='height: 51px;margin-top: 10px;'>
-                                            <span class="label label-pill bright"
-                                                style="background-color:<?= $color ?>;background-color: green;padding: 10px;color: #fff;">
-                                                <?= $text ?>
-                                            </span>
-                                        </div>
+                                        
                                     </div>
-                                    <div class="col-xs-2 text-xs-right">
+                                    <div class="col-xs-4 mt-2 text-xs-right">
                                         <div>
                                             <a href="<?= FRONT_SITE_PATH.'order-history?orderDetails='.$row['Order_Id'] ?>"
                                                 data-link-action="view-order-details" title="Details">
-                                                <i class="material-icons"></i> 
+                                                <i class="material-icons"></i>
                                             </a>
                                             <a href="download?filename=<?= $row['invoice_file'] ?>&redirect=<?= $url ?>"
                                                 data-link-action="view-order-details" title="Download Invoice">
-                                                <i class="fa fa-download"></i> 
+                                                <i class="fa fa-download"></i>
                                             </a>
+                                            <a href="javacript:void(0)" title="Payment Status"><?= $text ?></a>
                                         </div>
                                         <div>
                                             <!-- <a href="https://rubiktheme.com/demo/rb_evo_demo/en/order?submitReorder=&amp;id_order=8"
@@ -582,6 +547,7 @@
                                             </a> -->
                                         </div>
                                     </div>
+
                                     <?php
                                          }
                                     ?>

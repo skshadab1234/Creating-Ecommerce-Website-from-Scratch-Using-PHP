@@ -16,6 +16,7 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
         $payment_prod_price = explode(",",$row['payment_prod_price']);
         $product_qty = explode(",",$row['product_qty']);
         $product_size_array = explode(",",$row['product_varient']);
+        $estimate_delivery_date_array = explode(",",$row['estimate_delivery_date']);
 
         $product_id = $product_id_array[$track_id_index]; // Here we get product id using tracking id Index
         $product_id_res = SqlQuery("SELECT * FROM product_details WHERE id = '$product_id'");
@@ -24,10 +25,6 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
             $ProductImageById = ProductImageById($product_row['id'],"limit 1");
             array_unshift($ProductImageById,"");
             unset($ProductImageById[0]);
-
-            
-            
-            
         }else{
             redirect(FRONT_SITE_PATH);
         }
@@ -143,6 +140,58 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
     .StepProgress strong {
         display: block;
     }
+
+    @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+    /****** Style Star Rating Widget *****/
+
+    .rating { 
+        width: 100%;
+        border: none;
+    }
+
+    .rating > input { display: none; } 
+    .rating > label:before { 
+    margin: 5px;
+    font-size: 1.25em;
+    font-family: FontAwesome;
+    display: inline-block;
+    content: "\f005";
+    }
+
+    .rating > .half:before { 
+    content: "\f089";
+    position: absolute;
+    }
+
+    .rating > label { 
+    color: #ddd; 
+    float: right; 
+    }
+
+    /***** CSS Magic to Highlight Stars on Hover *****/
+
+    .rating > input:checked ~ label, /* show gold star when clicked */
+    .rating:not(:checked) > label:hover, /* hover current star */
+    .rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+
+    .rating > input:checked + label:hover, /* hover current star when changing rating */
+    .rating > input:checked ~ label:hover,
+    .rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+    .rating > input:checked ~ label:hover ~ label { color: #FFED85;  } 
+
+    .rating_class{
+        text-align: center;
+        background: green;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        font-weight: 900;
+        border-radius: 10%;
+        font-size: 18px;
+        padding: 10px;
+    }
 </style>
 
 <section id="wrapper">
@@ -181,7 +230,7 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
                 <section id="main">
                     <header class="page-header">
                         <h1>
-                            <?= $Order_id ?>
+                            <?= $Order_id ?> (Estimate Delivery : <?= date("D M d, Y", strtotime($estimate_delivery_date_array[$track_id_index])) ?>)
                         </h1>
                     </header>
                     <section id="content" class="page-content">
@@ -211,7 +260,7 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
                                                 <?= $product_qty[$track_id_index].' x '.$payment_prod_price[$track_id_index] ?>
                                                 <br>
                                                 Total Price : <strong>₹
-                                                    <?= number_format($payment_prod_price[$track_id_index]) ?></strong>
+                                                    <?= number_format($product_qty[$track_id_index] *  $payment_prod_price[$track_id_index]) ?></strong>
                                             </td>
                                             <td align="center">
                                                 Track id : <?= $track_id ?>
@@ -227,6 +276,7 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
                                                 if (mysqli_num_rows($track_res) > 0) {
                                                     $track_rows = mysqli_fetch_assoc($track_res);
                                                     $Tracking_Name = explode(",",$track_rows['Tracking_Name']);
+                                                    $Tracking_time = explode(",",$track_rows['Tracking_time']);
 
                                                     foreach($track_res as $track_res_key => $track_res_val) {
                                                         ?>
@@ -246,6 +296,7 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
                                                                }else{
                                                                    if (in_array($val,$current_status)) {
                                                                        $class_name= 'is-done';
+                                                                       $val = $val.' - '.date("D M d, Y", strtotime($Tracking_time[$key]));
                                                                    }else{
                                                                        $class_name = '';
                                                                        $val = $val;
@@ -257,13 +308,15 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
                                                                 ?>
                                                                     <li class="StepProgress-item <?= $class_name ?>" >
                                                                         <strong><?= $val ?> </strong>
-                                                                        <div class="mt-1" style="line-height:1px">
+                                                                        <div class="mt-1" style="line-height:10px;" >
+                                                                            
+                                                                            <!-- <p class="text-muted"> Mon Nov 15, 2021 12:20 am</p><p ><strong>Hey Bro How are you</strong></p><p><strong> <i class="fa fa-map-marker"></i> DOMBIVAL EAST</strong></p><hr> -->
                                                                             <?php
                                                                                 if (isset($ordered_message[$key]) ) {
                                                                                     echo $ordered_message[$key];
-                                                                                    
                                                                                 } 
                                                                             ?>
+                                                                            
                                                                         </div>
                                                                     </li>            
                                                                 <?php
@@ -302,9 +355,133 @@ if (isset($_GET['track_id']) && $_GET['track_id'] > 0 && isset($_GET['Order_id']
 
 
                             </div>
-
+                            
                         </div>
+                        
+                        <div id="rating_system_add">
+                            <?php
+                                if (in_array("Delivered",$current_status)) {
+                                    $rate_res = SqlQuery("SELECT * FROM product_rating WHERE Order_ID = '$Order_id' && Track_id='$track_id'");
+                                    if (mysqli_num_rows($rate_res) > 0) {
+                                        // show rated comment
+                                        $rate_row = mysqli_fetch_assoc($rate_res);
+                                        if($rate_row['rated_no'] >= 2.5) {
+                                            $text_color = 'green';
+                                        }else{
+                                            $text_color = 'red';
+                                        }
+                                        ?>
+                                            <div class="container-fluid mt-2">
+                                                <header class="page-header">
+                                                    <h1>
+                                                        Thanks for Rating
+                                                    </h1>
+                                                </header>
+                                                <div class="card">
+                                                    <div class="row">
+                                                        <div class="col-sm-10">
+                                                            <p class="text-justify p-2"><?= $rate_row['rate_comment'] ?></p>
+                                                        </div>
+                                                        <div class="col-sm-2 " style="display: flex;justify-content: center;align-items: center;padding: 20px">
+                                                            <h1 class="rating_class" style="background: <?= $text_color ?>"><?= $rate_row['rated_no'] ?> <span class="ml-1"><i class="fa fa-star "></i></span></h1>
+                                                        </div>
+                                                    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php
+                                    }else{
+                                        // Add a comment
+                                        ?>
+                                        <div class="container-fluid mt-2">
+                                            <header class="page-header">
+                                                <h1>
+                                                    Thanks for Shopping
+                                                </h1>
+                                            </header>
+                                            <div class="product_reviews_block_tab">
+                                                <!-- <div class="rb-review-list">
+                                                    <p class="alert alert-info">No comment at this time.</p>
 
+                                                </div> -->
+
+                                                <div class="rb-new-review-form">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title h2">
+                                                            Write a review
+                                                        </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="" id="product_review_submit" action="" method="POST">
+                                                            <input type="hidden" name="order_id_rate" value="<?= $Order_id ?>">
+                                                            <input type="hidden" name="track_id_rate" value="<?= $track_id ?>">
+                                                            <input type="hidden" name="product_id_rate" value="<?= $product_id ?>">
+            
+                                                            <div class="form-group">
+                                                                <fieldset class="rating">
+                                                                    <input type="radio" id="star5" class="form-control" name="rating" value="5" required/>
+                                                                    <label class = "full" for="star5" title="Awesome - 5 stars"></label>
+
+                                                                    <input type="radio" id="star4half" class="form-control" name="rating" value="4.5" required/>
+                                                                    <label class="half" for="star4half" title="Pretty good - 4.5 stars"></label>
+
+                                                                    <input type="radio" id="star4" class="form-control" name="rating" value="4" required/>
+                                                                    <label class = "full" for="star4" title="Pretty good - 4 stars"></label>
+
+                                                                    <input type="radio" id="star3half" class="form-control" name="rating" value="3.5" required/>
+                                                                    <label class="half" for="star3half" title="Meh - 3.5 stars"></label>
+
+                                                                    <input type="radio" id="star3" class="form-control" name="rating" value="3" required/>
+                                                                    <label class = "full" for="star3" title="Meh - 3 stars"></label>
+
+                                                                    <input type="radio" id="star2half" class="form-control" name="rating" value="2.5" required/>
+                                                                    <label class="half" for="star2half" title="Kinda bad - 2.5 stars"></label>
+
+                                                                    <input type="radio" id="star2"  class="form-control" name="rating" value="2" required/>
+                                                                    <label class = "full" for="star2" title="Kinda bad - 2 stars"></label>
+
+                                                                    <input type="radio" id="star1half" class="form-control" name="rating" value="1.5" required/>
+                                                                    <label class="half" for="star1half" title="Meh - 1.5 stars"></label>
+
+                                                                    <input type="radio" id="star1" class="form-control" name="rating" value="1" required/>
+                                                                    <label class = "full" for="star1" title="Sucks big time - 1 star"></label>
+
+                                                                    <input type="radio" id="starhalf" class="form-control" name="rating" value="0.5" required/>
+                                                                    <label class="half" for="starhalf" title="Sucks big time - 0.5 stars"></label>
+                                                                </fieldset>
+                                                                
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label class="form-control-label" for="new_review_content">
+                                                                    Comment <sup class="required">*</sup>
+                                                                </label>
+
+                                                                <textarea type="text" class="form-control" id="rb_review_content"
+                                                                    required="" name="rb_review_content"></textarea>
+                                                            </div>
+
+                                                            <div class="cssload-container rb-ajax-loading">
+                                                                <div class="cssload-double-torus"></div>
+                                                            </div>
+                                                            <button class="btn btn-primary  pull-xs-right"
+                                                                type="submit">
+                                                                Submit
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                    
+                                    <?php
+                                }
+                            ?>
+                        </div>
+                       
                     </section>
 
                 </section>

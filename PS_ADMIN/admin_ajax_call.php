@@ -2,6 +2,8 @@
 require 'includes/session.php';
 include ('../smtp/PHPMailerAutoload.php');
 
+$page_url =  'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+
 if (isset($_POST['admin_email']) && isset($_POST['admin_password']))
 {
     $admin_email = get_safe_value($_POST['admin_email']);
@@ -137,15 +139,60 @@ elseif (isset($_POST['SelectedDate']))
                                 ' . numtostring($YesterDayRevenueTotal) . '
                                 <i class="' . $YesterDayRevenueTotal_Arrow . '"></i>
                             </span> 
-                        </h3>
+                    </h3>
                         <p>Revenue <span class="text-success">' . numtostring((int)$Total_Revenue['total_earned']) . '</span></p>';
+
+    $today_orders_total = '{
+        "data": [';
+    $payment_details_res = SqlQuery("Select * from payment_details WHERE added_on='$SelectedDate'");
+    $x = 0;
+    $length = mysqli_num_rows($payment_details_res);
+
+    foreach ($payment_details_res as $key => $value) {
+        $x++;
+
+        if($x == $length){
+            $addcomma = ''; 
+        }else{
+            $addcomma = ',';
+        }
+
+        if($value['payment_status'] == 'succeeded') {
+            // Done 
+            $text = 'Success';
+            $color = 'green';
+        }else{
+            // Error 
+            $text = 'Error';
+            $color = 'red';
+        }
+    
+        $today_orders_total .= '[
+            '.json_encode("<a href=".ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].">".$value['Order_Id']."</a>").',
+            "₹ '.$value['amount_captured'].'",
+            "By Card",
+            '.json_encode("<span class='label label-pill bright' style='background-color:".$color." ; padding: 5px 10px'>".$text."</span>").',
+            '.json_encode('<a style="color:#ddd" href='.FRONT_SITE_PATH.'Invoices?orderId='.$value['Order_Id'].'&redirect='.ADMIN_FRONT_SITE.'>Generate</a> / <a href='.FRONT_SITE_PATH.'download?filename='.$value['invoice_file'].'&filepath=UserInvoice/'.$value['invoice_file'].'&redirect='.ADMIN_FRONT_SITE.'" style="color:#ddd">Download</a> / <a href='.ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].'&PrintData=print" style="color:#ddd">Print</a>').'
+            ]'.$addcomma.'';
+
+        }
+    $today_orders_total .= ']
+                            }';
+
+   $f = fopen("json/data.json",'w');
+   fwrite($f,'');
+   fwrite($f,$today_orders_total);
+   fclose($f);
 
     $arr = array(
         'order_html' => $orders_html,
         'product_html' => $product_html,
         'users_html' => $users_html,
-        'revenue_html' => $revenue_html
+        'revenue_html' => $revenue_html,
+        'datatable_order_date' => $output_date
     );
+
+
     echo json_encode($arr);
 
 }
@@ -998,14 +1045,186 @@ elseif (isset($_POST['social_title'])  && $_POST['social_title'] != ''
 }
 
 
+elseif (isset($_POST['user_type']) && isset($_POST['delivery_boy_name']) && isset($_POST['delvery_boy_pincode']) && isset($_POST['delivery_boy_city']) && isset($_POST['delivery_boy_state']) && isset($_POST['delivery_boy_email']) && isset($_POST['delivery_boy_email']) && isset($_POST['delivery_boy_email'])) {
+    $user_type = get_safe_value($_POST['user_type']);
+    $user_id = get_safe_value($_POST['user_id']);
+    $delivery_boy_name = get_safe_value($_POST['delivery_boy_name']);
+    $delivery_boy_email = get_safe_value($_POST['delivery_boy_email']);
+    $delivery_boy_phone = get_safe_value($_POST['delivery_boy_phone']);
+    $delivery_boy_address = get_safe_value($_POST['delivery_boy_address']);
+    $delvery_boy_pincode = get_safe_value($_POST['delvery_boy_pincode']);
+    $delivery_boy_city = get_safe_value($_POST['delivery_boy_city']);
+    $delivery_boy_state = get_safe_value($_POST['delivery_boy_state']);
+    $delivery_boy_landmark = get_safe_value($_POST['delivery_boy_landmark']);
+    $user_status = get_safe_value($_POST['user_status']);
+
+    $res = SqlQuery("SELECT * FROM delivery_boy WHERE delivery_boy_id = '$user_id'");
+    $row = mysqli_fetch_assoc($res);
+    
+   
+    if ($user_type == 'update') {
+        if ($delivery_boy_email != $row['delivery_boy_email']) {
+            // EMAIL ID CHANGED
+            $email_changed = 'Please Confirm Your Mail';
+            if (mysqli_num_rows(SqlQuery("SELECT * FROM delivery_boy WHERE delivery_boy_email = '$delivery_boy_email'")) > 0) {
+                $arr = array("status"=>'error', 'message' => 'Email id exist');
+            }else{
+                SqlQuery("Update delivery_boy set delivery_boy_name='$delivery_boy_name', delivery_boy_email='$delivery_boy_email', delivery_boy_phone='$delivery_boy_phone', delivery_boy_address='$delivery_boy_address', delvery_boy_pincode ='$delvery_boy_pincode', delivery_boy_city='$delivery_boy_city', delivery_boy_state='$delivery_boy_state',delivery_boy_landmark='$delivery_boy_landmark',delivery_boy_verifed='$user_status' WHERE delivery_boy_id = '$user_id'");
+                $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$delivery_boy_email.'&DeliveryLoginCode='.$row['deliveryLoginCode'].'&redirect='.FRONT_SITE_PATH.">Click here to Verify</a>";
+                $emailresp = send_email($delivery_boy_email, $html, 'Email id Changed Confirmation');
+                if ($emailresp == 'Sended')
+                {
+                    $arr = array(
+                        'status' => 'email_change_success',
+                        'message' => 'User Successfully Updated',
+                        'text' => 'Link Sended to ' . $delivery_boy_email
+                    );
+                }
+            }
+        }else{
+            SqlQuery("Update delivery_boy set delivery_boy_name='$delivery_boy_name', delivery_boy_email='$delivery_boy_email', delivery_boy_phone='$delivery_boy_phone', delivery_boy_address='$delivery_boy_address', delvery_boy_pincode ='$delvery_boy_pincode', delivery_boy_city='$delivery_boy_city', delivery_boy_state='$delivery_boy_state',delivery_boy_landmark='$delivery_boy_landmark',delivery_boy_verifed='$user_status' WHERE delivery_boy_id   = '$user_id'");
+            $arr = array("status"=>'success', 'message' => 'User Successfully Updated', 'text' => '');
+        }
+    
+    }else{
+        if (mysqli_num_rows(SqlQuery("SELECT * FROM delivery_boy WHERE delivery_boy_email = '$delivery_boy_email'")) > 0) {
+            $arr = array("status"=>'error', 'message' => 'Email id exist');
+        }else{
+            $date = date('Y-m-d H:i:s');
+            $userloginCode = rand(11111,99999);
+            $password = rand(111111,999999);
+            $password_hash = password_hash($password, PASSWORD_BCRYPT);
+            $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$delivery_boy_email.'&userLoginCode='.$userloginCode.'&redirect='.FRONT_SITE_PATH.">Click here to Verify</a>
+                    <p>Password : ".$password."</p>
+            ";
+            SqlQuery("INSERT into delivery_boy(delivery_boy_name,delivery_boy_email,delivery_boy_phone,delivery_boy_address,delvery_boy_pincode,delivery_boy_city,delivery_boy_landmark,delivery_boy_state,delivery_boy_added_on,delivery_boy_status,deliveryLoginCode, delivery_boy_password)
+                      VALUES('$delivery_boy_name', '$delivery_boy_email', '$delivery_boy_phone', '$delivery_boy_address', '$delvery_boy_pincode', '$delivery_boy_city', '$delivery_boy_landmark', '$delivery_boy_state', '$date', '$user_status', '$userloginCode', '$password_hash')");
+
+            $emailresp = send_email($delivery_boy_email, $html, 'Confirm Your Email');
+            if ($emailresp == 'Sended')
+            {
+                $arr = array(
+                    'status' => 'success',
+                    'message' => 'Account Created Successfully',
+                    'text' => 'Confirmation Mail Sended Successfully to ' . $delivery_boy_email
+                );
+            }
+        }
+    }
+    
+
+    echo json_encode($arr);
+
+}
 
 
+elseif (isset($_POST['OrderTrackId']) && $_POST['OrderTrackId'] != '') {
+    $OrderTrackId = get_safe_value($_POST['OrderTrackId']);
 
+    // Getting Order Delivery Pincode
+    $row = mysqli_fetch_assoc(SqlQuery("SELECT * FROM ordertrackingdetails WHERE id = '$OrderTrackId'"));
+    $delivery_pincode = $row['delivery_to_pincode'];
 
+    // Getting Delivery Boy Pincode
+    $delivery_res = SqlQuery("SELECT * FROM delivery_boy WHERE delvery_boy_pincode = '$delivery_pincode'");
 
+    if (mysqli_num_rows($delivery_res) > 0) {
+        $list = '';
 
+        foreach ($delivery_res as $key => $value) {
+            $list .= "<option value=".$value['delivery_boy_id'].">".$value['delivery_boy_name']."</option>";
+        }
+        $arr = array("status"=>'success', 'list' => $list);
+    }else{
+        
+        $arr = array("status"=>'error', 'message' => 'No Delivery Boy in this city');
+    }
 
+    echo json_encode($arr);
 
+}
+
+elseif (isset($_POST['SubmitAssignedDelivery_id']) && $_POST['SubmitAssignedDelivery_id'] != '' && isset($_POST['orderTrackId']) && $_POST['orderTrackId'] != '') {
+    $SubmitAssignedDelivery_id = get_safe_value($_POST['SubmitAssignedDelivery_id']);
+    $orderTrackId = get_safe_value($_POST['orderTrackId']);
+
+    SqlQuery("UPDATE ordertrackingdetails set delivery_boy_id = '$SubmitAssignedDelivery_id' WHERE id = '$orderTrackId'");
+
+    $res= SqlQuery("SELECT * FROM delivery_boy WHERE delivery_boy_id = '$SubmitAssignedDelivery_id'");
+    $row = mysqli_fetch_assoc($res);
+
+    if ($row['delivery_boy_profile'] != '') {
+        $delivery_image = DELIVERY_PROFILE.$row['delivery_boy_profile'];
+    }else{
+        $delivery_image = 'https://png.pngitem.com/pimgs/s/35-350426_profile-icon-png-default-profile-picture-png-transparent.png';
+    }
+    $html = ' 
+            <table class="table table-bordered table-striped dataTable dtr-inline">
+                <thead>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    <td><img src='.$delivery_image.' style="border-radius:50%;width:50px;height:50px" alt=""></td>
+                    <td>'.$row['delivery_boy_name'].'</td>
+                    <td><a href="javascript:void(0)" onclick="RemoveAssignedDeliveryBoy('.$orderTrackId.')">Remove</a></td>
+                </tbody>
+            </table>';
+
+    echo $html;
+}
+
+elseif (isset($_POST['RemoveAssignedDeliveryBoy']) && $_POST['RemoveAssignedDeliveryBoy'] != '') {
+    $orderTrackid = get_safe_value($_POST['RemoveAssignedDeliveryBoy']);
+    
+    SqlQuery("UPDATE ordertrackingdetails set delivery_boy_id = '' WHERE id = '$orderTrackid'");
+
+    $html = ' <button type="button" class="btn btn-default" onclick="getDeliveryBoyForAssigning('.$orderTrackid.')" data-toggle="modal" data-target="#getDeliveryBoyForAssigning_'.$orderTrackid.'">
+                    Assign Delivery to
+                </button>
+                <div class="modal fade" id="getDeliveryBoyForAssigning_'.$orderTrackid.'"  aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content ">
+                            <div class="modal-header card_box">
+                                <h4 class="modal-title">Assigning this item to </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                                <div class="modal-body text-left card_box" id="hideDiv_NoDeliveryBoy_'.$orderTrackid.'"> 
+                                    <div class="form-group col-md-12">
+                                        <select name="delivery_id" id="listofdeliveryBoy_'.$orderTrackid.'"
+                                            class="form-control select2 select2-hidden-accessible" style="width: 100%;"
+                                            required>
+                                            
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer card_box justify-content-between">
+                                    <button type="button" data-dismiss="modal" onclick="SubmitAssignedDelivery('.$orderTrackid.')" class="btn btn-primary">Save changes</button>
+                                </div>
+                        
+                        </div>
+                        <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                    ';
+                    ?>
+                    <script>
+                         //Initialize Select2 Elements
+                     $('.select2').select2()
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({
+                        theme: 'bootstrap4'
+                    })
+                    </script>
+                    <?php
+    echo $html;                    
+}
 
 
 
