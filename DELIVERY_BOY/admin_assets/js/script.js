@@ -110,3 +110,46 @@ function GetStateCity() {
         });
     }
 }
+
+// creating func to get current tracking status from php function 
+function getCurrentTrackStatus(getCurrentTrackStatus_Response) {
+    $.ajax({
+        url:'delivery_ajax_call.php',
+        type:'post',
+        data: {getCurrentTrackStatus_Response:getCurrentTrackStatus_Response},
+        success:function(data){
+            $("#Track_Status").html(data);
+        }
+    })
+}
+
+// Submit Delivery Status 
+$("#ChangeDeliveryStatus").submit(e=>{
+    e.preventDefault();
+
+    var form_data = $("#ChangeDeliveryStatus").serialize();
+    jQuery.ajax({
+        url:'delivery_ajax_call.php',
+        type:'post',
+        data: form_data,
+        success:function(data){
+            var json = $.parseJSON(data);
+            
+            getCurrentTrackStatus(json.track_id);
+            if (json.status == 'success') {
+                $("#"+json.Status_Name+"_"+json.track_id).prop('disabled', true);
+            }
+            if(json.status == 'delivered') {
+                $("#changeDelivery_Div_Form").remove();
+                swal("Package Delivered to Customer", 'Thanks for Delivering', 'success');
+            }
+            
+            $("#ChangeDeliveryStatus")[0].reset();
+        }
+    });
+})
+
+
+
+
+

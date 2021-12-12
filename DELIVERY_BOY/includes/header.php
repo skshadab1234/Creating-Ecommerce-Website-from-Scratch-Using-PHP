@@ -13,6 +13,10 @@
     else if ($page_url == DELIVERY_FRONT_SITE.'my-account.php') {
         $title = $DELIVERYData['delivery_boy_name'].' - Profile';
     }
+
+    else if ($page_url == DELIVERY_FRONT_SITE.'DeliveryDetails.php') {
+        $title = 'Delivery Details';
+    }
     
     if(!isset($_SESSION['DELIVERY_ID'])) redirect(DELIVERY_FRONT_SITE.'login');
     $base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .  $_SERVER['HTTP_HOST'];
@@ -168,6 +172,10 @@
 
         .dropzone .dz-preview.dz-image-preview {
             background: none;
+        }
+
+        .nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+            background-color: #3f6791!important;
         }
     </style>
 </head>

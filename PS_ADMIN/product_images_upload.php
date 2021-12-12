@@ -41,6 +41,7 @@ elseif (isset($_POST['list_image_files']) && isset($_POST['product_id']) && $_PO
             <div class="contaner" style="display: flex;justify-content: center; margin-top: 10px;">
                 <a href="javascript:void(0)" onclick="delete_prd_images('<?= $prod_img ?>', '<?= $ids ?>')"
                     class="text-danger remove_image">Remove</a>
+                    <input type="hidden" id="ADMIN_FRONT_SITE" value="<?= ADMIN_FRONT_SITE ?>">
             </div>
         </div>
         <?php
@@ -56,9 +57,9 @@ elseif (isset($_POST['list_image_files']) && isset($_POST['product_id']) && $_PO
     
     <script>
     function delete_prd_images(prod_img, pid) {
-
+        var ADMIN_FRONT_SITE = $("#ADMIN_FRONT_SITE").val();
         $.ajax({
-            url: "product_images_upload.php",
+            url: ADMIN_FRONT_SITE+"product_images_upload.php",
             method: "post",
             data: {
                 prod_img: prod_img,

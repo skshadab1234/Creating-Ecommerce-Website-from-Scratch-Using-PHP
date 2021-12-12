@@ -343,3 +343,78 @@ elseif (isset($_POST['boy_name']) && $_POST['boy_name'] != '' && isset($_POST['d
 
        echo json_encode($arr);
 }
+
+elseif (isset($_POST['track_id']) && $_POST['track_id'] != '' && isset($_POST['current_statuss']) && $_POST['current_statuss'] != '' && isset($_POST['track_meesage']) && $_POST['track_meesage'] != '') {
+  $track_id = get_safe_value($_POST['track_id']);
+  $current_statuss = get_safe_value($_POST['current_statuss']);
+  $track_meesage = get_safe_value($_POST['track_meesage']);
+  $location = get_safe_value($_POST['location']);
+
+  if ($location != '') {
+    $final_location = '<p><strong> <i class="fa fa-map-marker"></i> '.$location.'</strong></p>';
+  }else{
+    $final_location = '';
+  }
+
+  $TrackingName_row = ExecutedQuery("SELECT * FROM ordertrackingdetails where track_id = '$track_id'");
+  $TrackingName_row = $TrackingName_row[0];
+  $current_status_db = explode(",",$TrackingName_row['Current_Status']);
+  $Tracking_time = explode(",",$TrackingName_row['Tracking_time']);
+  $TrackDetails = explode(",PS_FASHION_STORE,",$TrackingName_row['Tracking_Details']);
+
+  // Getting Index to put message on selected status 
+  $TrackName = explode(",",$TrackingName_row['Tracking_Name']);
+  $getIndex = array_search($current_statuss,$TrackName);
+  // Converting Track msg to Html format 
+  $html_track_message = '<p class="text-muted"> '.date("D M d, Y h:i A").'</p><p ><strong>'.$track_meesage.'</strong></p>'.$final_location.'<hr>';
+  $TrackDetails[$getIndex] = $TrackDetails[$getIndex].$html_track_message;
+  $TrackDetails_implode = implode(",PS_FASHION_STORE,",$TrackDetails);
+
+  // prx($current_status_db);
+  if (in_array($current_statuss,$current_status_db)) {
+    // do not update time and do not add new Status
+    // only add Track Details
+    SqlQuery("UPDATE ordertrackingdetails SET Tracking_Details='$TrackDetails_implode' WHERE track_id = '$track_id'");
+  }else{
+    // we have to update time,  and add a track details, new status
+    $current_status_db[$getIndex] = $current_statuss;
+    $Tracking_time[$getIndex] = date("Y-m-d H:i:s");
+    $Current_Status_implode = implode(",",$current_status_db);
+    $Tracking_time_implode = implode(",",$Tracking_time);
+    SqlQuery("UPDATE ordertrackingdetails SET Tracking_Details='$TrackDetails_implode', Tracking_time='$Tracking_time_implode',Current_Status='$Current_Status_implode' WHERE track_id = '$track_id'");
+  }
+
+  if($current_statuss == 'Ordered') {
+    $Status_Name = '';
+  }else{
+    $Status_Name = $current_status_db[$getIndex - 1];
+  }
+  if ($current_statuss == 'Delivered') {
+    $arr = array("status" => 'delivered', 'track_id' => $track_id);
+  }else{
+    $arr = array("status" => 'success', 'track_id' => $track_id, 'Status_Name' => $Status_Name);
+  }
+  
+  echo json_encode($arr);
+}
+
+
+elseif (isset($_POST['getCurrentTrackStatus_Response'])) {
+    $track_id = get_safe_value($_POST['getCurrentTrackStatus_Response']);
+    echo OrderTrackStatus($track_id);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

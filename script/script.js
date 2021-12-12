@@ -745,29 +745,36 @@ $("#product_review_submit").submit( e => {
 })
 
 
+
 // Download Invoice 
-function DownloadInvoice(ProductOrderId,pid,qty_key,prd_varint_key,payment_prod_price, filename,redirect) {
-    // $("#DownloadInvoiceAtag_"+pid).hide();
+function DownloadInvoice(ProductOrderId, pid, qty_key, prd_varint_key, payment_prod_price, filename, redirect) {
+    $("#DownloadInvoiceAtag_" +pid+prd_varint_key).hide();
     $.ajax({
-        url: 'Invoices.php',
-        method:'post',
+        url: './Invoices.php',
+        method: 'post',
         data: {
-            ProductOrderId : ProductOrderId,
-            pid : pid,
-            qty_key : qty_key,
-            prd_varint_key : prd_varint_key,
+            ProductOrderId: ProductOrderId,
+            pid: pid,
+            qty_key: qty_key,
+            prd_varint_key: prd_varint_key,
             payment_prod_price: payment_prod_price,
-            filename  : filename,
-            redirect : redirect
+            filename: filename,
+            redirect: redirect
         },
-        success : (res) => {
+        success: (res) => {
             var data = $.parseJSON(res);
 
-            window.location.href = data.sendto;
-            $("#DownloadInvoiceAtag_"+pid).show();
+            $("#DownloadInvoiceAtag_" +pid+prd_varint_key).show();
+
+            swal({
+                title: "Invoice Downloaded Successfully",
+                type: "success"
+            }).then(() => {
+                $("#addInvoiceMessagefromRespone_"+pid+prd_varint_key).html("<a href="+data.filepath+data.filename+" target='_blank'>#"+data.filename+"</a>");   
+            });
         }
     })
-    
+
 }
 
 

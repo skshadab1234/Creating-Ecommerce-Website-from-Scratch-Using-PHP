@@ -193,26 +193,26 @@
                                                     <th class="sorting" tabindex="0" aria-controls="example1"
                                                         rowspan="1" colspan="1"
                                                         aria-label="Browser: activate to sort column ascending"
-                                                        style="">Sr no</th>
+                                                        style="" width="5%">Sr no</th>
                                                     <th class="sorting" tabindex="0" aria-controls="example1"
                                                         rowspan="1" colspan="1"
                                                         aria-label="Browser: activate to sort column ascending"
-                                                        style="">Image</th>
+                                                        style="" width="5%">Image</th>
                                                     <th class="sorting" tabindex="0" aria-controls="example1"
                                                         rowspan="1" colspan="1"
-                                                        aria-label="Platform(s): activate to sort column ascending">
+                                                        aria-label="Platform(s): activate to sort column ascending" width="15%">
                                                         Full Name</th>
                                                     <th class="sorting" tabindex="0" aria-controls="example1"
                                                         rowspan="1" colspan="1"
-                                                        aria-label="CSS grade: activate to sort column ascending">
+                                                        aria-label="CSS grade: activate to sort column ascending" width="20%">
                                                         Email</th>
                                                     <th class="sorting" tabindex="0" aria-controls="example1"
                                                         rowspan="1" colspan="1"
-                                                        aria-label="CSS grade: activate to sort column ascending">
+                                                        aria-label="CSS grade: activate to sort column ascending" width="5%">
                                                         Status</th>
                                                     <th class="sorting" tabindex="0" aria-controls="example1"
                                                         rowspan="1" colspan="1"
-                                                        aria-label="CSS grade: activate to sort column ascending">
+                                                        aria-label="CSS grade: activate to sort column ascending" >
                                                         Tools</th>
                                                 </tr>
                                             </thead>
@@ -222,9 +222,9 @@
                                                    $delivery_boy_res = SqlQuery("SELECT * FROM delivery_boy");
                                                    foreach($delivery_boy_res  as $key => $value) {
                                                        if ($value['delivery_boy_verifed'] == 1) {
-                                                           $user_status = '<p class="text-success">Verified</p>';
+                                                           $user_status = '<p class="text-success">Active</p>';
                                                        }else{
-                                                           $user_status = '<p class="text-danger">Not Verified</p>';
+                                                           $user_status = '<p class="text-danger">Blocked</p>';
                                                        }
                                                       
                                                        if ($value['delivery_boy_profile'] == '') {
@@ -236,7 +236,7 @@
                                                 <tr>
                                                     <td><?= $key+1 ?></td>
                                                     <td><img class="img-reponsive img-fluid" width="80px" height="80px"
-                                                            src="<?= $user_img ?>" alt=""></td>
+                                                            src="<?= $user_img ?>" alt="<?= $value['delivery_boy_name'] ?>"></td>
                                                     </td>
                                                     <td><?= $value['delivery_boy_name'] ?>
                                                     </td>
@@ -253,7 +253,16 @@
                                                    }                 
                                                ?>
                                             </tbody>
-
+                                            <tfoot>
+                                                <tr>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
 
                                     </div>
@@ -286,11 +295,32 @@
                 theme: 'bootstrap4'
             })
 
+            $('#example1 tfoot th:gt(1)').each( function () {
+                var title = $(this).text();
+                $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
+            } );
+
             $("#example1").DataTable({
+                mark: {
+                    diacritics: false
+                },
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every( function () {
+                        var that = this;
+        
+                        $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                            if ( that.search() !== this.value ) {
+                                that
+                                    .search( this.value )
+                                    .draw();
+                            }
+                        } );
+                    } );
+                },
                 buttons: [{
                         extend: 'print',
                         exportOptions: {
@@ -316,12 +346,15 @@
 
              $.validator.setDefaults({
                     submitHandler: function(form) {
+                        $("#submit_user").attr("disabled", true);
+                        $("#submit_user").html('Updating...');
                         $.ajax({
                             type: "POST",
                             url: "admin_ajax_call.php",
                             data: $(form).serialize(),
                             success: function(res) {
-                                console.log(res);
+                                $("#submit_user").attr("disabled", false);
+                                $("#submit_user").html('Submit');
                                 var json = $.parseJSON(res);
                                 if (json.status == 'email_change_success') {
                                     swal(json.message,json.text,'success');

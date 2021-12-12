@@ -31,7 +31,7 @@ if (isset($_GET['orderId']) && $_GET['orderId'] != '') {
         $payment_status = "Not paid";
     }
 
-    
+
     $html = '
         <!DOCTYPE html>
             <html lang="en">
@@ -300,9 +300,12 @@ elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && iss
 
     $filename = basename($_POST['filename']);
     $filepath = "UserInvoice/Per_Product_Invoice/".$filename;
+
 	if(!empty($filename) && file_exists($filepath)){
+        $filepath_gen =  PER_PRODUCT_INVOICE;
+        
         $urltosend = FRONT_SITE_PATH."download?filename=".$filename."&filepath=UserInvoice/Per_Product_Invoice/".$filename.'&redirect='.$redirect;
-        $arr = array('sendto' => $urltosend);
+        $arr = array('sendto' => $urltosend, 'returnto' => $redirect, 'filepath' =>$filepath_gen, 'filename' => $filename);
 	}
 	else{
 		$Sql = "SELECT * FROM payment_details WHERE Order_Id = '$order_id'";
@@ -321,6 +324,7 @@ elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && iss
             $payment_status = "Not paid";
         }
 
+        $rand = rand(1111,9999);
         $html = '
             <!DOCTYPE html>
                 <html lang="en">
@@ -329,7 +333,7 @@ elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && iss
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <link rel="icon" type="image/vnd.microsoft.icon" href="'.FRONT_SITE_PATH.'logo.png">
                     <link rel="shortcut icon" type="image/x-icon" href="'.FRONT_SITE_PATH.'logo.png">
-                    <title>Invoice-P'.$product_id.''.$size.''.$product_qty.'-PS</title>
+                    <title>Invoice-P'.$rand.'-PS</title>
                     <style>
                         body{
                             background-color: #F6F6F6; 
@@ -453,7 +457,7 @@ elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && iss
                         <tbody>
                             <tr>
                                 <td  width="40%">
-                                <h3 class="heading">Invoice No.: #P'.$product_id.''.$size.''.$product_qty.'-PS</h3>
+                                <h3 class="heading">Invoice No.: #P'.$rand.'-PS</h3>
                                 <p class="sub-heading">Order Date: '.date("d M,Y", strtotime($row['created'])).' </p>
                                 <p class="sub-heading">Email Address: '.COMPANY_EMAIL.' </p>
                                 </td>
@@ -536,22 +540,27 @@ elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && iss
         // echo $html;
         $mpdf=new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
-        $file='UserInvoice/Per_Product_Invoice/Invoice-P'.$product_id.''.$size.''.$product_qty.'-PS.pdf';
-        $file_store = 'Invoice-P'.$product_id.''.$size.''.$product_qty.'-PS.pdf';
+        $file='UserInvoice/Per_Product_Invoice/Invoice-P'.$rand.'-PS.pdf';
+        $file_store = 'Invoice-P'.$rand.'-PS.pdf';
         $mpdf->output($file,'F');
         
         $per_product_invoice  = explode(",",$row['per_product_invoice']);
         $p_KEY = explode(",",$row['product_id']);
         $p_key_search = array_search($product_id,$p_KEY);
         
-        $per_product_invoice[$p_key_search] = $file_store.',';
+        $per_product_invoice[$p_key_search] = $file_store;
         
         $per_product_invoice_string = implode(",", $per_product_invoice);
-        // $per_product_invoice_string_substr = substr($per_product_invoice_string,0,-1);
+        
+
+        $per_product_invoice_string_substr = substr($per_product_invoice_string,0,-1);
+        
         mysqli_query($con, "UPDATE payment_details set per_product_invoice='$per_product_invoice_string' WHERE Order_Id='$order_id'");
         
         $urltosend = FRONT_SITE_PATH.'download?filename='.$file_store.'&filepath='.$file.'&redirect='.$redirect;
-        $arr = array('sendto' => $urltosend);
+        $filepath_gen =  PER_PRODUCT_INVOICE;
+        
+        $arr = array('sendto' => $urltosend, 'returnto' => $redirect, 'filepath' =>$filepath_gen, 'filename' => $file_store);
 	}
     echo json_encode($arr);
     

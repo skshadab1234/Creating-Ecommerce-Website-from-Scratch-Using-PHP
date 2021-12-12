@@ -86,7 +86,7 @@
                                     <option selected="selected" disabled>Sub Category</option>
                                    
                                 </select>
-                                <input type="hidden" id="sub_cat_recive_from_Db" value="<?= $category_subcat_id ?>">
+                                <input type="hidden" id="sub_cat_recive_from_Db" value="<?= urlencode($category_subcat_id) ?>">
                             </div>
 
                             <div class="form-group col-md-6">
@@ -242,7 +242,16 @@
                                                    }                 
                                                ?>
                                             </tbody>
-
+                                            <tfoot>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Id</th>
+                                                    <th>Subcat Name</th>
+                                                    <th>Subcat Values</th>
+                                                    <th>Status</th>
+                                                    <th>Tools</th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
 
                                     </div>
@@ -265,12 +274,33 @@
 
         <script>
         $(function() {
+            $('#example1 tfoot th:gt(0)').each( function () {
+                var title = $(this).text();
+                $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
+            } );
 
             $("#example1").DataTable({
+                mark: {
+                    diacritics: false
+                },
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every( function () {
+                        var that = this;
+        
+                        $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                            if ( that.search() !== this.value ) {
+                                that
+                                    .search( this.value )
+                                    .draw();
+                            }
+                        } );
+                    } );
+                },
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
                 "paging": true,

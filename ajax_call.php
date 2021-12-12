@@ -563,7 +563,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
                 array_unshift($ProductImageById,"");
                 unset($ProductImageById[0]);
     
-                $sum += $_SESSION['cart'][$key]['prod_price'];
+                $sum += $_SESSION['cart'][$key]['prod_price'] * $_SESSION['cart'][$key]['prod_qty'];
                 if ($get_pid_size['1'] == '') {
                     $prd_size = '';
                 }else{
@@ -1805,7 +1805,22 @@ elseif (isset($_POST['pincodeOfAddressToGetCityState']) ) {
             $address_comple .= '<option value="'.$value->Name.'" '.$selected.'>'.$value->Name.'</option>';
         }
         $arr['address_complement'] = $address_comple;
-        echo json_encode($arr);
+
+        if (isset($_POST['checkPincodeServicable'])) {
+            $res = SqlQuery("SELECT *  FROM `delivery_boy` where delivery_boy_status = 1 && delivery_boy_verifed = 1 && delvery_boy_pincode= '$pincode' GROUP BY delvery_boy_pincode");
+            if (mysqli_num_rows($res) > 0) {
+                // deliveiable
+                $arr['status'] = 'delivereable';
+                echo json_encode($arr);
+            }else{
+                // not delivereable
+                $array['status'] = 'not_delivereable';
+                echo json_encode($array);
+            }
+        }else{
+            echo json_encode($arr);
+        }
+
     }else{
         echo 'no';
     }

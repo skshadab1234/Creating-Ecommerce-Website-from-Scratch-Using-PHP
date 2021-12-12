@@ -110,8 +110,7 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
     <link rel="icon" type="image/vnd.microsoft.icon" href="<?= FRONT_SITE_PATH ?>logo.png">
     <link rel="shortcut icon" type="image/x-icon" href="<?= FRONT_SITE_PATH ?>logo.png">
 
-    <link rel="stylesheet" href="https://rubiktheme.com/demo/rb_evo_demo/themes/rb_evo/assets/cache/theme-8e39f832.css"
-        type="text/css" media="all">
+    <link rel="stylesheet" href="https://rubiktheme.com/demo/rb_evo_demo/themes/rb_evo/assets/cache/theme-8e39f835.css" type="text/css" media="all">
 
     <link rel="stylesheet" href="<?= FRONT_SITE_PATH ?>style/HomePage.css">
 
@@ -1475,6 +1474,12 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                         Order history and details
                                                     </span>
                                                 </a>
+                                                <a id="history-link" href="<?= SELLER_FRONT_SITE ?>">
+                                                    <span class="link-item">
+                                                        <img src="media/sell_5097.png" width="20px" alt="">
+                                                        Sell on <?= SITE_NAME ?>
+                                                    </span>
+                                                </a>
                                                 <!-- TPL LOGIN -->
                                                 <!-- End -->
 
@@ -1621,6 +1626,12 @@ $url = $base_url . $_SERVER["REQUEST_URI"];
                                                 <div class="error_place">
 
                                                 </div>
+                                                <a id="history-link" target="_blank" href="<?= SELLER_FRONT_SITE ?>">
+                                                    <span class="link-item">
+                                                        <img src="media/sell_5097.png" width="20px" alt=""> 
+                                                        Sell on <?= SITE_NAME ?>
+                                                    </span>
+                                                </a>
                                                 <!-- TPL LOGIN -->
 
                                                 <!-- <div id="language_selector" class="d-inline-block">

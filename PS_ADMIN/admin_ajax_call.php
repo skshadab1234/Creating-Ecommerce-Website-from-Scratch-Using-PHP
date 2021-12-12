@@ -415,7 +415,6 @@ elseif (isset($_POST['admin_id_update_pass']) && $_POST['admin_id_update_pass'] 
 elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($_POST['product_size']) && isset($_POST['short_description']) && isset($_POST['long_description']) && isset($_POST['product_price']))
 {
     $product_name = get_safe_value($_POST['product_name']);
-    $brand_data = get_safe_value($_POST['brand_data']);
     $total_stock = get_safe_value($_POST['total_stock']);
     $product_size = get_safe_value($_POST['product_size']);
     $product_weight = get_safe_value($_POST['product_weight']);
@@ -427,6 +426,15 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
     $product_hips = get_safe_value($_POST['product_hips']);
     $product_tags = get_safe_value($_POST['product_tags']);
     $product_opt = get_safe_value($_POST['product_opt']);
+    $selling_by = get_safe_value($_POST['selling_by']);
+    $sku_id = get_safe_value($_POST['sku_id']);
+    $brand_data = get_safe_value($_POST['brand_data']);
+    
+
+    if(isset($_POST['brand_name'])) {
+        $brand_name = get_safe_value($_POST['brand_name']);
+    }
+
     $date = date('Y-m-d');
     $prodid = get_safe_value($_POST['prodid']);
 
@@ -439,11 +447,34 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
         $product_subCat_Values = '';
     }
 
-    if (count(ProductDetails("WHERE product_name = '$product_name'")) > 0)
+  
+    $listprd_skuId = ProductDetails("WHERE sku_id='$sku_id'");
+    $count_products_sku = count($listprd_skuId);
+    
+    if($brand_data == '') {
+        $brand_exist = ExecutedQuery("SELECT * FROM brands WHERE brand_name ='$brand_name'");
+        if ($brand_exist != 0) {
+            $brand_exist = $brand_exist[0];
+            if(mysqli_query($con,"UPDATE brands SET brand_name = '$brand_name' WHERE bid = '".$brand_exist['bid']."'")){
+                $brand_last_id = mysqli_insert_id($con);
+                $brand_data = $brand_last_id;
+            }
+        }else{
+            $date = date("Y-m-d");
+            if(mysqli_query($con,"INSERT INTO brands (brand_name,brand_status,brand_added_on,sellerId_BrandOwner) VALUES('$brand_name', 1,'$date','".$_SESSION['SELLER_ID']."')")){
+                $brand_last_id = mysqli_insert_id($con);
+                $brand_data = $brand_last_id;
+            }
+        }
+        
+    }
+    
+    if (count(ProductDetails("WHERE product_name = '$product_name' && selling_by='$selling_by'")) > 0)
     {
+        $ProductDetails = ProductDetails("WHERE product_name = '$product_name'")[0];
+        $qc_status_forUpdate = $ProductDetails['qc_status'].',0';
         if ($product_opt == 'update')
         {
-            $ProductDetails = ProductDetails("WHERE product_name = '$product_name'")[0];
             if ($total_stock == $ProductDetails['total_stock']) {
                 $total_stock = $ProductDetails['total_stock'];
             }else{
@@ -451,21 +482,24 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
             }
             
             $_SESSION['product_name'] = $product_name;
-            SqlQuery("UPDATE product_details set product_name = '$product_name', 
-                                          product_brand = '$brand_data',
-                                          total_stock = '$total_stock',
-                                          product_size = '$product_size',
-                                          product_weight = '$product_weight',
-                                          product_desc_short = '$short_description',
-                                          product_desc_long = '$long_description',
-                                          product_categories = '$category',
-                                          product_subCategories = '$sub_category_data',
-                                          product_subCat_Values = '$product_subCat_Values',
-                                          product_price = '$product_price',
-                                          product_oldPrice = '$product_oldPrice',
-                                          product_waist = '$product_waist',
-                                          product_hips = '$product_hips',
-                                          product_tags = '$product_tags' WHERE id = '$prodid'");
+            SqlQuery("UPDATE product_details set sku_id = '$sku_id',
+                                            product_name = '$product_name', 
+                                            product_brand = '$brand_data',
+                                            total_stock = '$total_stock',
+                                            product_size = '$product_size',
+                                            product_weight = '$product_weight',
+                                            product_desc_short = '$short_description',
+                                            product_desc_long = '$long_description',
+                                            product_categories = '$category',
+                                            product_subCategories = '$sub_category_data',
+                                            product_subCat_Values = '$product_subCat_Values',
+                                            product_price = '$product_price',
+                                            product_oldPrice = '$product_oldPrice',
+                                            product_waist = '$product_waist',
+                                            product_hips = '$product_hips',
+                                            product_tags = '$product_tags',
+                                            selling_by= '$selling_by',
+                                            qc_status = '$qc_status_forUpdate' WHERE id = '$prodid'");
 
             if (isset($_POST['data_sheet_name']) && isset($_POST['data_sheet_desc']))
             {
@@ -513,165 +547,184 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
     }
     else
     {
-        if ($product_opt == 'add')
-        {
-            $inserted = "INSERT into product_details(
-                                    product_name,
-                                    product_brand,
-                                    total_stock, 
-                                    product_size,
-                                    product_weight,
-                                    product_desc_short,
-                                    product_desc_long,
-                                    product_price,
-                                    product_categories,
-                                    product_subCategories,
-                                    product_subCat_Values,
-                                    product_oldPrice,
-                                    product_waist,
-                                    product_hips, 
-                                    product_tags,
-                                    product_status,
-                                    product_added_on)
-                                    
-                                    VALUES('$product_name', 
-                                        '$brand_data', 
-                                        '$total_stock', 
-                                        '$product_size', 
-                                        '$product_weight', 
-                                        '$short_description', 
-                                        '$long_description', 
-                                        '$product_price', 
-                                        '$category',
-                                        '$sub_category_data',
-                                        '$product_subCat_Values',
-                                        '$product_oldPrice', 
-                                        '$product_waist', 
-                                        '$product_hips', 
-                                        '$product_tags',
-                                        '2',
-                                        '$date')";
-
-            if (mysqli_query($con , $inserted))
+        if($count_products_sku > 0) {
+            $arr = array(
+                "status" => 'error',
+                'message' => 'SKU ID Already Exists',
+                'product_name' => $product_name
+            );
+        }else{
+            if ($product_opt == 'add')
             {
-                $last_id = mysqli_insert_id($con);
-                $ProductDetailss = ProductDetails("WHERE id = '$last_id'");
-                $product_name = $ProductDetailss[0]['product_name'];
-                $_SESSION['product_name'] = $product_name;
+               
+                $inserted = "INSERT into product_details(
+                                        sku_id,
+                                        product_name,
+                                        product_brand,
+                                        total_stock, 
+                                        product_size,
+                                        product_weight,
+                                        product_desc_short,
+                                        product_desc_long,
+                                        product_price,
+                                        product_categories,
+                                        product_subCategories,
+                                        product_subCat_Values,
+                                        product_oldPrice,
+                                        product_waist,
+                                        product_hips, 
+                                        product_tags,
+                                        product_status,
+                                        product_added_on,
+                                        selling_by)
+                                        
+                                        VALUES('$sku_id', 
+                                            '$product_name',
+                                            '$brand_data', 
+                                            '$total_stock', 
+                                            '$product_size', 
+                                            '$product_weight', 
+                                            '$short_description', 
+                                            '$long_description', 
+                                            '$product_price', 
+                                            '$category',
+                                            '$sub_category_data',
+                                            '$product_subCat_Values',
+                                            '$product_oldPrice', 
+                                            '$product_waist', 
+                                            '$product_hips', 
+                                            '$product_tags',
+                                            '2',
+                                            '$date',
+                                            '$selling_by')";
 
-                if (isset($_POST['data_sheet_name'])  && isset($_POST['data_sheet_desc'])) 
+                if (mysqli_query($con , $inserted))
+                {
+                    $last_id = mysqli_insert_id($con);
+                    $ProductDetailss = ProductDetails("WHERE id = '$last_id'");
+                    $product_name = $ProductDetailss[0]['product_name'];
+                    $_SESSION['product_name'] = $product_name;
+
+                    if (isset($_POST['data_sheet_name'])  && isset($_POST['data_sheet_desc'])) 
+                    {
+                        foreach ($_POST['data_sheet_name'] as $key => $val)
+                        {
+                            $data_sheet_name = $val;
+                            $data_sheet_name = $val;
+                            $data_sheet_desc = $_POST['data_sheet_desc'][$key];
+
+                            if (isset($_POST['data_sheet_name']) && isset($_POST['data_sheet_desc']))
+                            {
+                                foreach ($_POST['data_sheet_name'] as $key => $val)
+                                {
+                                    $data_sheet_name = $val;
+                                    $data_sheet_desc = $_POST['data_sheet_desc'][$key];
+                                    $result = SqlQuery("Select * from product_data_sheet where data_sheet_name = '$val' && product_id = '$last_id'");
+                                    if (mysqli_num_rows($result) > 0)
+                                    {
+                                        $arr = array(
+                                            "status" => 'update_success',
+                                            'message' => 'Product Saved as Draft',
+                                            'product_name' => $product_name
+                                        );
+                                    }
+                                    else
+                                    {
+                                        SqlQuery("Insert into product_data_sheet(data_sheet_name, data_sheet_desc, product_id, status) VALUES('$data_sheet_name', '$data_sheet_desc', '$last_id', '1')");
+                                        $arr = array(
+                                            "status" => 'update_success',
+                                            'message' => 'Product Saved as Draft',
+                                            'product_name' => $product_name
+                                        );
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                $arr = array(
+                                    "status" => 'update_success',
+                                    'message' => 'Product Saved as Draft',
+                                    'product_name' => $product_name
+                                );
+                            }
+                        }
+                    }
+                }
+
+                $arr = array(
+                        "status" => 'update_success',
+                        'message' => 'Product Saved as Draft',
+                        'product_name' => $product_name
+                    );
+            }
+            else if ($product_opt == 'update')
+            {
+                $_SESSION['product_name'] = $product_name;
+                $ProductDetails = ProductDetails("WHERE product_name = '$product_name'")[0];
+                if ($total_stock == $ProductDetails['total_stock']) {
+                    $total_stock = $ProductDetails['total_stock'];
+                }else{
+                    $total_stock = $ProductDetails['total_stock'] + $total_stock;
+                }
+                SqlQuery("UPDATE product_details set 
+                                                    sku_id = '$sku_id',
+                                                    product_name = '$product_name', 
+                                                    product_brand = '$brand_data',
+                                                    total_stock = '$total_stock',
+                                                    product_size = '$product_size',
+                                                    product_weight = '$product_weight',
+                                                    product_desc_short = '$short_description',
+                                                    product_desc_long = '$long_description',
+                                                    product_categories = '$category',
+                                                    product_subCategories = '$sub_category_data',
+                                                    product_subCat_Values = '$product_subCat_Values',
+                                                    product_price = '$product_price',
+                                                    product_oldPrice = '$product_oldPrice',
+                                                    product_waist = '$product_waist',
+                                                    product_hips = '$product_hips',
+                                                    product_tags = '$product_tags',
+                                                    selling_by = '$selling_by',
+                                                    qc_status = '$qc_status_forUpdate' WHERE id = '$prodid'");
+
+                if (isset($_POST['data_sheet_name']) && isset($_POST['data_sheet_desc']))
                 {
                     foreach ($_POST['data_sheet_name'] as $key => $val)
                     {
                         $data_sheet_name = $val;
-                        $data_sheet_name = $val;
                         $data_sheet_desc = $_POST['data_sheet_desc'][$key];
-
-                        if (isset($_POST['data_sheet_name']) && isset($_POST['data_sheet_desc']))
-                        {
-                            foreach ($_POST['data_sheet_name'] as $key => $val)
-                            {
-                                $data_sheet_name = $val;
-                                $data_sheet_desc = $_POST['data_sheet_desc'][$key];
-                                $result = SqlQuery("Select * from product_data_sheet where data_sheet_name = '$val' && product_id = '$last_id'");
-                                if (mysqli_num_rows($result) > 0)
-                                {
-                                    $arr = array(
-                                        "status" => 'update_success',
-                                        'message' => 'Product Saved as Draft',
-                                        'product_name' => $product_name
-                                    );
-                                }
-                                else
-                                {
-                                    SqlQuery("Insert into product_data_sheet(data_sheet_name, data_sheet_desc, product_id, status) VALUES('$data_sheet_name', '$data_sheet_desc', '$last_id', '1')");
-                                    $arr = array(
-                                        "status" => 'update_success',
-                                        'message' => 'Product Saved as Draft',
-                                        'product_name' => $product_name
-                                    );
-                                }
-                            }
-                        }
-                        else
+                        $result = SqlQuery("Select * from product_data_sheet where data_sheet_name = '$val' && product_id = '$prodid'");
+                        if (mysqli_num_rows($result) > 0)
                         {
                             $arr = array(
                                 "status" => 'update_success',
-                                'message' => 'Product Saved as Draft',
+                                'message' => 'Product Updated',
+                                'product_name' => $product_name
+                            );
+                        }
+                        else
+                        {
+                            SqlQuery("Insert into product_data_sheet(data_sheet_name, data_sheet_desc, product_id, status) VALUES('$data_sheet_name', '$data_sheet_desc', '$prodid', '1')");
+                            $arr = array(
+                                "status" => 'update_success',
+                                'message' => 'Product Updated',
                                 'product_name' => $product_name
                             );
                         }
                     }
                 }
-            }
-
-            $arr = array(
-                    "status" => 'update_success',
-                    'message' => 'Product Saved as Draft',
-                    'product_name' => $product_name
-                );
-        }
-        else if ($product_opt == 'update')
-        {
-            $_SESSION['product_name'] = $product_name;
-            $ProductDetails = ProductDetails("WHERE product_name = '$product_name'")[0];
-            if ($total_stock == $ProductDetails['total_stock']) {
-                $total_stock = $ProductDetails['total_stock'];
-            }else{
-                $total_stock = $ProductDetails['total_stock'] + $total_stock;
-            }
-            SqlQuery("UPDATE product_details set product_name = '$product_name', 
-                                              product_brand = '$brand_data',
-                                              total_stock = '$total_stock',
-                                              product_size = '$product_size',
-                                              product_weight = '$product_weight',
-                                              product_desc_short = '$short_description',
-                                              product_desc_long = '$long_description',
-                                              product_categories = '$category',
-                                              product_subCategories = '$sub_category_data',
-                                              product_subCat_Values = '$product_subCat_Values',
-                                              product_price = '$product_price',
-                                              product_oldPrice = '$product_oldPrice',
-                                              product_waist = '$product_waist',
-                                              product_hips = '$product_hips',
-                                              product_tags = '$product_tags' WHERE id = '$prodid'");
-
-            if (isset($_POST['data_sheet_name']) && isset($_POST['data_sheet_desc']))
-            {
-                foreach ($_POST['data_sheet_name'] as $key => $val)
+                else
                 {
-                    $data_sheet_name = $val;
-                    $data_sheet_desc = $_POST['data_sheet_desc'][$key];
-                    $result = SqlQuery("Select * from product_data_sheet where data_sheet_name = '$val' && product_id = '$prodid'");
-                    if (mysqli_num_rows($result) > 0)
-                    {
-                        $arr = array(
-                            "status" => 'update_success',
-                            'message' => 'Product Updated',
-                            'product_name' => $product_name
-                        );
-                    }
-                    else
-                    {
-                        SqlQuery("Insert into product_data_sheet(data_sheet_name, data_sheet_desc, product_id, status) VALUES('$data_sheet_name', '$data_sheet_desc', '$prodid', '1')");
-                        $arr = array(
-                            "status" => 'update_success',
-                            'message' => 'Product Updated',
-                            'product_name' => $product_name
-                        );
-                    }
+                    $arr = array(
+                        "status" => 'update_success',
+                        'message' => 'Product Updated',
+                        'product_name' => $product_name
+                    );
                 }
             }
-            else
-            {
-                $arr = array(
-                    "status" => 'update_success',
-                    'message' => 'Product Updated',
-                    'product_name' => $product_name
-                );
-            }
         }
+        
     }
+   
 
     echo json_encode($arr);
 
@@ -728,9 +781,21 @@ elseif (isset($_POST['product_publish_as_data']) && isset($_POST['product_publis
 elseif (isset($_POST['ProductListingAjax']))
 {
     $ProductDetails = ProductDetails('left join shop_category on product_details.product_categories =  shop_category.cat_id left join brands on product_details.product_brand = brands.bid');
+    $x = 0;
+    $length = count($ProductDetails);
+    $product_listing_td = '{
+        "data": [';
 
     foreach ($ProductDetails as $key => $val)
     {
+        $x++;
+
+        if($x == $length){
+            $addcomma = ''; 
+        }else{
+            $addcomma = ',';
+        }
+
         $ProductImageById = ProductImageById($val['id'], 'limit 1');
         array_unshift($ProductImageById, "");
         unset($ProductImageById[0]);
@@ -764,38 +829,50 @@ elseif (isset($_POST['ProductListingAjax']))
         }else{
             $product_subCat_Values = '';
         }
-  ?>
-  <tr class="odd">
-      <td class="dtr-control sorting_1" tabindex="0"><input type="checkbox" name="checked_product_delete[]"
-              onclick="get_total_selected()" id="<?=$val['id'] ?>" value="<?=$val['id'] ?>"></td>
-      <td style=""><img class="img-reponsive img-fluid" width="80px" height="80px"
-              style="border-radius:50%;width:80px;height:80px"
-              src="<?=FRONT_SITE_IMAGE_PRODUCT . $ProductImageById['1']['product_img'] ?>" alt=""></td>
-      <td style=""><a
-              href="<?=ADMIN_FRONT_SITE . 'products?operation=addProduct&id=' . $val['id'] . '' ?>"><?=$val['product_name'] ?></a>
-      </td>
-      <td>
-          <h6 class="text-muted">
-              <strike>₹<?=$val['product_oldPrice'] ?></strike>
-          </h6>
-          <h5>₹ <?=$val['product_price'] ?></h5>
-      </td>
-      <td><?=$val['brand_name'] ?></td>
-      <td style="color: <?=$color ?>">
-          <?=$val['total_stock'] - $val['total_sold'] ?></td>
-      <td><?=$val['product_size'] ?></td>
-      <td><?=$val['category_name'].' - '.$val['product_subCategories'].''.$product_subCat_Values ?></td>
-      <td><span class="btn <?=$bgColor ?>"><?=$text ?></span>
-      </td>
-      <td><?=date("d M,Y", strtotime($val['product_added_on'])) ?>
-      </td>
-  </tr>
 
-  <?php
-      }
-  ?>
+        if ($val['total_stock'] -  $val['total_sold'] < 100) {
+            $color = 'red';
+            $total_stock_msg = 'Out of Stock';
+        }else{
+            $color = 'green';
+            $total_stock_msg = "In Stock:- ".($val['total_stock'] -  $val['total_sold']);
+        }
 
-  <?php
+        $qc_status_explode = explode(",",$val['qc_status']);
+        unset($qc_status_explode[0]);
+        $end_qc_status = end($qc_status_explode);
+
+        if ($end_qc_status == 0) {
+            $qc_text = '<span class="text-warning">In Process</span>';
+        }elseif($end_qc_status == 1) {
+            $qc_text = '<span class="text-success">Approved</span>';
+        }else{
+            $qc_text = '<span class="text-danger">Rejected</span>';
+        }
+        $product_listing_td .= '[
+                                '.json_encode("<input type=\"checkbox\" name=\"checked_product_delete[]\" onclick=\"get_total_selected()\" id='".$val['id']."' value='".$val['id']."'>").',
+                                '.json_encode("<img class=\"img-reponsive img-fluid\" width=\"80px\" height=\"80px\" style=\"border-radius:50%;width:80px;height:80px\" src='".FRONT_SITE_IMAGE_PRODUCT . $ProductImageById['1']['product_img']."' alt=\"\">").',
+                                '.json_encode("<a href='".ADMIN_FRONT_SITE.'products?operation=addProduct&id='.$val['id']."'>".$val['product_name']."</a><br>SKU Id: ".$val['sku_id']."").',
+                                '.json_encode("<h6 class='text-muted'><strike>₹ ".$val['product_oldPrice']."</strike></h6>
+                                              <h5>₹ ".$val['product_price']."</h5>").',
+                                '.json_encode("".$val['brand_name']."").',
+                                '.json_encode("<p style=\"color: ".$color."\">".$total_stock_msg."</p>").',
+                                '.json_encode("".$val['product_size']."").',
+                                '.json_encode("".$val['category_name'].' - '.$val['product_subCategories'].''.$product_subCat_Values ."").',
+                                '.json_encode("<span class=\"btn ".$bgColor."\">".$text."</span>").',
+                                '.json_encode("".$qc_text."").',
+                                '.json_encode("".date("d M,Y", strtotime($val['product_added_on']))."").'
+                            ]'.$addcomma.'';
+
+    }
+
+    $product_listing_td .= ']
+                            }';
+
+    $f = fopen("json/product.json",'w');
+    fwrite($f,'');
+    fwrite($f,$product_listing_td);
+    fclose($f);     
 }
 
 else if (isset($_POST['checked_product_delete'][0]))
@@ -804,10 +881,12 @@ else if (isset($_POST['checked_product_delete'][0]))
     {
         $id = get_safe_value($list);
         SqlQuery("delete from product_details where id='$id'");
+        SqlQuery("delete from products_image where product_id = '$id'");
+        SqlQuery("delete from product_data_sheet where product_id = '$id'");
+        SqlQuery("delete from product_rating where rate_product_id = '$id'");
+        SqlQuery("delete from ordertrackingdetails where track_product_id = '$id'");
         SqlQuery("delete from cart where product_id ='$id'");
     }
-    $ProductDetailsCount = Count(ProductDetails());
-    echo "Showing " . $ProductDetailsCount . " entries";
 }
 
 // Deleting Datasheet From Database by Id
@@ -848,7 +927,7 @@ elseif (isset($_POST['category_name']) && $_POST['category_name'] != '' && isset
 
 elseif (isset($_POST['change_category_load_sub_category']) && $_POST['change_category_load_sub_category'] != '' && isset($_POST['id']) && $_POST['id'] > 0 && isset($_POST['sub_cat_recive_from_Db'])){
     $id = get_safe_value($_POST['id']);
-    $sub_cat_recive_from_Db = get_safe_value($_POST['sub_cat_recive_from_Db']);
+    $sub_cat_recive_from_Db = urlencode(get_safe_value($_POST['sub_cat_recive_from_Db']));
 
     $res = SqlQuery("Select * from shop_category WHERE cat_id ='$id'");
     $row =mysqli_fetch_assoc($res);
@@ -858,13 +937,13 @@ elseif (isset($_POST['change_category_load_sub_category']) && $_POST['change_cat
         if ($sub_cat_recive_from_Db == '') {
             $selected = '';
         }else{
-            if ($list == $sub_cat_recive_from_Db) {
+            if (urlencode($list) == $sub_cat_recive_from_Db) {
                 $selected = 'selected';
             }else{
                 $selected = '';
             }
         }
-        $html.='<option value="'.$list.'" '.$selected.'>'.$list.'</option>';
+        $html.='<option value="'.urlencode($list).'" '.$selected.'>'.$list.'</option>';
     }
 
     echo $html;
@@ -944,11 +1023,12 @@ elseif (isset($_POST['brand_type']) && $_POST['brand_type'] != '' && isset($_POS
     
     $brand_name = get_safe_value($_POST['brand_name']);
     $brand_status = get_safe_value($_POST['brand_status']);
+    $seller_account = get_safe_value($_POST['seller_account']);
 
     if ($brand_type == 'update') {
         $brand_id = get_safe_value($_POST['brand_id']);
         $_SESSION['BRAND_ID_SESSION']  = $brand_id;
-        SqlQuery("update brands set brand_name='$brand_name', brand_status='$brand_status' WHERE bid = '$brand_id'");
+        SqlQuery("update brands set brand_name='$brand_name', brand_status='$brand_status',sellerId_BrandOwner = '$seller_account' WHERE bid = '$brand_id'");
         echo 'Updated';
     }
 
@@ -958,7 +1038,7 @@ elseif (isset($_POST['brand_type']) && $_POST['brand_type'] != '' && isset($_POS
         if (mysqli_num_rows($res) > 0) {
             echo 'exist';
         }else{
-            $sql = "INSERT into brands (brand_name, brand_status,brand_added_on) VALUES('$brand_name', '$brand_status', '$brand_added_on')";
+            $sql = "INSERT into brands (brand_name, brand_status,sellerId_BrandOwner,brand_added_on) VALUES('$brand_name', '$brand_status', '$seller_account','$brand_added_on')";
             if (mysqli_query($con, $sql)) {
                 $last_id = mysqli_insert_id($con);
                 $_SESSION['BRAND_ID_SESSION']  = $last_id;
@@ -1070,7 +1150,7 @@ elseif (isset($_POST['user_type']) && isset($_POST['delivery_boy_name']) && isse
                 $arr = array("status"=>'error', 'message' => 'Email id exist');
             }else{
                 SqlQuery("Update delivery_boy set delivery_boy_name='$delivery_boy_name', delivery_boy_email='$delivery_boy_email', delivery_boy_phone='$delivery_boy_phone', delivery_boy_address='$delivery_boy_address', delvery_boy_pincode ='$delvery_boy_pincode', delivery_boy_city='$delivery_boy_city', delivery_boy_state='$delivery_boy_state',delivery_boy_landmark='$delivery_boy_landmark',delivery_boy_verifed='$user_status' WHERE delivery_boy_id = '$user_id'");
-                $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$delivery_boy_email.'&DeliveryLoginCode='.$row['deliveryLoginCode'].'&redirect='.FRONT_SITE_PATH.">Click here to Verify</a>";
+                $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$delivery_boy_email.'&DeliveryLoginCode='.$row['deliveryLoginCode'].'&redirect='.DELIVERY_FRONT_SITE.">Click here to Verify</a>";
                 $emailresp = send_email($delivery_boy_email, $html, 'Email id Changed Confirmation');
                 if ($emailresp == 'Sended')
                 {
@@ -1132,7 +1212,16 @@ elseif (isset($_POST['OrderTrackId']) && $_POST['OrderTrackId'] != '') {
         $list = '';
 
         foreach ($delivery_res as $key => $value) {
-            $list .= "<option value=".$value['delivery_boy_id'].">".$value['delivery_boy_name']."</option>";
+            $DelveredOrder = GetAssignedDeliveryForDeliveryBoy($value['delivery_boy_id'])['Delivered'];
+            $PendingOrders = GetAssignedDeliveryForDeliveryBoy($value['delivery_boy_id'])['Pending'];
+
+            $DelveredOrders = explode(",",$DelveredOrder);
+            $totalDelivery = ($DelveredOrders[0] == 0) ? 0 : count($DelveredOrders);
+
+            $explodePendingOrder = explode(",",$PendingOrders);
+            $totalPending = ($explodePendingOrder[0] == 0) ? 0 : count($explodePendingOrder);
+
+            $list .= "<option value=".$value['delivery_boy_id'].">".$value['delivery_boy_name']."-".$value['delivery_boy_email']."-".$totalDelivery." Delivered - ".$totalPending." Pending</option>";
         }
         $arr = array("status"=>'success', 'list' => $list);
     }else{
@@ -1163,12 +1252,10 @@ elseif (isset($_POST['SubmitAssignedDelivery_id']) && $_POST['SubmitAssignedDeli
                 <thead>
                     <th>Image</th>
                     <th>Name</th>
-                    <th>Action</th>
                 </thead>
                 <tbody>
                     <td><img src='.$delivery_image.' style="border-radius:50%;width:50px;height:50px" alt=""></td>
-                    <td>'.$row['delivery_boy_name'].'</td>
-                    <td><a href="javascript:void(0)" onclick="RemoveAssignedDeliveryBoy('.$orderTrackId.')">Remove</a></td>
+                    <td>'.$row['delivery_boy_name'].'<br>'.$row['delivery_boy_email'].'<br> <a href="javascript:void(0)" onclick="RemoveAssignedDeliveryBoy('.$orderTrackId.')">Remove</a></td>
                 </tbody>
             </table>';
 
@@ -1226,8 +1313,35 @@ elseif (isset($_POST['RemoveAssignedDeliveryBoy']) && $_POST['RemoveAssignedDeli
     echo $html;                    
 }
 
+// Send for QC PASS 
+elseif (isset($_POST['product_qc_status_pid']) && isset($_POST['qc_status']) && isset($_POST['qc_note'])) {
+    $pid = get_safe_value($_POST['product_qc_status_pid']);
+    $qc_status = get_safe_value($_POST['qc_status']);
+    $qc_note = get_safe_value($_POST['qc_note']);
 
+    $row = ExecutedQuery("SELECT * FROM product_details WHERE id = '$pid'");
+    $row = $row[0];
+    $qc_status__db = $row['qc_status'].','.$qc_status;
+    $qc_notes__db = $row['qc_message'].',PS_FASHION_STORE,'.$qc_note;
+    
+    SqlQuery("UPDATE product_details SET qc_status='$qc_status__db', qc_message='$qc_notes__db' WHERE id='$pid'");
 
+    if($qc_status == 0){
+        $qc_text = 'Send for Re-Edit';
+        $alert_color = 'text-info';
+    }elseif ($qc_status == 1) {
+        $qc_text = 'Approved';
+        $alert_color = 'text-success';
+    }else if ($qc_status == 2){
+        $qc_text = 'Rejected';
+        $alert_color = 'text-danger';
+    }
+
+    $html = '<dl class="col-12 col-md-3 '.$alert_color.'">'.$qc_text.'</dl>
+             <dl class="col-12 col-md-9 '.$alert_color.'">'.$qc_note.'</dl>';
+
+    echo $html;
+}
 
 
 

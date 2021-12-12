@@ -6,6 +6,7 @@
         $id = '';
         $status = '';
         $brand_name = '';
+        $sellerId_BrandOwner = '';
         $hide_previe_image = 'display:none';
 
         if (isset($_GET['id']) && $_GET['id'] > 0) {
@@ -17,6 +18,7 @@
                 $row = mysqli_fetch_assoc($brand_res);
                 $status = $row['brand_status'];
                 $brand_name = $row['brand_name'];
+                $sellerId_BrandOwner = $row['sellerId_BrandOwner'];
             }else{
                 redirect(ADMIN_FRONT_SITE.'category');
             }
@@ -70,7 +72,6 @@
                 <div class="card_box card-default mt-3">
                     <div class="card-body">
                         <div class="row">
-
                             <div class="form-group col-md-6">
                                 <label for="brand_name">Brand Name</label>
                                 <input type="text" class="form-control" name="brand_name" value="<?= $brand_name ?>"
@@ -106,6 +107,27 @@
                                     <label for="checkboxPrimary2">Block
                                     </label>
                                 </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="">Select Seller Account</label>
+                                <select name="seller_account" id="seller_account"
+                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;">
+                                    <option value="" selected="selected" disabled>Select Seller Account</option>
+                                    <?php
+                                        $seller_acc = ExecutedQuery("SELECT * FROM seller_account WHERE seller_verified=1");
+                                        foreach ($seller_acc as $key => $value) {
+                                            if ($value['id'] == $sellerId_BrandOwner) {
+                                                $selected ='selected';
+                                            }else{
+                                                $selected = '';
+                                            }
+                                            ?>
+                                            <option  <?= $selected ?> value=' <?= $value['id'] ?>'><?= $value['seller_fullname'] ?></option>
+                                            <?php
+                                        }
+                                    ?>
+                                </select>
                             </div>
                         </div>
 
@@ -163,27 +185,14 @@
                                             aria-describedby="example1_info">
                                             <thead>
                                                 <tr role="row">
-                                                    <th class="sorting"><input type="checkbox"
-                                                            id="delete_check_brand" onclick="select_all_brand()">
+                                                    <th class="sorting">
+                                                        <input type="checkbox" id="delete_check_brand" onclick="select_all_brand()">
                                                     </th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="Browser: activate to sort column ascending"
-                                                        style="">Id</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="Browser: activate to sort column ascending"
-                                                        style="">Brand Image</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="Platform(s): activate to sort column ascending">
-                                                        Brand Name</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="CSS grade: activate to sort column ascending">
-                                                        STATUS</th>
-
-
+                                                    <th>Id</th>
+                                                    <th>Brand Image</th>
+                                                    <th>Seller Name</th>
+                                                    <th>Brand Name</th>
+                                                    <th>STATUS</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="category_listing_td">
@@ -202,6 +211,9 @@
                                                        }else{
                                                            $brand_img = FRONT_SITE_IMAGE_BRAND.$value['brand_img'];
                                                        }
+
+                                                       $seller_account= ExecutedQuery("SELECT * FROM seller_account WHERE id = ".$value['sellerId_BrandOwner']."");
+                                                       $seller_account = $seller_account[0];
                                                        ?>
                                                 <tr>
                                                     <td class="dtr-control sorting_1" tabindex="0"><input
@@ -212,6 +224,7 @@
                                                     <td><img class="img-reponsive img-fluid" width="80px" height="80px"
                                                             src="<?= $brand_img ?>"
                                                             alt=""></td>
+                                                    <td><strong>Full Name:</strong> <?= $seller_account['seller_fullname'] ?> <br> <strong>Email: </strong> <?= $seller_account['seller_email'] ?></td>
                                                     <td><a
                                                             href="<?= ADMIN_FRONT_SITE.'brand?operation=editBrand&id='.$value['bid'].'' ?>"><?= $value['brand_name'] ?></a>
                                                     </td>
@@ -221,7 +234,16 @@
                                                    }                 
                                                ?>
                                             </tbody>
-
+                                            <tfoot>
+                                                <tr>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>by Seller Name</th>
+                                                    <th>by Brand Name</th>
+                                                    <th>by Status</th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
 
                                     </div>
@@ -291,16 +313,39 @@
         }
 
         $(function() {
+             //Initialize Select2 Elements
+             $('.select2').select2()
+
+            $('#example1 tfoot th:gt(2)').each( function () {
+                var title = $(this).text();
+                $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
+            } );
+
             $("#example1").DataTable({
+
                 "responsive": true,
-                "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "colvis"],
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every( function () {
+                        var that = this;
+        
+                        $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                            if ( that.search() !== this.value ) {
+                                that
+                                    .search( this.value )
+                                    .draw();
+                            }
+                        } );
+                    } );
+                },
+        
                 buttons: [{
                         extend: 'print',
                         exportOptions: {
                             stripHtml: false,
-                            columns: [1,2, 3,4]
+                            columns: [1,2, 3,4,5]
                             //specify which column you want to print
 
                         }

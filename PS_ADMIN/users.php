@@ -253,14 +253,14 @@
                                                    $user_res = SqlQuery("SELECT * FROM users");
                                                    foreach($user_res  as $key => $value) {
                                                        if ($value['verify'] == 1) {
-                                                           $user_status = '<p class="text-success">Verified</p>';
+                                                           $user_status = '<p class="text-success">Active</p>';
                                                        }else{
-                                                           $user_status = '<p class="text-danger">Not Verified</p>';
+                                                           $user_status = '<p class="text-danger">Blocked</p>';
                                                        }
                                                        if ($value['newsletter'] == 1) {
-                                                          $newsletter = '<p class="text-success">Subscribed</p>';
+                                                          $newsletter = '<p class="text-success">Active</p>';
                                                         }else{
-                                                            $newsletter = '<p class="text-danger">Not Subscribed</p>';
+                                                            $newsletter = '<p class="text-danger">Blocked</p>';
                                                         }
                                                        if ($value['user_img'] == '') {
                                                             $user_img = 'https://st3.depositphotos.com/23594922/31822/v/600/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg';
@@ -289,7 +289,17 @@
                                                    }                 
                                                ?>
                                             </tbody>
-
+                                            <tfoot>
+                                                <tr>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
 
                                     </div>
@@ -312,12 +322,32 @@
 
         <script>
         $(function() {
+            $('#example1 tfoot th:gt(1)').each( function () {
+                var title = $(this).text();
+                $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
+            } );
             $("#example1").DataTable({
+                mark: {
+                    diacritics: false
+                },
                 "responsive": true,
-                "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                buttons: [{
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every( function () {
+                        var that = this;
+        
+                        $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                            if ( that.search() !== this.value ) {
+                                that
+                                    .search( this.value )
+                                    .draw();
+                            }
+                        } );
+                    } );
+                },
+                    buttons: [{
                         extend: 'print',
                         exportOptions: {
                             stripHtml: false,
@@ -342,12 +372,17 @@
 
              $.validator.setDefaults({
                     submitHandler: function(form) {
+                        $("#submit_user").attr("disabled", true);
+                        $("#submit_user").html('Updating...');
+
                         $.ajax({
                             type: "POST",
                             url: "admin_ajax_call.php",
                             data: $(form).serialize(),
                             success: function(res) {
                                 var json = $.parseJSON(res);
+                                $("#submit_user").attr("disabled", false);
+                                $("#submit_user").html('Submit');
                                 if (json.status == 'email_change_success') {
                                     swal(json.message,json.text,'success');
                                     window.location = 'users';

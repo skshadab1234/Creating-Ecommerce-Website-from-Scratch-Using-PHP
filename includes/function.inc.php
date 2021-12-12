@@ -25,10 +25,10 @@ function get_safe_value($str){
 
 function redirect($link){
 	?>
-	<script>
-		window.location.href='<?php echo $link?>';
-	</script>
-	<?php
+<script>
+window.location.href = '<?php echo $link?>';
+</script>
+<?php
 	die();
 }
 
@@ -42,7 +42,7 @@ function send_email($email,$html,$subject){
 	$mail->SMTPSecure="tls";
 	$mail->SMTPAuth=true;
 	$mail->Username="ks615044@gmail.com"; // Change My Email
-	$mail->Password="@addPassword";
+	$mail->Password="Parveenloveshadab1@";
 	$mail->setFrom("ks615044@gmail.com"); // Change My Email
 	$mail->addAddress($email);
 	$mail->IsHTML(true);
@@ -307,9 +307,13 @@ function ExecutedQuery($query){
 		while ($row = mysqli_fetch_assoc($res)) {
 			$data[] = $row;
 		}
+
+		return $data;
+
+	}else{
+		return 0;
 	}
 
-	return $data;
 }
 
 
@@ -363,55 +367,165 @@ function star_rate($number) {
 function GetAssignedDeliveryForDeliveryBoy($deliveryBoyId) {
 	global $con;
 
-	
 	$delivered= '';
+	$track_id = '';
 	$pending= '';	
+	$delivered_trackid = '';
+	$pending_trackid = '';
 
 	$res = SqlQuery("SELECT * FROM ordertrackingdetails WHERE delivery_boy_id = '$deliveryBoyId'");
 	if (mysqli_num_rows($res) > 0) {
 		$row = mysqli_fetch_assoc($res);
 				
 		foreach ($res as $key => $value) {
-		$current_Status = explode(",", $value['Current_Status']);
-
+			$current_Status = explode(",", $value['Current_Status']);
 		
 			if (end($current_Status) == 'Delivered') {
 				$delivered .= $value['track_product_id'].',';
+				$delivered_trackid .= $value['track_id'].',';
 			}
 
 			if (end($current_Status) != 'Delivered') {
 				$pending .= $value['track_product_id'].',';
+				$pending_trackid .= $value['track_id'].',';
 			}
 		}
+
+		$delivered_trackid = substr($delivered_trackid,0,-1);
+		$pending_trackid = substr($pending_trackid,0,-1);
 		$delivered = substr($delivered, 0, -1);
 		$pending = substr($pending, 0, -1);
-		$arr = array('Delivered' => $delivered, 'Pending' => $pending);
+		$arr = array('Delivered' => $delivered, 'Pending' => $pending, 'DeliveredTrackId' => $delivered_trackid, 'PendingTrackId' => $pending_trackid);
 	}else{
 		$delivered = '0';
 		$pending = '0';
-		$arr = array('Delivered' => $delivered, 'Pending' => $pending);
+		$arr = array('Delivered' => $delivered, 'Pending' => $pending, 'Track_Id' => $track_id);
 	}
-
-	
-	
 	return $arr;
 }
 
+function OrderTrackStatus($track_id) {
+	global $con;
+	$Sql = "SELECT * FROM ordertrackingdetails WHERE track_id = '$track_id'";
+	$res = mysqli_query($con, $Sql);
+	if (mysqli_num_rows($res) > 0) {
+		$row = mysqli_fetch_assoc($res);
+		?>
+<div class="col-md-12 card_box">
+    <div class="card-header">
+        <h4>Shipping Details</h4>
+    </div>
+    <!-- Modal is in Footer File  -->
+    <div class="card-body">
+        <div class="tab-content">
+            <div class="tab-pane active" id="timeline">
+                <!-- The timeline -->
+                <div class="timeline timeline-inverse">
+                    <?php
+                                        $TrackName = explode(',', $row['Tracking_Name']);
+                                        foreach ($res as $track_key => $track_value) {
+                                            foreach ($TrackName as $key => $value) {
+                                                $box_color = '#283046!important';
+                                                $icon_color = '#283046';
+                                                $icon = 'fas fa-dot-circle';
+    
+                                                $ordered_message = array();
+                                                $current_status = explode(",",$row['Current_Status']);
+                                                if (in_array("Canceled",$current_status)) {
+                                                    if (isset($current_status[$key+1]) == 'Canceled') {
+                                                            $box_color = '#283046!important';
+                                                        }else{
+                                                            $box_color = '#e74c3c!important';
+                                                            $value = 'Canceled '.$value;
+                                                            $icon_color = '#e74c3c';
+                                                            $icon = 'fas fa-times';
+                                                        }
+                                                }
+                                                
+                                                if (in_array($value,$current_status)) {
+                                                    $icon_color = 'green';
+                                                    $icon = 'fas fa-check-circle';
+                                                }
+    
+                                                if (in_array("Delivered",$current_status)) {
+                                                    if (isset($current_status[$key+1]) != 'Delivered') {
+                                                        $box_color = 'green!important';
+                                                        $icon_color = 'green';
+                                                        $icon = 'fas fa-check-circle';
+                                                    }
+                                                }
+                                                
+                                                $TrackingTime = explode(",",$row['Tracking_time']);
+                                                if(!empty($TrackingTime[$key])) {
+                                                    $time_text = '<span class="time"><i class="far fa-clock"></i> '.date("h:i A", strtotime($TrackingTime[$key])).'</span>';
+                                                    $TEXT_Time = '<!-- timeline time label -->
+                                                                    <div class="time-label">
+                                                                        <span style="background:#283046">
+                                                                        '.date("d M, Y", strtotime($TrackingTime[$key])).'
+                                                                        </span>
+                                                                    </div>';
+                                                }else{
+                                                    $TEXT_Time = '';
+                                                    $time_text = '';
+                                                }
+                                                
+                                                if (isset(array($row['Tracking_Details'])[$track_key])) {
+                                                    $ordered_message = explode(",PS_FASHION_STORE,", array($row['Tracking_Details'])[$track_key]);
+                                                }
+                                                ?>
+                    <?= $TEXT_Time ?>
+                    <!-- /.timeline-label -->
+                    <!-- timeline item -->
+                    <div>
+                        <i class="<?= $icon ?>" style="background:<?= $icon_color ?>"></i>
+                        <div class="timeline-item" style="background-color: <?= $box_color ?>;border:none">
+                            <?=  $time_text ?>
 
+                            <h3 class="timeline-header"><?= $value ?></h3>
 
+                            <div class="timeline-body mt-3" style="line-height:20px">
+                                <?php
+									if (isset($ordered_message[$key]) ) {
+										echo $ordered_message[$key];
+									} 
+								?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                                            }
+                                        }
+                                   ?>
 
+                </div>
+                <?php
+                                    if($row['Canceled_By'] == 'user'){
+                                        ?>
+                <div class="callout callout-danger mt-5">
+                    User Canceled the Order
+                </div>
+                <?php
+                                    }
 
+                                    else  if($row['Canceled_By'] == 'admin'){
+                                        ?>
+                <div class="callout callout-danger mt-5">
+                    Your Order has been canceled by <?= SITE_NAME ?>
+                </div>
+                <?php
+                                    }else{
 
+                                    }
+                                ?>
 
-
-
-
-
-
-
-
-
-
-
-
-
+            </div>
+        </div>
+        <!-- /.tab-content -->
+    </div>
+</div>
+<?php
+		
+	}else{
+		
+	}
+}

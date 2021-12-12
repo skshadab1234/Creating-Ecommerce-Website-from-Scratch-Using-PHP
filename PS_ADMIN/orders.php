@@ -87,7 +87,7 @@
                     <!-- Table row -->
                     <div class="row">
                         <div class="col-12 table-responsive">
-                        <table class="table table-striped">
+                        <table id="example2" class="table table-striped">
                             <thead>
                             <tr>
                                 <th width="10%"></th>
@@ -107,6 +107,7 @@
                                             $track_res = SqlQuery("SELECT * FROM ordertrackingdetails WHERE track_id = '$track_id[$key]'");
                                             $track_row = mysqli_fetch_assoc($track_res);
                                             $current_status_track = explode(",",$track_row['Current_Status']);
+                                            $filtered_status = array_filter($current_status_track);
 
                                             if (in_array("Delivered",$current_status_track)) {
                                                 $rate_res = SqlQuery("SELECT * FROM product_rating where Track_id = '".$track_row['track_id']."'");
@@ -147,6 +148,14 @@
                                                 $estimate_delivery_date = explode(',', $row['estimate_delivery_date']);
 
                                                 $per_product_invoice = explode(',', $row['per_product_invoice']);
+                                                
+                                                if ($per_product_invoice[$key] != '') {
+                                                    $invoice_message =  "<a href=".PER_PRODUCT_INVOICE.$per_product_invoice[$key]." target='_blank'>#".substr($per_product_invoice[$key],0,-4)."</a>";
+                                                }else{
+                                                    $invoice_message = "<a href='javascript:void(0)' 
+                                                    id='DownloadInvoiceAtag_".$Prdrow['id'].$product_varient[$key]."'
+                                                    onclick=\"DownloadInvoice('".$orderDetails."', '".$Prdrow["id"]."', '".$product_qty[$key]."', '".$product_varient[$key]."', '".$payment_prod_price[$key]."', '".$per_product_invoice[$key]."','".$url."')\">Download</a>";
+                                                }
 
                                                 $message_display = '';
                                                 if(!empty($product_message[$key])){
@@ -161,10 +170,11 @@
                                                                             </div>
                                                                             
                                                                         </div>';
+                                                                   
                                                 }
                                                     ?>
 
-                                    <tr>
+                                   <tr>
                                         <td><img style="width:5rem;height:100%;max-width: 5rem;" src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'] ?>" ></td>
                                         <td>
                                             <strong>
@@ -185,8 +195,10 @@
                                                 <tbody>
                                                     <td><?= date("D M d, Y", strtotime($estimate_delivery_date[$key])) ?></td>
                                                     <td><a href="<?= ADMIN_FRONT_SITE.'TrackOrders?track_id='.$track_id[$key].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key] ?></a></td>
-                                                    <td><span style="color:green"><?= end($current_status_track) ?></td>
-                                                    <th><a href="javascript:void(0)" id='DownloadInvoiceAtag_<?= $Prdrow['id'] ?>' onclick="DownloadInvoice('<?= $orderDetails ?>', '<?= $Prdrow['id'] ?>', '<?= $product_qty[$key] ?>', '<?= $product_varient[$key] ?>', '<?= $payment_prod_price[$key] ?>', '<?= $per_product_invoice[$key] ?>','<?= $page_url ?>')">Download</a></th>
+                                                    <td><span style="color:green"><?= end($filtered_status) ?></td>
+                                                    <th id="addInvoiceMessagefromRespone_<?= $orderDetails.$Prdrow['id'].$product_varient[$key] ?>">
+                                                        <?= $invoice_message ?>
+                                                    </th>
                                                     <?= $appen_table_body ?>
                                                 </tbody>
                                             </table>
@@ -207,7 +219,7 @@
                                     ?>
                                 
                             </tbody>
-                            
+                           
                         </table>
                         </div>
                         <!-- /.col -->
@@ -309,30 +321,12 @@
                                             aria-describedby="example1_info">
                                             <thead>
                                                 <tr role="row">
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="Browser: activate to sort column ascending"
-                                                        style="">Order Id</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="Browser: activate to sort column ascending"
-                                                        style="">Order Date</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="Platform(s): activate to sort column ascending">
-                                                        Total Price</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="CSS grade: activate to sort column ascending">
-                                                        Payment</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="CSS grade: activate to sort column ascending">
-                                                        Status</th>                                                        
-                                                    <th class="sorting" tabindex="0" aria-controls="example1"
-                                                        rowspan="1" colspan="1"
-                                                        aria-label="CSS grade: activate to sort column ascending">
-                                                        Invoice</th>
+                                                    <th>Order Id</th>
+                                                    <th>Order Date</th>
+                                                    <th>Total Price</th>
+                                                    <th>Payment</th>
+                                                    <th>Status</th>                                                        
+                                                    <th data-orderable="false"> Invoice</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -362,14 +356,28 @@
                                                                 </span>
                                                             </td>
                                                             <td class="hidden-md-down">
-                                                                <a style="color:#ddd" href="<?= FRONT_SITE_PATH.'Invoices?orderId='.$value['Order_Id'].'&redirect='.$page_url ?>">Generate</a> / <a href="<?= FRONT_SITE_PATH ?>download?filename=<?= $value['invoice_file'] ?>&redirect=<?= $page_url ?>" style="color:#ddd">Download</a> / <a href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].'&PrintData=print' ?>" style="color:#ddd">Print</a></td>
+                                                                <a style="color:#ddd" href="<?= FRONT_SITE_PATH.'Invoices?orderId='.$value['Order_Id'].'&redirect='.$page_url ?>">Generate</a> / <a href="<?= FRONT_SITE_PATH ?>download?filename=<?= $value['invoice_file'] ?>&filepath=UserInvoice/<?= $value['invoice_file']?>&redirect=<?= $page_url ?>" style="color:#ddd">Download</a> / <a href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].'&PrintData=print' ?>" style="color:#ddd">Print</a></td>
                                                             </tr>
                                                          <?php
                                                      }
                                                 ?>
                                                
                                             </tbody>
-
+                                            <style>
+                                                #example1 tfoot th:nth-last-child(1) input{
+                                                   visibility:hidden;
+                                                }
+                                            </style>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>Order Id</th>
+                                                    <th>Date</th>
+                                                    <th>Total Price</th>
+                                                    <th>Payment Status</th>
+                                                    <th>Status</th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
 
                                     </div>
@@ -403,18 +411,50 @@
 ?>
 <script>
         $(function() {
+            $('#example1 tfoot th').each( function () {
+                var title = $(this).text();
+                $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
+            } );
+
             $("#example1").DataTable({
+                mark: {
+                    diacritics: false
+                },
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                initComplete: function () {
+                // Apply the search
+                this.api().columns().every( function () {
+                    var that = this;
+    
+                    $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                        if ( that.search() !== this.value ) {
+                            that
+                                .search( this.value )
+                                .draw();
+                        }
+                    } );
+                } );
+            },
+            buttons: [{
+                        extend: 'print',
+                        exportOptions: {
+                            stripHtml: false,
+                            columns: [0, 1, 2, 3, 4]
+                            //specify which column, you want to print
+
+                        }
+                    }
+
+                ]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
-                "paging": true,
+                "paging": false,
                 "lengthChange": false,
-                "searching": false,
+                "searching": true,
                 "ordering": true,
-                "info": true,
+                "info": false,
                 "autoWidth": false,
                 "responsive": true,
             });

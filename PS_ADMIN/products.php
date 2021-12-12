@@ -31,6 +31,9 @@
         $product_added_on ='';
         $product_status = '';
         $product_subCat_Values = '';
+        $selling_by = 'admin';
+        $sku_id = '';
+        $qc_status = '';
 
         $type = 'add';
 
@@ -61,7 +64,9 @@
                 $product_added_on = $ProductDetails['product_added_on'];
                 $prodid = $ProductDetails['id'];
                 $product_status = $ProductDetails['product_status'];
-                
+                $selling_by = $ProductDetails['selling_by'];
+                $sku_id = $ProductDetails['sku_id'];
+                $qc_status = $ProductDetails['qc_status'];
             }
 
         }
@@ -74,7 +79,6 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0"><?= $head_title ?></h1>
-
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -88,12 +92,14 @@
 
     <div class="content">
         <div class="container-fluid">
+            
             <form action="" id="product_data_form">
                 <input type="hidden" name='product_opt' value="<?= $type ?>">
                 <input type="hidden" name='prodid' value="<?= $prodid ?>">
-                <div class="card_box card-default" data-select2-id="40">
+                <input type="hidden" name='selling_by' value="<?= $selling_by ?>">
+                <div class="card_box card-default">
                     <div class="card-header">
-                        <h3 class="card-title">Add Basic information </h3>
+                        <h3 class="card-title h5">Add Basic information </h3>
                         <button type="submit" id="submit_data" class="btn btn-primary float-right">Next</button>
                     </div>
                     <!-- /.card-header -->
@@ -106,10 +112,14 @@
                                     placeholder="Enter Product Name" value="<?= $product_name ?>">
                             </div>
 
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
+                                <label for="product_size">SKU ID</label>
+                                <input type="text" class="form-control"  value="<?= $sku_id ?>" name="sku_id" placeholder="Enter Unique SKU ID">
+                            </div>
+                            <div class="form-group col-md-3">
                                 <label>Category</label>
                                 <select name="category" id='product_category_121'
-                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;" required
+                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;" 
                                     onchange="product_category_Change()">
                                     <option selected="selected" disabled>Select Category</option>
                                     <?php
@@ -125,9 +135,7 @@
                                             }
                                             
                                             ?>
-                                    <option <?= $selected ?> value="<?= $val['cat_id'] ?>"><?= $val['category_name'] ?>
-                                    </option>
-                                    </option>
+                                    <option <?= $selected ?> value="<?= $val['cat_id'] ?>"><?= $val['category_name'] ?></option>
                                     <?php
                                         }
                                     ?>
@@ -158,9 +166,7 @@
 
                             <div class="form-group col-md-6">
                                 <label>Brand</label>
-                                <select name="brand_data" id='brand_data'
-                                    class="form-control select2 select2-hidden-accessible" style="width: 100%;"
-                                    required>
+                                <select name="brand_data" id='brand_data' class="form-control select2 select2-hidden-accessible" style="width: 100%;">
                                     <option selected="selected" disabled>Select Brand</option>
                                     <?php
                                         foreach($BRAND_DATA as $key => $val) {
@@ -400,6 +406,98 @@
                         </div>
                     </div>
                 </form>
+
+                <form action="" method="post" id='qc_form_settings'>
+                    <input type="hidden" name='product_qc_status_pid' value="<?= $id ?>">
+                    <div class="card_box card-default mt-3 mb-5">
+                        <div class="card-header">
+                            <h3 class="card-title">QC (Quality Check)</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+
+                                <div class="form-group col-md-6">
+                                    <label for="qc_status">Set QC as</label>
+                                    <select name="qc_status" id="qc_status"
+                                        class="form-control select2 select2-hidden-accessible" style="width: 100%;">
+                                        <option value="" selected="" disabled>Select QC Status</option>
+                                        <?php
+                                            $arr_visible = array("0"=>'Send for re-edit', '1' => 'Approved', '2' => 'Reject');
+                                            foreach ($arr_visible as $key => $value) {
+                                                if ($qc_status == $key) {
+                                                    $qc_status_selected = 'selected';
+                                                }else{
+                                                    $qc_status_selected = '';
+                                                }
+                                                ?>
+                                            <option <?= $qc_status_selected ?> value='<?= $key ?>'><?= $value ?></option>
+                                        <?php
+                                                }
+                                            ?>
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <label for="qc_note">Add Note (if any)</label>
+                                    <textarea name="qc_note" id="qc_note_summernote" cols="30" rows="10"></textarea>
+                                </div>
+
+                                <div class="alert alert-warning alert-dismissible">
+                                    <h5><i class="icon fas fa-ban"></i> Note!</h5>
+                                    Note this point, you can't edit anything after you submit your QC message. Make Sure you Submit After Checking all Qc Status and Qc Note.
+                                </div>
+
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            <button type="submit" id="qc_pass_btn"
+                                class="btn btn-primary float-right">Submit</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="card_box card-default">
+                    <div class="callout callout-danger" style="background-color: #283046;">
+                        <h5>QC Test Pass Notes.</h5>
+                        <p>Following are the messages wrote by qc checker.</p>
+                        <dl class="row" id="qc_status_notets" >
+                            <?php
+                                $qc_status_explode = explode(",",$qc_status);
+                                unset($qc_status_explode[0]);
+                                $qc_message_explode = explode(",PS_FASHION_STORE,",$ProductDetails['qc_message']);
+                                unset($qc_message_explode[0]);
+
+                                if (count($qc_status_explode) > 0) {
+                                    foreach ($qc_status_explode as $key => $value) {
+                                        if($value == 0){
+                                            $qc_text = 'Send for Re-Edit';
+                                            $alert_color = 'text-info';
+                                        }elseif ($value == 1) {
+                                            $qc_text = 'Approved';
+                                            $alert_color = 'text-success';
+                                        }else if ($value == 2){
+                                            $qc_text = 'Rejected';
+                                            $alert_color = 'text-danger';
+                                        }
+                                    ?>
+                                        <dt class="col-12 col-md-3 <?= $alert_color ?>"><?= $qc_text ?></dt>
+                                        <dd class="col-12 col-md-9 <?= $alert_color ?>"><?php if(isset($qc_message_explode[$key])) echo $qc_message_explode[$key] ?></dd>
+                                    <?php
+                                    }
+                                }else{
+                                    ?>
+                                        <h3>No Qc Test Pass Found.</h3>
+                                    <?php
+                                }
+                            ?>
+                        </dl>
+
+                    </div>
+                </div>
             </div>
 
             <input type="hidden" id='product_ids' value="<?= $id ?>">
@@ -449,118 +547,44 @@
                                         <div class="row">
                                             <div class="col-sm-12">
 
-                                                <table id="example1"
-                                                    class="table table-bordered table-striped dataTable dtr-inline"
+                                                <table id="ProductListExample"
+                                                    class="table table-bordered table-striped dataTable dtr-inline "
                                                     role="grid" aria-describedby="example1_info">
                                                     <thead>
                                                         <tr role="row">
-                                                            <th class="sorting"><input type="checkbox"
-                                                                    id="delete_check_data" onclick="select_all()"></th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="Browser: activate to sort column ascending"
-                                                                style="">IMAGE</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="Browser: activate to sort column ascending"
-                                                                style="">NAME</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="Platform(s): activate to sort column ascending">
-                                                                PRODUCT PRICE</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="CSS grade: activate to sort column ascending">
-                                                                PRODUCT BRAND</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="CSS grade: activate to sort column ascending">
-                                                                Instock</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="CSS grade: activate to sort column ascending">
-                                                                PRODUCT SIZE</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="CSS grade: activate to sort column ascending">
-                                                                BreadCrump</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="CSS grade: activate to sort column ascending">
-                                                                STATUS</th>
-                                                            <th class="sorting" tabindex="0" aria-controls="example1"
-                                                                rowspan="1" colspan="1"
-                                                                aria-label="CSS grade: activate to sort column ascending">
-                                                                ADDED ON</th>
-
+                                                            <th width="1%"> 
+                                                                <input type="checkbox" id="delete_check_data" onclick="select_all()">
+                                                            </th>
+                                                            <th width="5%">IMAGE</th>
+                                                            <th width="20%">NAME</th>
+                                                            <th width="2%">PRODUCT PRICE</th>
+                                                            <th width="2%">PRODUCT BRAND</th>
+                                                            <th width="2%">Instock</th>
+                                                            <th width="5%">PRODUCT SIZE</th>
+                                                            <th width="20%">BreadCrump</th>
+                                                            <th>STATUS</th>
+                                                            <th>QC STATUS</th>
+                                                            <th>ADDED ON</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="product_listing_td">
-                                                        <?php
-                                                                    $ProductDetails = ProductDetails('left join shop_category on product_details.product_categories =  shop_category.cat_id left join brands on product_details.product_brand = brands.bid');
-                                                                    foreach($ProductDetails as $key => $val) {
-                                                                        $ProductImageById = ProductImageById($val['id'], 'limit 1');
-                                                                        array_unshift($ProductImageById,"");
-                                                                        unset($ProductImageById[0]);
-                                                                        if ($val['total_stock'] -  $val['total_sold'] < 100) {
-                                                                            $color = 'red';
-                                                                        }else{
-                                                                            $color = 'green';
-                                                                        }
-
-                                                                        if ($val['product_status'] == 0) {
-                                                                            $text = 'Blocked';
-                                                                            $bgColor = 'bg-danger';
-                                                                        }else if ($val['product_status'] == 2) {
-                                                                            $text = 'Draft';
-                                                                            $bgColor = 'bg-warning';
-                                                                        }else{
-                                                                            $text = 'Active';
-                                                                            $bgColor = 'bg-success';
-                                                                        }
-
-                                                                        if ($val['product_subCat_Values'] != '') {
-                                                                            $product_subCat_Values = ' - '.$val['product_subCat_Values'];
-                                                                        }else{
-                                                                            $product_subCat_Values = '';
-                                                                        }
-                                                                    ?>
-                                                        <tr class="odd" id="delete_box_<?= $val['id'] ?>">
-                                                            <td class="dtr-control sorting_1" tabindex="0"><input
-                                                                    type="checkbox" name="checked_product_delete[]"
-                                                                    onclick="get_total_selected()" id="<?= $val['id']?>"
-                                                                    value="<?= $val['id'] ?>"></td>
-                                                            <td style=""><img class="img-reponsive img-fluid"
-                                                                    width="80px" height="80px"
-                                                                    style="border-radius:50%;width:80px;height:80px"
-                                                                    src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById['1']['product_img'] ?>"
-                                                                    alt=""></td>
-                                                            <td style=""><a
-                                                                    href="<?= ADMIN_FRONT_SITE.'products?operation=addProduct&id='.$val['id'].'' ?>"><?= $val['product_name'] ?></a>
-                                                            </td>
-                                                            <td>
-                                                                <h6 class="text-muted">
-                                                                    <strike>₹<?= $val['product_oldPrice'] ?></strike>
-                                                                </h6>
-                                                                <h5>₹ <?= $val['product_price'] ?></h5>
-                                                            </td>
-                                                            <td><?= $val['brand_name'] ?></td>
-                                                            <td style="color: <?= $color ?>">
-                                                                <?= $val['total_stock'] - $val['total_sold'] ?></td>
-                                                            <td><?= $val['product_size'] ?></td>
-                                                            <td><?= $val['category_name'].' - '.$val['product_subCategories'].''.$product_subCat_Values ?>
-                                                            </td>
-                                                            <td><span class="btn <?= $bgColor ?>"><?= $text ?></span>
-                                                            </td>
-                                                            <td><?= date("d M,Y", strtotime($val['product_added_on'])) ?>
-                                                            </td>
-                                                        </tr>
-                                                        <?php
-                                                            }
-                                                        ?>
 
                                                     </tbody>
-
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th>By Name</th>
+                                                            <th>By Price</th>
+                                                            <th>By Brand</th>
+                                                            <th>By Stock</th>
+                                                            <th>By Size</th>
+                                                            <th>By Breadcrump</th>
+                                                            <th>By Status</th>
+                                                            <th>By QC status</th>
+                                                            <th>By Added Date</th>
+                                                        </tr>
+                                                    </tfoot>
                                                 </table>
 
                                             </div>
@@ -579,8 +603,8 @@
 
 
             <?php
-    require 'includes/footer.php';
-?>
+                require 'includes/footer.php';
+            ?>
 
             <script>
             $("#product_images").hide();
@@ -594,7 +618,7 @@
 
             Dropzone.options.dropzoneFrom = {
                 autoProcessQueue: false,
-                acceptedFiles: ".png,.jpg,.jpeg",
+                acceptedFiles: ".png,.jpg,.jpeg,.webp",
                 parallelUploads: 10000,
                 uploadMultiple: true,
                 init: function() {
@@ -633,10 +657,28 @@
 
 
             $(function() {
+                $('#example1 tfoot th:gt(1)').each( function () {
+                    var title = $(this).text();
+                    $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
+                } );
                 $("#example1").DataTable({
                     "responsive": true,
-                    "lengthChange": false,
                     "autoWidth": false,
+                    "lengthMenu": [[2,5, 10, 25, 50, -1], [2,5, 10, 25, 50, "All"]],
+                    initComplete: function () {
+                        // Apply the search
+                        this.api().columns(':gt(1)').every( function () {
+                            var that = this;
+            
+                            $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                                if ( that.search() !== this.value ) {
+                                    that
+                                        .search( this.value )
+                                        .draw();
+                                }
+                            } );
+                        } );
+                    },
                     buttons: [{
                         extend: 'print',
                         exportOptions: {
@@ -649,15 +691,7 @@
 
                 ]
                 }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-                $('#example2').DataTable({
-                    "paging": true,
-                    "lengthChange": false,
-                    "searching": false,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "responsive": true,
-                });
+                
 
                 //Initialize Select2 Elements
                 $('.select2').select2()
@@ -679,6 +713,13 @@
                     tabsize: 2,
                     height: 250,
                 });
+
+                $('#qc_note_summernote').summernote({
+                    placeholder: 'Add some comment that will visible to seller so he can edit and again send for QC',
+                    tabsize: 2,
+                    height: 100
+                });
+                
 
                 $.validator.addMethod("valueNotEquals", function(value, element, arg) {
                     return arg !== value;
@@ -736,6 +777,18 @@
                             required: true,
                             rangelength: [10, 255]
                         },
+                        category: {
+                            required: true
+                        },
+                        sub_category_data: {
+                            required : true,
+                        },
+                        sku_id :{
+                            required : true,
+                        },
+                        brand_data: {
+                            required : true
+                        },
                         total_stock: {
                             required: true,
                             number: true
@@ -774,6 +827,44 @@
                     }
                 });
 
+                $.validator.setDefaults({
+                    submitHandler: function(form) {
+                        $("#qc_pass_btn").attr("disabled", true);
+                        $.ajax({
+                            type: "POST",
+                            url: "admin_ajax_call.php",
+                            data: $(form).serialize(),
+                            success: function(res) {
+                                $("#qc_status_notets").append(res);
+                                $("#qc_pass_btn").attr("disabled", false);
+                                $("#qc_form_settings")[0].reset();
+                                swal('QC Status', 'QC Status Updated', 'success');
+                            }
+                        });
+                    }
+                });
+                $('#qc_form_settings').validate({
+                    rules: {
+                        qc_status: {
+                            required : true
+                        },
+                        qc_note: {
+                            required: true,
+                            rangelength:[3,255]
+                        }
+                    },
+                    errorElement: 'span',
+                    errorPlacement: function(error, element) {
+                        error.addClass('invalid-feedback');
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function(element, errorClass, validClass) {
+                        $(element).addClass('is-invalid');
+                    },
+                    unhighlight: function(element, errorClass, validClass) {
+                        $(element).removeClass('is-invalid');
+                    }
+                });
 
             });
             </script>

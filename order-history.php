@@ -181,6 +181,7 @@
                                             $track_res = SqlQuery("SELECT * FROM ordertrackingdetails WHERE track_id = '$track_id[$key]'");
                                             $track_row = mysqli_fetch_assoc($track_res);
                                             $current_status_track = explode(",",$track_row['Current_Status']);
+                                            $filtered_status = array_filter($current_status_track);
 
                                             if (in_array("Delivered",$current_status_track)) {
                                                 $rate_res = SqlQuery("SELECT * FROM product_rating where Track_id = '".$track_row['track_id']."'");
@@ -226,6 +227,14 @@
                                                 if(!empty($product_message[$key])){
                                                     $message_display .= ' <textarea class="form-control" rows="10" id="textareacommentorder_'.$orderDetails.'" disabled>'.$product_message[$key].'</textarea>';
                                                 }
+
+                                                if ($per_product_invoice[$key] != '') {
+                                                    $invoice_message =  "<a href=".PER_PRODUCT_INVOICE.$per_product_invoice[$key]." target='_blank'>#".substr($per_product_invoice[$key],0,-4)."</a>";
+                                                }else{
+                                                    $invoice_message = "<a href='javascript:void(0)' 
+                                                    id='DownloadInvoiceAtag_".$Prdrow['id'].$product_varient[$key]."'
+                                                    onclick=\"DownloadInvoice('".$row['Order_Id']."', '".$Prdrow["id"]."', '".$product_qty[$key]."', '".$product_varient[$key]."', '".$payment_prod_price[$key]."', '".$per_product_invoice[$key]."','".$url."')\">Download</a>";
+                                                }
                                             ?>
 
                                     <tr>
@@ -251,8 +260,10 @@
                                                 <tbody>
                                                     <td><?= date("D M d, Y", strtotime($estimate_delivery_date[$key])) ?></td>
                                                     <td><a href="<?= FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key] ?></a></td>
-                                                    <td><span style="color:green"><?= end($current_status_track) ?></td>
-                                                    <th><a href="javascript:void(0)" id='DownloadInvoiceAtag_<?= $Prdrow['id'] ?>' onclick="DownloadInvoice('<?= $orderDetails ?>', '<?= $Prdrow['id'] ?>', '<?= $product_qty[$key] ?>', '<?= $product_varient[$key] ?>', '<?= $payment_prod_price[$key] ?>', '<?= $per_product_invoice[$key] ?>','<?= $page_url ?>')">Download</a></th>
+                                                    <td><span style="color:green"><?= end($filtered_status) ?></td>
+                                                    <th id="addInvoiceMessagefromRespone_<?= $Prdrow['id'].$product_varient[$key] ?>">
+                                                        <?= $invoice_message ?>
+                                                    </th>
                                                     <?= $appen_table_body ?>
                                                 </tbody>
                                             </table>
@@ -481,6 +492,7 @@
                                         </span>
                                     </td>
                                     <td class="text-sm-center hidden-md-down">
+                                        
                                         <a
                                             href="download?filename=<?= $row['invoice_file'] ?>&filepath=UserInvoice/<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download</a>
                                     </td>
