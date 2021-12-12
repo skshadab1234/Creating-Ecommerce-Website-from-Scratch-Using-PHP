@@ -42,7 +42,7 @@ function send_email($email,$html,$subject){
 	$mail->SMTPSecure="tls";
 	$mail->SMTPAuth=true;
 	$mail->Username="ks615044@gmail.com"; // Change My Email
-	$mail->Password="Parveenloveshadab1@";
+	$mail->Password="a@";
 	$mail->setFrom("ks615044@gmail.com"); // Change My Email
 	$mail->addAddress($email);
 	$mail->IsHTML(true);
