@@ -232,8 +232,8 @@
                                                                  $order_id = $value['Order_Id'];
 
                                                                  $invoice_message = "<a href='javascript:void(0)' 
-                                                                 id='DownloadInvoiceAtag_".$value['Order_Id'].$product_ids_array[$tarcking_id_key].$product_varient_array[$tarcking_id_key]."'
-                                                                 onclick=\"DownloadInvoice('".$value['Order_Id']."', '".$product_ids_array[$tarcking_id_key]."', '".$product_qty_array[$tarcking_id_key]."', '".$product_varient_array[$tarcking_id_key]."', '".$payment_prod_price_array[$tarcking_id_key]."', '".$per_product_invoice_array[$tarcking_id_key]."','".$url."')\">Download</a>";
+                                                                 id='DownloadInvoiceAtag_".$value['Order_Id'].$tarcking_id[$tarcking_id_key].$product_ids_array[$tarcking_id_key].$product_varient_array[$tarcking_id_key]."'
+                                                                 onclick=\"DownloadInvoice('".$value['Order_Id']."','".$tarcking_id[$tarcking_id_key]."', '".$product_ids_array[$tarcking_id_key]."', '".$product_qty_array[$tarcking_id_key]."', '".$product_varient_array[$tarcking_id_key]."', '".$payment_prod_price_array[$tarcking_id_key]."', '".$per_product_invoice_array[$tarcking_id_key]."','".$url."')\">Download</a>";
                                                              }
                                                              ?>
                                                             <tr>
@@ -314,7 +314,7 @@
                                                                         }
                                                                     ?>
                                                                 </td>
-                                                                <td id="addInvoiceMessagefromRespone_<?= $value['Order_Id'].$product_ids_array[$tarcking_id_key].$product_varient_array[$tarcking_id_key] ?>"><?= $invoice_message ?></td>
+                                                                <td id="addInvoiceMessagefromRespone_<?= $value['Order_Id'].$tarcking_id[$tarcking_id_key].$product_ids_array[$tarcking_id_key].$product_varient_array[$tarcking_id_key] ?>"><?= $invoice_message ?></td>
                                                                 <td>
                                                                     <?php
                                                                         if($value['payment_status'] == 'succeeded') {

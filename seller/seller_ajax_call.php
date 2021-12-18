@@ -450,7 +450,7 @@ elseif (isset($_POST['from_js_get_data_image']) && isset($_POST['signature_uploa
     SqlQuery("UPDATE seller_account SET seller_signature='$signature_image' WHERE id= '$seller_id'");
 }
 
-
+// Add New Brand 
 elseif (isset($_POST['brand_selection_for_add_new'])) {
     $brand_selected = get_safe_value($_POST['brand_selection_for_add_new']);
     $subcategory_selection = get_safe_value($_POST['subcategory_selection']);
@@ -524,6 +524,80 @@ elseif (isset($_POST['brand_selection_for_add_new'])) {
     echo $html;
 }
 
+// Brand Request Updating By Brand Owner 
+elseif (isset($_POST['approvalBrand_id']) && isset($_POST['brand_id']) && isset($_POST['sellerReqId']) && isset($_POST['approval_comment'])) {
+  $approvalBrand_id = get_safe_value($_POST['approvalBrand_id']);
+  $brand_id = get_safe_value($_POST['brand_id']);
+  $sellerReqId = get_safe_value($_POST['sellerReqId']);
+  $approval_comment = get_safe_value($_POST['approval_comment']);
+
+  if (!isset($_POST['select_brand_status'])) {
+    $arr = array("status" => "error");
+  }else{
+    SqlQuery("UPDATE brand_approval_doc SET notes_from_brand_owner = '$approval_comment' WHERE id = '$approvalBrand_id'");
+    $brand_fromDb = ExecutedQuery("SELECT * FROM brands WHERE bid = '$brand_id'")[0];
+
+    $seller_request_approved_explode = explode(",",$brand_fromDb['seller_request_approved']);
+    $seller_request_in_process_explode = explode(",",$brand_fromDb['seller_request_in_process']);
+    $seller_request_rejected_explode = explode(",",$brand_fromDb['seller_request_rejected']);
+
+    // Remove Seller Id from array list 
+    foreach (array_keys($seller_request_approved_explode, $sellerReqId) as $key) {
+        unset($seller_request_approved_explode[$key]);
+    }
+
+    foreach (array_keys($seller_request_in_process_explode, $sellerReqId) as $key) {
+        unset($seller_request_in_process_explode[$key]);
+    }
+
+    foreach (array_keys($seller_request_rejected_explode, $sellerReqId) as $key) {
+        unset($seller_request_rejected_explode[$key]);
+    }
+
+    $select_brand_status = get_safe_value($_POST['select_brand_status']);
+    $seller_request_in_process_string = implode(',',$seller_request_in_process_explode);
+    $seller_request_approved_string = implode(',',$seller_request_approved_explode);
+    $seller_request_rejected_string = implode(',',$seller_request_rejected_explode);
+
+    if ($select_brand_status == 0) {
+      if($brand_fromDb['seller_request_in_process'] != '') {
+        $seller_request_in_process_string = $seller_request_in_process_string.','.$sellerReqId;
+      }else{
+        $seller_request_in_process_string = $sellerReqId;
+      }  
+
+      // We use this status in response for displaying into status column
+      $approval_status = '<span class="text-warning">In Process</span>';
+    }
+
+    if ($select_brand_status == 1) {
+      if($brand_fromDb['seller_request_approved'] != '') {
+        $seller_request_approved_string = $seller_request_approved_string.','.$sellerReqId;
+      }else{
+        $seller_request_approved_string = $sellerReqId;
+      }  
+
+      $approval_status = '<span class="text-success">Approved</span>';
+    }
+
+    if ($select_brand_status == 2) {
+      if($brand_fromDb['seller_request_rejected'] != '') {
+        $seller_request_rejected_string = $seller_request_rejected_string.','.$sellerReqId;
+      }else{
+        $seller_request_rejected_string = $sellerReqId;
+      }  
+      $approval_status = '<span class="text-danger">Rejected</span>';
+    }
+
+    SqlQuery("UPDATE brands SET seller_request_approved = '$seller_request_approved_string',
+              seller_request_in_process = '$seller_request_in_process_string',
+              seller_request_rejected = '$seller_request_rejected_string' WHERE bid = '$brand_id'");
+
+    $arr = array("status" => "success",'note'=>$approval_comment, 'approval_Brandid' => $approvalBrand_id, 'approval_status' => $approval_status);
+  }
+
+  echo json_encode($arr);
+}
 
 
 

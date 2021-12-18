@@ -25,6 +25,20 @@
         if(isset($_GET['brandid']) && $_GET['brandid'] != '') {
             $title = 'Applying for Brand Approval';
         }
+    }elseif ($page_url == SELLER_FRONT_SITE.'brands.php') {
+        $active_menu_brand = 'active';
+      
+        if(isset(($_GET['action'])) && $_GET['action'] == 'viewBrandListing'){
+          $title ='View Brand List';
+          $active_brand = 'active';
+        }else if(isset(($_GET['action'])) && $_GET['action'] == 'addNewBrandListing'){
+            $title ='Add new Brand';
+            $add_new_brand_active = 'active';
+        } 
+        else{
+          $title = 'Approve Requested Brand';
+          $active_brand_arb = 'active';
+        }
     }
     else if ($page_url == SELLER_FRONT_SITE.'profile.php') {
         $title = $sell_row['seller_fullname'].'- Profile';
@@ -36,7 +50,6 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,7 +76,9 @@
     <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.min.css">    
-
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    
     <!-- For Dropzone Csss  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css" />
     
@@ -124,6 +139,18 @@
                         <a class="dropdown-item <?= $active_lip ?>" href="<?= SELLER_FRONT_SITE.'ProductListing' ?>">QC Check Products</a>
                     </div>
                 </li>
+
+                <li class="nav-item dropdown <?= $active_menu_brand ?>">
+                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Brands
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item <?= $active_brand ?>" href="<?= SELLER_FRONT_SITE.'brands?action=viewBrandListing' ?>">My Brands</a>
+                        <a class="dropdown-item <?= $add_new_brand_active ?>" href="<?= SELLER_FRONT_SITE.'brands?action=addNewBrandListing' ?>">Add New Brands</a>
+                        <a class="dropdown-item <?= $active_brand_arb ?>" href="<?= SELLER_FRONT_SITE.'brands' ?>">Approve Requested Brands</a>
+                    </div>
+                </li>   
             </ul>
             <ul class='navbar-nav'>
                 <li class="nav-item dropdown">

@@ -19,18 +19,17 @@ if(!empty($_FILES))
 
 elseif (isset($_POST['list_image_files']) && isset($_POST['brand_ids'])) {
     $id = get_safe_value($_POST['brand_ids']);
+    $res = SqlQuery("Select * from brands Where bid = '$id'");
+    $row = mysqli_fetch_assoc($res);
     
     ?>
     <div class="row" style="justify-content: center;align-items: center;">
         <?php
-        if ($id == "") {
+        if ($row['brand_img'] == "") {
             ?>
             No Images Uploaded, Please Add some Images
             <?php
         }else{
-            
-            $res = SqlQuery("Select * from brands Where bid = '$id'");
-            $row = mysqli_fetch_assoc($res);
             ?>
                 <div class="col-6 col-sm-2  mt-2" style="">
                     <div class="container" style="display: flex;justify-content: center; margin-top: 10px;">
@@ -47,14 +46,15 @@ elseif (isset($_POST['list_image_files']) && isset($_POST['brand_ids'])) {
         }
         ?>
                 
-             
+    <input type="hidden" id="admin_path" value="<?= ADMIN_FRONT_SITE ?>">         
     </div>
     
     <script>
+    var admin_path = $("#admin_path").val();
     function delete_prd_images(brand_img, bid) {
 
         $.ajax({
-            url: "brand_images.php",
+            url: admin_path+"brand_images.php",
             method: "post",
             data: {
                 brand_img: brand_img,

@@ -293,6 +293,7 @@ if (isset($_GET['orderId']) && $_GET['orderId'] != '') {
 elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && isset($_POST['pid']) && $_POST['pid'] != '') {
     $order_id = get_safe_value($_POST['ProductOrderId']);
     $product_id = get_safe_value($_POST['pid']);
+    $track_id = get_safe_value($_POST['track_id']);
     $product_qty = get_Safe_value($_POST['qty_key']);
     $size = get_Safe_value($_POST['prd_varint_key']);
     $price = get_Safe_value($_POST['payment_prod_price']);
@@ -545,14 +546,13 @@ elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && iss
         $mpdf->output($file,'F');
         
         $per_product_invoice  = explode(",",$row['per_product_invoice']);
-        $p_KEY = explode(",",$row['product_id']);
-        $p_key_search = array_search($product_id,$p_KEY);
+        $p_KEY = explode(",",$row['tracking_id']);
+        $p_key_search = array_search($track_id,$p_KEY);
         
         $per_product_invoice[$p_key_search] = $file_store;
         
         $per_product_invoice_string = implode(",", $per_product_invoice);
         
-
         $per_product_invoice_string_substr = substr($per_product_invoice_string,0,-1);
         
         mysqli_query($con, "UPDATE payment_details set per_product_invoice='$per_product_invoice_string' WHERE Order_Id='$order_id'");

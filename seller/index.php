@@ -299,7 +299,7 @@ if (!isset($_SESSION['SELLER_ID'])) redirect(SELLER_FRONT_SITE.'logintoseller');
     <?php
         }
         else{
-            redirect(SELLER_FRONT_SITE.'profile');
+            redirect(SELLER_FRONT_SITE.'dashboard');
         }
         
     ?>

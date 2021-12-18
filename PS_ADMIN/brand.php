@@ -7,12 +7,10 @@
         $status = '';
         $brand_name = '';
         $sellerId_BrandOwner = '';
-        $hide_previe_image = 'display:none';
 
         if (isset($_GET['id']) && $_GET['id'] > 0) {
             $id = get_safe_value($_GET['id']);
             $type= 'update';
-            $hide_previe_image = '';
             $brand_res = SqlQuery("SELECT * FROM brands WHERE bid = '$id'");
             if (mysqli_num_rows($brand_res) > 0) {
                 $row = mysqli_fetch_assoc($brand_res);
@@ -56,7 +54,7 @@
                     </div>
                 </div>
 
-                <div class="card_box card-default mt-3 mb-5" id="brand_images" style="<?= $hide_previe_image ?>">
+                <div class="card_box card-default mt-3 mb-5" id="brand_images">
                     <div class="card-header">
                         <h3 class="card-title">Uploaded Brand Images</h3>
                     </div>
@@ -296,7 +294,6 @@
         }
         list_image();   
         function list_image() {
-            
             var brand_ids = $("#brand_ids").val();
             
             $.ajax({

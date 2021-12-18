@@ -30,8 +30,8 @@
         $payment_row = ExecutedQuery("SELECT * FROM payment_details where Order_Id = '$track_Order_id'");
         $payment_row = $payment_row[0];
         
-        $payment_row_pid = explode(",",$payment_row['product_id']);
-        $getIndex = array_search($delivery_product_id,$payment_row_pid);
+        $payment_row_tid = explode(",",$payment_row['tracking_id']);
+        $getIndex = array_search($track_id,$payment_row_tid);
 
         // Now with the help of this index we will get estimate date,size,quantity,price
         $estimate_delivery_date_explode = explode(",",$payment_row['estimate_delivery_date']);
@@ -81,7 +81,6 @@
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
 
     <div class="content">
         <div class="container-fluid">

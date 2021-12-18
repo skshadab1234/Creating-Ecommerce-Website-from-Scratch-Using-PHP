@@ -88,7 +88,6 @@ function DashboardData(date) {
 
 DashboardData(dates)
 
-
 // Forgot Password Syustem 
 
 $("#admin_forgot_password").submit((e) => {
@@ -169,36 +168,47 @@ $("#form_main_setting_product").submit((e) => {
     });
 })
 
-// Selecting checkbox to delete Product 
+// Selecting checkbox to Update Product and Showig and Hiding All Buttons
+$("#product_activate_btn").click(()=>{
+    $("#productStatusAfterBtnClick").val('1');
+});
+
+$("#product_deactivate_btn").click(()=>{
+    $("#productStatusAfterBtnClick").val('0');
+});
+
+$("#product_draft_btn").click(()=>{
+    $("#productStatusAfterBtnClick").val('2');
+});
 
 function select_all() {
-    if (jQuery('#delete_check_data').prop("checked")) {
+    if (jQuery('#update_check_data').prop("checked")) {
         jQuery('input[type=checkbox]').each(function () {
             jQuery('#' + this.id).prop('checked', true);
         });
-        $("#product_delete_btn").show();
+        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn").show();
     } else {
         jQuery('input[type=checkbox]').each(function () {
             jQuery('#' + this.id).prop('checked', false);
         });
-        $("#product_delete_btn").hide();
+        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn").hide();
     }
 }
 
 function get_total_selected() {
     if ($('input[type=checkbox]:checked').length > 0) {
-        $("#product_delete_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn").show();
+        $("#product_activate_btn, #product_deactivate_btn, #product_draft_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn").show();
     } else {
-        $("#product_delete_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn").hide();
+        $("#product_activate_btn, #product_deactivate_btn, $product_draft_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn").hide();
     }
 
 }
 
 
-$("#delete_all_product_checkbox_frm").submit((e) => {
+$("#update_all_product_checkbox_frm").submit((e) => {
     e.preventDefault();
 
-    var form_data = $("#delete_all_product_checkbox_frm").serialize();
+    var form_data = $("#update_all_product_checkbox_frm").serialize();
     jQuery.ajax({
         url: 'admin_ajax_call.php',
         type: 'post',
@@ -226,10 +236,12 @@ function ProductListingAjax() {
                     $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
                 } );
 
-                $('#ProductListExample').DataTable({
+               $('#ProductListExample').DataTable({
+                    dom: 'Blfrtip',
                     "destroy": true,
                     "responsive": true,
                     "autoWidth": false,
+                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                     initComplete: function () {
                         // Apply the search
                         this.api().columns(':gt(1)').every( function () {
@@ -244,20 +256,28 @@ function ProductListingAjax() {
                             } );
                         } );
                     },
-                    buttons: [{
+
+                    buttons: [
+                        {
+                            extend: 'searchBuilder',
+                            config: {
+                                depthLimit: 2
+                            }
+                        },
+                        {
                             extend: 'print',
                             exportOptions: {
                                 stripHtml: false,
                                 columns: [1, 2, 3,4,5,6,7,8,9]
                                 //specify which column you want to print
-
                             }
-                        }
-
+                        }    
                     ],
-                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            
+                    
                     'ajax': ADMIN_FRONT_SITE + 'json/product.json',
                 });
+
         }
     });
 }
@@ -597,13 +617,14 @@ function RemoveAssignedDeliveryBoy(orderTrackid) {
 }
 
 // Download Invoice 
-function DownloadInvoice(ProductOrderId, pid, qty_key, prd_varint_key, payment_prod_price, filename, redirect) {
-    $("#DownloadInvoiceAtag_" + ProductOrderId+pid+prd_varint_key).hide();
+function DownloadInvoice(ProductOrderId, track_id,pid, qty_key, prd_varint_key, payment_prod_price, filename, redirect) {
+    $("#DownloadInvoiceAtag_" +ProductOrderId+track_id+pid+prd_varint_key).hide();
     $.ajax({
         url: '../Invoices.php',
         method: 'post',
         data: {
             ProductOrderId: ProductOrderId,
+            track_id:track_id,
             pid: pid,
             qty_key: qty_key,
             prd_varint_key: prd_varint_key,
@@ -614,13 +635,13 @@ function DownloadInvoice(ProductOrderId, pid, qty_key, prd_varint_key, payment_p
         success: (res) => {
             var data = $.parseJSON(res);
 
-            $("#DownloadInvoiceAtag_" +ProductOrderId+pid+prd_varint_key).show();
+            $("#DownloadInvoiceAtag_" +ProductOrderId+track_id+pid+prd_varint_key).show();
 
             swal({
                 title: "Invoice Downloaded Successfully",
                 type: "success"
             }).then(() => {
-                $("#addInvoiceMessagefromRespone_"+ProductOrderId+pid+prd_varint_key).html("<a href="+data.filepath+data.filename+" target='_blank'>#"+data.filename+"</a>");   
+                $("#addInvoiceMessagefromRespone_"+ProductOrderId+track_id+pid+prd_varint_key).html("<a href="+data.filepath+data.filename+" target='_blank'>#"+data.filename+"</a>");   
             });
         }
     })

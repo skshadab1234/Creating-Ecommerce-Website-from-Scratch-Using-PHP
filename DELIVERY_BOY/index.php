@@ -16,7 +16,11 @@
     $totalPending = ($explodePendingOrder[0] == 0) ? 0 : count($explodePendingOrder);
     
     $DeliveredTrackId = explode(",",GetAssignedDeliveryForDeliveryBoy($DELIVERYData['delivery_boy_id'])['DeliveredTrackId']);
+    $DeliveredTrackId = array_filter($DeliveredTrackId);
     $PendingTrackId = explode(",",GetAssignedDeliveryForDeliveryBoy($DELIVERYData['delivery_boy_id'])['PendingTrackId']);
+    $PendingTrackId = array_filter($PendingTrackId);
+
+    
 ?>
 
 <!-- Content Wrapper. Contains page content -->
@@ -137,14 +141,14 @@
                                 $trackId = $row['track_id'];
                                 $payment_res = SqlQuery("SELECT * FROM payment_details WHERE Order_Id='$order_id'");
                                 foreach($payment_res as $pay_key => $payment_row) {
+                                    $tracking_id = explode(",",$payment_row['tracking_id']);
                                     $getProductId = explode(",",$payment_row['product_id']);
                                     $per_product_invoice = explode(",",$payment_row['per_product_invoice']);
                                     $product_varient = explode(",",$payment_row['product_varient']);
                                     $payment_prod_price = explode(",",$payment_row['payment_prod_price']);
                                     $estimate_delivery_date = explode(",",$payment_row['estimate_delivery_date']);
                                     $qty = explode(",",$payment_row['product_qty']);
-                                    $getProductIndex = array_search($value,$getProductId);
-                                    
+                                    $getProductIndex = array_search($trackId,$tracking_id);
                                     // pr($getProductId[$pay_key]);
                                     $ProductDetails =  ProductDetails('where id='.$getProductId[$getProductIndex].'');
                                     $ProductDetails = $ProductDetails[0];
@@ -155,18 +159,18 @@
                                     }else{
                                         $invoice_msg =  "<a href=".PER_PRODUCT_INVOICE.$per_product_invoice[$getProductIndex]." target='_blank'>#".substr($per_product_invoice[$getProductIndex],0,-4)."</a>";
                                         ?>
-                        <tr>
-                            <td><?= date("d/m/Y h:i A",strtotime($estimate_delivery_date[$getProductIndex])) ?></td>
-                            <td> <a
-                                    href="<?= DELIVERY_FRONT_SITE.'DeliveryDetails?deliveryTrackId='.$row['id'].'&Invoice='.$per_product_invoice[$getProductIndex] ?>">View</a>
-                            </td>
-                            <td>₹ <?= number_format($payment_prod_price[$getProductIndex] * $qty[$getProductIndex]) ?>
-                            </td>
-                            <td><?= $product_varient[$getProductIndex] ?>/<?= $qty[$getProductIndex] ?></td>
-                            <td><?= $invoice_msg ?></td>
-                            <td><?= end($filtered_status) ?></td>
-                        </tr>
-                        <?php
+                                        <tr>
+                                            <td><?= date("d/m/Y h:i A",strtotime($estimate_delivery_date[$getProductIndex])) ?></td>
+                                            <td> <a
+                                                    href="<?= DELIVERY_FRONT_SITE.'DeliveryDetails?deliveryTrackId='.$row['id'].'&Invoice='.$per_product_invoice[$getProductIndex] ?>">View</a>
+                                            </td>
+                                            <td>₹ <?= number_format($payment_prod_price[$getProductIndex] * $qty[$getProductIndex]) ?>
+                                            </td>
+                                            <td><?= $product_varient[$getProductIndex] ?>/<?= $qty[$getProductIndex] ?></td>
+                                            <td><?= $invoice_msg ?></td>
+                                            <td><?= end($filtered_status) ?></td>
+                                        </tr>
+                                        <?php
                                     }
 
                                 }

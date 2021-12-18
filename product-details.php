@@ -92,32 +92,26 @@
                 </li>
                 <?php
                     }
-                ?>
 
-                <?php
                     if ($ProductDetails['product_subCategories'] != '') {
                         ?>
-                <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a itemprop="item"
-                        href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
-                        <span itemprop="name"><?=  $ProductDetails['product_subCategories'] ?></span>
-                    </a>
-                    <meta itemprop="position" content="2">
-                </li>
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a itemprop="item"
+                                href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
+                                <span itemprop="name"><?=  urldecode($ProductDetails['product_subCategories']) ?></span>
+                            </a>
+                            <meta itemprop="position" content="2">
+                        </li>
 
                 <?php
                     }
-                  ?>
 
-
-
-                <?php
                     if ($ProductDetails['product_subCat_Values'] != '') {
                         ?>
                 <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                     <a itemprop="item"
                         href="<?= FRONT_SITE_PATH.'subcategories?subcat_name='.urlencode($ProductDetails['product_subCategories']) ?>">
-                        <span itemprop="name"><?=  $ProductDetails['product_subCat_Values'] ?></span>
+                        <span itemprop="name"><?=  urldecode($ProductDetails['product_subCat_Values']) ?></span>
                     </a>
                     <meta itemprop="position" content="2">
                 </li>
@@ -232,11 +226,16 @@
                                 <div class="product-attributes-label">
                                     <div class="product-manufacturer">
                                         <label class="label">Brand:</label>
-
+                                        <?php
+                                            if($ProductDetails['brand_img'] == '' ){
+                                                $brand_name_check = $ProductDetails['brand_name'];
+                                            }else{
+                                                $brand_name_check = ' <img src='.FRONT_SITE_IMAGE_BRAND.$ProductDetails['brand_img'].' class="img img-thumbnail manufacturer-logo" alt="Studio Design">';
+                                            }
+                                        ?>  
                                         <a
-                                            href="<?= FRONT_SITE_PATH.'brand?brand_name='.$ProductDetails['brand_name'] ?>">
-                                            <img src="<?= FRONT_SITE_IMAGE_BRAND.$ProductDetails['brand_img'] ?>"
-                                                class="img img-thumbnail manufacturer-logo" alt="Studio Design">
+                                            href="<?= FRONT_SITE_PATH.'brand?brand_name='.$ProductDetails['brand_name'] ?>" title="<?= $ProductDetails['brand_name'] ?>">
+                                            <?= $brand_name_check ?>
                                         </a>
 
                                     </div>

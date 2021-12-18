@@ -825,7 +825,7 @@ elseif (isset($_POST['ProductListingAjax']))
         }
 
         if ($val['product_subCat_Values'] != '') {
-            $product_subCat_Values = ' - '.$val['product_subCat_Values'];
+            $product_subCat_Values = ' - '.urldecode($val['product_subCat_Values']);
         }else{
             $product_subCat_Values = '';
         }
@@ -835,7 +835,7 @@ elseif (isset($_POST['ProductListingAjax']))
             $total_stock_msg = 'Out of Stock';
         }else{
             $color = 'green';
-            $total_stock_msg = "In Stock:- ".($val['total_stock'] -  $val['total_sold']);
+            $total_stock_msg = "".($val['total_stock'] -  $val['total_sold']);
         }
 
         $qc_status_explode = explode(",",$val['qc_status']);
@@ -850,15 +850,15 @@ elseif (isset($_POST['ProductListingAjax']))
             $qc_text = '<span class="text-danger">Rejected</span>';
         }
         $product_listing_td .= '[
-                                '.json_encode("<input type=\"checkbox\" name=\"checked_product_delete[]\" onclick=\"get_total_selected()\" id='".$val['id']."' value='".$val['id']."'>").',
-                                '.json_encode("<img class=\"img-reponsive img-fluid\" width=\"80px\" height=\"80px\" style=\"border-radius:50%;width:80px;height:80px\" src='".FRONT_SITE_IMAGE_PRODUCT . $ProductImageById['1']['product_img']."' alt=\"\">").',
+                                '.json_encode("<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='".$val['id']."' value='".$val['id']."'>").',
+                                '.json_encode("<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='".FRONT_SITE_IMAGE_PRODUCT . $ProductImageById['1']['product_img']."' alt=\"\">").',
                                 '.json_encode("<a href='".ADMIN_FRONT_SITE.'products?operation=addProduct&id='.$val['id']."'>".$val['product_name']."</a><br>SKU Id: ".$val['sku_id']."").',
-                                '.json_encode("<h6 class='text-muted'><strike>₹ ".$val['product_oldPrice']."</strike></h6>
-                                              <h5>₹ ".$val['product_price']."</h5>").',
+                                '.json_encode("".$val['product_price']."").',
+                                '.json_encode("".$val['product_oldPrice']."").',
                                 '.json_encode("".$val['brand_name']."").',
                                 '.json_encode("<p style=\"color: ".$color."\">".$total_stock_msg."</p>").',
                                 '.json_encode("".$val['product_size']."").',
-                                '.json_encode("".$val['category_name'].' - '.$val['product_subCategories'].''.$product_subCat_Values ."").',
+                                '.json_encode("".$val['category_name'].' - '.urldecode($val['product_subCategories']).''.$product_subCat_Values ."").',
                                 '.json_encode("<span class=\"btn ".$bgColor."\">".$text."</span>").',
                                 '.json_encode("".$qc_text."").',
                                 '.json_encode("".date("d M,Y", strtotime($val['product_added_on']))."").'
@@ -875,17 +875,13 @@ elseif (isset($_POST['ProductListingAjax']))
     fclose($f);     
 }
 
-else if (isset($_POST['checked_product_delete'][0]))
+else if (isset($_POST['checked_product_update'][0]))
 {
-    foreach ($_POST['checked_product_delete'] as $list)
+    $product_status = get_safe_value($_POST['product_status']);
+    foreach ($_POST['checked_product_update'] as $list)
     {
         $id = get_safe_value($list);
-        SqlQuery("delete from product_details where id='$id'");
-        SqlQuery("delete from products_image where product_id = '$id'");
-        SqlQuery("delete from product_data_sheet where product_id = '$id'");
-        SqlQuery("delete from product_rating where rate_product_id = '$id'");
-        SqlQuery("delete from ordertrackingdetails where track_product_id = '$id'");
-        SqlQuery("delete from cart where product_id ='$id'");
+        SqlQuery("UPDATE product_details SET product_status='$product_status' where id='$id'");
     }
 }
 

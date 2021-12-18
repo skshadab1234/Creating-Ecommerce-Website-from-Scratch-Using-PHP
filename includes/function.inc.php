@@ -42,7 +42,7 @@ function send_email($email,$html,$subject){
 	$mail->SMTPSecure="tls";
 	$mail->SMTPAuth=true;
 	$mail->Username="ks615044@gmail.com"; // Change My Email
-	$mail->Password="a@";
+	$mail->Password="@";
 	$mail->setFrom("ks615044@gmail.com"); // Change My Email
 	$mail->addAddress($email);
 	$mail->IsHTML(true);
@@ -399,7 +399,7 @@ function GetAssignedDeliveryForDeliveryBoy($deliveryBoyId) {
 	}else{
 		$delivered = '0';
 		$pending = '0';
-		$arr = array('Delivered' => $delivered, 'Pending' => $pending, 'Track_Id' => $track_id);
+		$arr = array('Delivered' => $delivered, 'Pending' => $pending, 'DeliveredTrackId' => $delivered_trackid, 'PendingTrackId' => $pending_trackid);
 	}
 	return $arr;
 }

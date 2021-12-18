@@ -525,16 +525,17 @@
                 </div>
                 <!-- /.content-header -->
 
-                <form action="" id="delete_all_product_checkbox_frm" method="post">
+                <form action="" id="update_all_product_checkbox_frm" method="post">
+                    <input type="hidden" name="product_status" id="productStatusAfterBtnClick">
                     <div class="content">
                         <div class="container-fluid">
                             <div class="card_box">
                                 <div class="card-header">
-                                    <button type="submit" class="btn btn-danger float-left" id="product_delete_btn"
-                                        style="display:none">Delete</button>
+                                    <button type="submit" class="btn btn-success" id="product_activate_btn" style="display:none">Activate</button>
+                                    <button type="submit" class="btn btn-danger" id="product_deactivate_btn" style="display:none">Deactive</button>
+                                    <button type="submit" class="btn btn-info" id="product_draft_btn" style="display:none">Draft</button>
 
                                     <h3 class="card-title float-right">
-
                                         <button class="btn btn-success"><a
                                                 href="<?= ADMIN_FRONT_SITE.'products?operation=addNewProduct' ?>"
                                                 style="color:#fff">Add new</a></button>
@@ -542,29 +543,28 @@
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body">
-
                                     <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
                                         <div class="row">
                                             <div class="col-sm-12">
-
                                                 <table id="ProductListExample"
                                                     class="table table-bordered table-striped dataTable dtr-inline "
                                                     role="grid" aria-describedby="example1_info">
                                                     <thead>
                                                         <tr role="row">
                                                             <th width="1%"> 
-                                                                <input type="checkbox" id="delete_check_data" onclick="select_all()">
+                                                                <input type="checkbox" id="update_check_data" onclick="select_all()">
                                                             </th>
-                                                            <th width="5%">IMAGE</th>
+                                                            <th width="2%">IMAGE</th>
                                                             <th width="20%">NAME</th>
-                                                            <th width="2%">PRODUCT PRICE</th>
+                                                            <th width="2%">SELLING PRICE</th>
+                                                            <th width="2%">UNIT PRICE</th>
                                                             <th width="2%">PRODUCT BRAND</th>
                                                             <th width="2%">Instock</th>
-                                                            <th width="5%">PRODUCT SIZE</th>
+                                                            <th width="2%">PRODUCT SIZE</th>
                                                             <th width="20%">BreadCrump</th>
-                                                            <th>STATUS</th>
-                                                            <th>QC STATUS</th>
-                                                            <th>ADDED ON</th>
+                                                            <th width="5%">STATUS</th>
+                                                            <th width="5%">QC STATUS</th>
+                                                            <th width="15%">ADDED ON</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="product_listing_td">
@@ -575,7 +575,8 @@
                                                             <th></th>
                                                             <th></th>
                                                             <th>By Name</th>
-                                                            <th>By Price</th>
+                                                            <th>By Sell Price</th>
+                                                            <th>By Unit Price</th>
                                                             <th>By Brand</th>
                                                             <th>By Stock</th>
                                                             <th>By Size</th>
@@ -657,42 +658,7 @@
 
 
             $(function() {
-                $('#example1 tfoot th:gt(1)').each( function () {
-                    var title = $(this).text();
-                    $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
-                } );
-                $("#example1").DataTable({
-                    "responsive": true,
-                    "autoWidth": false,
-                    "lengthMenu": [[2,5, 10, 25, 50, -1], [2,5, 10, 25, 50, "All"]],
-                    initComplete: function () {
-                        // Apply the search
-                        this.api().columns(':gt(1)').every( function () {
-                            var that = this;
-            
-                            $( 'input', this.footer() ).on( 'keyup change clear', function () {
-                                if ( that.search() !== this.value ) {
-                                    that
-                                        .search( this.value )
-                                        .draw();
-                                }
-                            } );
-                        } );
-                    },
-                    buttons: [{
-                        extend: 'print',
-                        exportOptions: {
-                            stripHtml: false,
-                            columns: [1, 2, 3,4,5,6,7,8,9]
-                            //specify which column you want to print
-
-                        }
-                    }
-
-                ]
-                }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
                 
-
                 //Initialize Select2 Elements
                 $('.select2').select2()
 

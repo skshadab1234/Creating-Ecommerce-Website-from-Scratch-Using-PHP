@@ -35,3 +35,5 @@ define('SERVER_DELIVERY_PROFILE',SERVER_IMAGE.'Ecomm/DELIVERY_BOY/media/delivery
 // For Seller 
 define('SELLER_FRONT_SITE',FRONT_SITE_PATH.'seller/');
 define('SERVER_SELLER',SERVER_IMAGE.'Ecomm/seller/');
+
+define('APPROVAL_BRAND_FILE',SELLER_FRONT_SITE.'images/approval_forms/');

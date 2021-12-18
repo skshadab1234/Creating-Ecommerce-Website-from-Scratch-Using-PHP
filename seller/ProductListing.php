@@ -593,7 +593,6 @@
             <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4 card p-2">
                 <div class="row">
                     <div class="col-sm-12">
-
                         <table id="example1"
                             class="table table-bordered table-striped dataTable dtr-inline text-center"
                             role="grid" aria-describedby="example1_info">
@@ -810,8 +809,6 @@
             });
         }
     }
-
-
 
     // WHEN WE CLICK ON SELECT BRAND BUTTON AFTER CHOOSING ALL TYPE OF CATEGORY 
     $("#select_brand_btn").click( () => {
