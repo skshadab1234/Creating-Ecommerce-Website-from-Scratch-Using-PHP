@@ -42,7 +42,7 @@ function send_email($email,$html,$subject){
 	$mail->SMTPSecure="tls";
 	$mail->SMTPAuth=true;
 	$mail->Username="ks615044@gmail.com"; // Change My Email
-	$mail->Password="@";
+	$mail->Password="!";
 	$mail->setFrom("ks615044@gmail.com"); // Change My Email
 	$mail->addAddress($email);
 	$mail->IsHTML(true);
@@ -529,3 +529,66 @@ function OrderTrackStatus($track_id) {
 		
 	}
 }
+
+// Generate Alpha Numerice Number 
+function random_strings($length_of_string)
+{
+  
+    // String of all alphanumeric character
+    $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  
+    // Shuffle the $str_result and returns substring
+    // of specified length
+    return substr(str_shuffle($str_result), 
+                       0, $length_of_string);
+}
+
+
+// Manage Wallet Function like insertt Update read full cCRUD operation Performs
+function ManageWallet($operationName,$uid,$amount='',$comment='',$transact_date='',$tranact_type=''){
+	global $con;
+
+	if ($operationName == 'insert') {
+		// Select Query to get exist amount and etc data 
+		$rowSelected = ExecutedQuery('SELECT * FROM ManageWallet WHERE UserId_wallet = '.$uid.'');
+		if ($rowSelected > 0) {
+			$rowSelected = $rowSelected[0];
+			// concat your data with db data
+			$amount_string = $rowSelected['WalletAmt'].','.$amount;
+			$Notes_Wallet = $rowSelected['Notes_Wallet'].',PS_FASHION_STORE,'.$comment;
+			$Transaction_Date = $rowSelected['Transact_Date'].','.$transact_date;
+			$tranact_type = $rowSelected['transact_type'].','.$tranact_type;
+			mysqli_query($con, "UPDATE ManageWallet SET UserId_wallet = '$uid', WalletAmt='$amount_string', Notes_Wallet='$Notes_Wallet', Transact_Date = '$Transaction_Date',transact_type='$tranact_type' WHERE UserId_wallet = '$uid'");
+		}else{
+			$amount_string = $amount;
+			$Notes_Wallet = $comment;
+			$Transaction_Date = $transact_date;
+			$tranact_type = $tranact_type;
+			mysqli_query($con, "INSERT into ManageWallet(UserId_wallet,WalletAmt,Notes_Wallet,Transact_Date,transact_type) VALUES('$uid','$amount_string','$Notes_Wallet','$Transaction_Date','$tranact_type')");
+		}
+		
+	}
+}
+
+function FetchUserWalletAmt($uid) {
+	global $con;
+
+	$data = array();
+	$row = ExecutedQuery("SELECT * FROM managewallet WHERE UserId_wallet='$uid'");
+	$data[] = $row[0];
+
+	$data[0]['Total_WalletAmt'] = array_sum(explode(",",$row[0]['WalletAmt']));
+	return $data[0];
+}
+
+
+
+
+
+
+
+
+
+
+
+

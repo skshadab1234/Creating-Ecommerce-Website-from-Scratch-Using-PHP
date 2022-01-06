@@ -6,12 +6,12 @@
                                 "499",
                                 "599",
                                 "Aurelia",
-                                "<p style=\"color: green\">535<\/p>",
+                                "<p style=\"color: green\">55308<\/p>",
                                 "S",
                                 "Men - Topwear - T-Shirts",
-                                "<span class=\"btn bg-success\">Active<\/span>",
-                                "<span class=\"text-success\">Approved<\/span>",
-                                "12 Dec,2021"
+                                "<span class=\"btn bg-danger\">Blocked<\/span>",
+                                "<span class=\"text-warning\">In Process<\/span>",
+                                "<span title=12-Dec-2021>12\/12\/2021<\/span>"
                             ],[
                                 "<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='3' value='3'>",
                                 "<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='http:\/\/localhost\/Ecomm\/media\/product_img\/men-purple-solid-polo-collar-t-shirt\/1.webp' alt=\"\">",
@@ -19,12 +19,12 @@
                                 "719",
                                 "899",
                                 "AND",
-                                "<p style=\"color: green\">245<\/p>",
+                                "<p style=\"color: green\">110<\/p>",
                                 "S,M,L,XL",
                                 "Men - Topwear - T-Shirts",
                                 "<span class=\"btn bg-success\">Active<\/span>",
                                 "<span class=\"text-warning\">In Process<\/span>",
-                                "12 Dec,2021"
+                                "<span title=12-Dec-2021>12\/12\/2021<\/span>"
                             ],[
                                 "<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='4' value='4'>",
                                 "<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='http:\/\/localhost\/Ecomm\/media\/product_img\/men-black-polo-collar-t-shirt\/1.jpg' alt=\"\">",
@@ -32,12 +32,12 @@
                                 "719",
                                 "899",
                                 "AND",
-                                "<p style=\"color: green\">399<\/p>",
+                                "<p style=\"color: green\">203<\/p>",
                                 "S,M,XL,XXL",
                                 "Men - Topwear - T-Shirts",
                                 "<span class=\"btn bg-success\">Active<\/span>",
-                                "<span class=\"text-warning\">In Process<\/span>",
-                                "12 Dec,2021"
+                                "<span class=\"text-success\">Approved<\/span>",
+                                "<span title=12-Dec-2021>12\/12\/2021<\/span>"
                             ],[
                                 "<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='5' value='5'>",
                                 "<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='http:\/\/localhost\/Ecomm\/media\/product_img\/men-navy-blue-solid-polo-collar-t-shirt\/1.jpg' alt=\"\">",
@@ -45,12 +45,12 @@
                                 "299",
                                 "399",
                                 "AND",
-                                "<p style=\"color: green\">200<\/p>",
+                                "<p style=\"color: red\">3<\/p>",
                                 "S,M,L",
                                 "Men - Topwear",
                                 "<span class=\"btn bg-success\">Active<\/span>",
                                 "<span class=\"text-success\">Approved<\/span>",
-                                "12 Dec,2021"
+                                "<span title=12-Dec-2021>12\/12\/2021<\/span>"
                             ],[
                                 "<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='6' value='6'>",
                                 "<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='http:\/\/localhost\/Ecomm\/media\/product_img\/men-red-solid-polo-collar-t-shirt\/1.jpg' alt=\"\">",
@@ -58,12 +58,12 @@
                                 "200",
                                 "400",
                                 "AND",
-                                "<p style=\"color: green\">200<\/p>",
+                                "<p style=\"color: green\">9500000<\/p>",
                                 "S",
                                 "Men - Topwear - T-Shirts",
                                 "<span class=\"btn bg-success\">Active<\/span>",
                                 "<span class=\"text-warning\">In Process<\/span>",
-                                "12 Dec,2021"
+                                "<span title=12-Dec-2021>12\/12\/2021<\/span>"
                             ],[
                                 "<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='7' value='7'>",
                                 "<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='http:\/\/localhost\/Ecomm\/media\/product_img\/women-mustard-yellow-yoke-design-foil-printed-kurta-with-trousers-dupatta\/1.jpg' alt=\"\">",
@@ -71,12 +71,12 @@
                                 "299",
                                 "399",
                                 "Anouk",
-                                "<p style=\"color: green\">398<\/p>",
+                                "<p style=\"color: green\">394<\/p>",
                                 "XS,S,M,L,XL,XXL,3XL,4XL",
                                 "Women - Indian & Fusion Wear",
                                 "<span class=\"btn bg-success\">Active<\/span>",
                                 "<span class=\"text-success\">Approved<\/span>",
-                                "12 Dec,2021"
+                                "<span title=12-Dec-2021>12\/12\/2021<\/span>"
                             ],[
                                 "<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='8' value='8'>",
                                 "<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='http:\/\/localhost\/Ecomm\/media\/product_img\/women-pink-embroidered-kurta-with-palazzos\/1.jpg' alt=\"\">",
@@ -86,9 +86,35 @@
                                 "Anouk",
                                 "<p style=\"color: green\">199<\/p>",
                                 "XS,S,M,L,XL,XXL",
-                                "Women - Indian & Fusion Wear - Kurtas & Suits",
+                                "Women - Indian & Fusion Wear",
+                                "<span class=\"btn bg-success\">Active<\/span>",
+                                "<span class=\"text-success\">Approved<\/span>",
+                                "<span title=12-Dec-2021>12\/12\/2021<\/span>"
+                            ],[
+                                "<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='9' value='9'>",
+                                "<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='http:\/\/localhost\/Ecomm\/media\/product_img\/men-green-white-slim-fit-printed-casual-shirt\/1.webp' alt=\"\">",
+                                "<a href='http:\/\/localhost\/Ecomm\/PS_ADMIN\/products?operation=addProduct&id=9'>Men Green & White Slim Fit Printed Casual Shirt<\/a><br>SKU Id: GWSF-1",
+                                "499",
+                                "1049",
+                                "HIGHLANDER",
+                                "<p style=\"color: green\">44970<\/p>",
+                                "S,M,L",
+                                "Men - Topwear",
                                 "<span class=\"btn bg-success\">Active<\/span>",
                                 "<span class=\"text-warning\">In Process<\/span>",
-                                "12 Dec,2021"
+                                "<span title=19-Dec-2021>12\/19\/2021<\/span>"
+                            ],[
+                                "<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='10' value='10'>",
+                                "<img class=\"img-reponsive img-fluid\"  style=\"border-radius:20%;width:60px;height:80px\" src='http:\/\/localhost\/Ecomm\/media\/product_img\/men-pink-slim-fit-casual-shirt\/1.webp' alt=\"\">",
+                                "<a href='http:\/\/localhost\/Ecomm\/PS_ADMIN\/products?operation=addProduct&id=10'>Men Pink Slim Fit Casual Shirt<\/a><br>SKU Id: DL-1",
+                                "499",
+                                "1049",
+                                "Dennis Lingo",
+                                "<p style=\"color: red\">10<\/p>",
+                                "S,XS,L.,M,XL",
+                                "Men - Topwear - Casual Shirts",
+                                "<span class=\"btn bg-success\">Active<\/span>",
+                                "<span class=\"text-success\">Approved<\/span>",
+                                "<span title=19-Dec-2021>12\/19\/2021<\/span>"
                             ]]
                             }

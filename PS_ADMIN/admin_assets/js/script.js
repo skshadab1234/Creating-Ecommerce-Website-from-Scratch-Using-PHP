@@ -181,29 +181,28 @@ $("#product_draft_btn").click(()=>{
     $("#productStatusAfterBtnClick").val('2');
 });
 
+
 function select_all() {
     if (jQuery('#update_check_data').prop("checked")) {
         jQuery('input[type=checkbox]').each(function () {
             jQuery('#' + this.id).prop('checked', true);
         });
-        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn").show();
+        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk").show();
     } else {
         jQuery('input[type=checkbox]').each(function () {
             jQuery('#' + this.id).prop('checked', false);
         });
-        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn").hide();
+        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk").hide();
     }
 }
 
 function get_total_selected() {
     if ($('input[type=checkbox]:checked').length > 0) {
-        $("#product_activate_btn, #product_deactivate_btn, #product_draft_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn").show();
+        $("#product_activate_btn, #product_deactivate_btn, #product_draft_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn, #update_stock_bulk").show();
     } else {
-        $("#product_activate_btn, #product_deactivate_btn, $product_draft_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn").hide();
+        $("#product_activate_btn, #product_deactivate_btn, #product_draft_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn, #update_stock_bulk").hide();
     }
-
 }
-
 
 $("#update_all_product_checkbox_frm").submit((e) => {
     e.preventDefault();
@@ -215,6 +214,11 @@ $("#update_all_product_checkbox_frm").submit((e) => {
         data: form_data,
         success: function (result) {
             ProductListingAjax();
+            $("#update_stock_value_123").val('');
+            $(".modal").hide();
+            $(".fade").hide();
+            $("body").css({"overflow-y" : "auto"});
+            $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk").hide();
         }
     });
 })

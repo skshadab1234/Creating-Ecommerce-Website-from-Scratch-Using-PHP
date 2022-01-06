@@ -3,6 +3,11 @@ define('SITE_NAME','PS Fashion Store');
 define('FRONT_SITE_NAME','Social Active');
 define("COMPANY_EMAIL",'ks615044@gmail.com');
 define("TOP_SALE_RANGE",2);
+define("CASH_LABEL_NAME","PSCASH");
+define("1PSCASHVALUE","0.25");
+define("SIGNUP_BONUS","50");
+define("FIRSTORDER_BONUS","100");
+define("GETSIGNEDUPBONUS","150");
 
 define('FRONT_SITE_PATH','http://localhost/Ecomm/');
 define('SERVER_IMAGE',$_SERVER['DOCUMENT_ROOT']."/");

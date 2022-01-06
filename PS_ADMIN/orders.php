@@ -148,13 +148,15 @@
                                                 $estimate_delivery_date = explode(',', $row['estimate_delivery_date']);
 
                                                 $per_product_invoice = explode(',', $row['per_product_invoice']);
+
+                                                $track_ids = explode(",",$row['tracking_id']);
                                                 
                                                 if ($per_product_invoice[$key] != '') {
                                                     $invoice_message =  "<a href=".PER_PRODUCT_INVOICE.$per_product_invoice[$key]." target='_blank'>#".substr($per_product_invoice[$key],0,-4)."</a>";
                                                 }else{
                                                     $invoice_message = "<a href='javascript:void(0)' 
-                                                    id='DownloadInvoiceAtag_".$Prdrow['id'].$product_varient[$key]."'
-                                                    onclick=\"DownloadInvoice('".$orderDetails."', '".$Prdrow["id"]."', '".$product_qty[$key]."', '".$product_varient[$key]."', '".$payment_prod_price[$key]."', '".$per_product_invoice[$key]."','".$url."')\">Download</a>";
+                                                                 id='DownloadInvoiceAtag_".$orderDetails.$track_ids[$key].$Prdrow['id'].$product_varient[$key]."'
+                                                                 onclick=\"DownloadInvoice('".$orderDetails."','".$track_ids[$key]."', '".$Prdrow["id"]."', '".$product_qty[$key]."', '".$product_varient[$key]."', '".$payment_prod_price[$key]."', '".$per_product_invoice[$key]."','".$url."')\">Download</a>";
                                                 }
 
                                                 $message_display = '';
@@ -196,9 +198,7 @@
                                                     <td><?= date("D M d, Y", strtotime($estimate_delivery_date[$key])) ?></td>
                                                     <td><a href="<?= ADMIN_FRONT_SITE.'TrackOrders?track_id='.$track_id[$key].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key] ?></a></td>
                                                     <td><span style="color:green"><?= end($filtered_status) ?></td>
-                                                    <th id="addInvoiceMessagefromRespone_<?= $orderDetails.$Prdrow['id'].$product_varient[$key] ?>">
-                                                        <?= $invoice_message ?>
-                                                    </th>
+                                                    <td id="addInvoiceMessagefromRespone_<?= $orderDetails.$track_ids[$key].$Prdrow["id"].$product_varient[$key] ?>"><?= $invoice_message ?></td>
                                                     <?= $appen_table_body ?>
                                                 </tbody>
                                             </table>
@@ -333,12 +333,19 @@
                                                 <?php
                                                      $payment_details_res = SqlQuery("Select * from payment_details");
                                                      foreach ($payment_details_res as $key => $value) {
+                                                        if ($value['payment_mode'] == 'wallet') {
+                                                            $payment_mode = 'Wallet';
+                                                        }elseif ($value['payment_mode'] == 'stripe') {
+                                                            $payment_mode = 'Stripe';
+                                                        }else{
+                                                            $payment_mode = "";
+                                                        }
                                                          ?>
                                                             <tr>
                                                                 <td><a href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'] ?>"><?= $value['Order_Id'] ?></a></td>
-                                                                <td><?= date("d M,Y", strtotime($value['added_on'])) ?></td>
+                                                                <td><?= date("d M,Y h:i", strtotime($value['created'])) ?></td>
                                                                 <td class="text-xs-right">₹ <?= $value['amount_captured'] ?></td>
-                                                                <td class="hidden-md-down">By Card</td>
+                                                                <td class="hidden-md-down">By <?= $payment_mode ?></td>
                                                                 <td>
                                                                 <?php
                                                                     if($value['payment_status'] == 'succeeded') {
@@ -388,8 +395,6 @@
                     </div>
                 </div>
             </div>
-
-
         <?php
     }
 
@@ -420,6 +425,7 @@
                 mark: {
                     diacritics: false
                 },
+                "order": [[ 1, "desc" ]],
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
@@ -463,10 +469,10 @@
         });
 
         $("#PrintInvoice").click( ()=> {
-                var printContents = document.getElementById("InvoiceDataToPrint").innerHTML;
-                var originalContents = document.body.innerHTML;
-                document.body.innerHTML = printContents;
-                window.print();
-                document.body.innerHTML = originalContents;
+            var printContents = document.getElementById("InvoiceDataToPrint").innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
         });
         </script>

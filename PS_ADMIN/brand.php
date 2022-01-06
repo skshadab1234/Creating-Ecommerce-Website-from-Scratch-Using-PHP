@@ -319,7 +319,7 @@
             } );
 
             $("#example1").DataTable({
-
+                dom: 'Blfrtip',
                 "responsive": true,
                 "autoWidth": false,
                 "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
@@ -338,16 +338,21 @@
                     } );
                 },
         
-                buttons: [{
-                        extend: 'print',
-                        exportOptions: {
-                            stripHtml: false,
-                            columns: [1,2, 3,4,5]
-                            //specify which column you want to print
+                buttons: [
+                        {
+                            extend: 'searchBuilder',
+                            config: {
+                                depthLimit: 2
+                            }
+                        },{
+                            extend: 'print',
+                            exportOptions: {
+                                stripHtml: false,
+                                columns: [1,2, 3,4,5]
+                                //specify which column you want to print
 
+                            }
                         }
-                    }
-
                 ]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({

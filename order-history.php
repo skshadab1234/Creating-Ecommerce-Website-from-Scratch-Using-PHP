@@ -223,6 +223,8 @@
 
                                                 $per_product_invoice = explode(',', $row['per_product_invoice']);
 
+                                                $track_ids = explode(",",$row['tracking_id']);
+
                                                 $message_display = '';
                                                 if(!empty($product_message[$key])){
                                                     $message_display .= ' <textarea class="form-control" rows="10" id="textareacommentorder_'.$orderDetails.'" disabled>'.$product_message[$key].'</textarea>';
@@ -232,8 +234,8 @@
                                                     $invoice_message =  "<a href=".PER_PRODUCT_INVOICE.$per_product_invoice[$key]." target='_blank'>#".substr($per_product_invoice[$key],0,-4)."</a>";
                                                 }else{
                                                     $invoice_message = "<a href='javascript:void(0)' 
-                                                    id='DownloadInvoiceAtag_".$Prdrow['id'].$product_varient[$key]."'
-                                                    onclick=\"DownloadInvoice('".$row['Order_Id']."', '".$Prdrow["id"]."', '".$product_qty[$key]."', '".$product_varient[$key]."', '".$payment_prod_price[$key]."', '".$per_product_invoice[$key]."','".$url."')\">Download</a>";
+                                                                        id='DownloadInvoiceAtag_".$orderDetails.$track_ids[$key].$Prdrow['id'].$product_varient[$key]."'
+                                                                        onclick=\"DownloadInvoice('".$orderDetails."','".$track_ids[$key]."', '".$Prdrow["id"]."', '".$product_qty[$key]."', '".$product_varient[$key]."', '".$payment_prod_price[$key]."', '".$per_product_invoice[$key]."','".$url."')\">Download</a>";
                                                 }
                                             ?>
 
@@ -261,9 +263,7 @@
                                                     <td><?= date("D M d, Y", strtotime($estimate_delivery_date[$key])) ?></td>
                                                     <td><a href="<?= FRONT_SITE_PATH.'trackmyorder?track_id='.$track_id[$key].'&Order_id='.$row['Order_Id'] ?>" target="_blank"><?= $track_id[$key] ?></a></td>
                                                     <td><span style="color:green"><?= end($filtered_status) ?></td>
-                                                    <th id="addInvoiceMessagefromRespone_<?= $Prdrow['id'].$product_varient[$key] ?>">
-                                                        <?= $invoice_message ?>
-                                                    </th>
+                                                    <td id="addInvoiceMessagefromRespone_<?= $orderDetails.$track_ids[$key].$Prdrow["id"].$product_varient[$key] ?>"><?= $invoice_message ?></td>
                                                     <?= $appen_table_body ?>
                                                 </tbody>
                                             </table>
@@ -372,7 +372,7 @@
 
                                 <section class="form-fields">
                                     <div class="form-group row">
-                                        <label class="col-md-3 form-control-label">Product</label>
+                                        <label class="col-md-3 form-control-label text-xs-left text-lg-right">Product Names</label>
                                         <div class="col-md-5">
                                             <select name="addcommentforyourOrder" class="form-control form-control-select" required>
                                                 <option value="" disabled selected>-- please choose --</option>
@@ -469,12 +469,19 @@
                                                 $Sql = "SELECT * FROM payment_details where payment_user_id = '$uid' order by id desc";
                                                 $res = mysqli_query($con, $Sql);
                                                 while ($row = mysqli_fetch_assoc($res)) {
+                                                    if ($row['payment_mode'] == 'wallet') {
+                                                        $payment_mode = 'Wallet';
+                                                    }elseif ($row['payment_mode'] == 'stripe') {
+                                                        $payment_mode = 'Stripe';
+                                                    }else{
+                                                        $payment_mode = "";
+                                                    }
                                                     ?>
                                 <tr>
                                     <th scope="row"><?= $row['Order_Id'].' - ('.count(explode(",",$row['product_id'])).' items)' ?></th>
                                     <td><?= date("d M,Y h:i:s A", strtotime($row['created'])) ?></td>
                                     <td class="text-xs-right">₹ <?= $row['amount_captured'] ?></td>
-                                    <td class="hidden-md-down">By Card</td>
+                                    <td class="hidden-md-down">By <?= $payment_mode ?></td>
                                     <td>
                                         <?php
                                             if($row['payment_status'] == 'succeeded') {
@@ -492,7 +499,6 @@
                                         </span>
                                     </td>
                                     <td class="text-sm-center hidden-md-down">
-                                        
                                         <a
                                             href="download?filename=<?= $row['invoice_file'] ?>&filepath=UserInvoice/<?= $row['invoice_file'] ?>&redirect=<?= $url ?>">Download</a>
                                     </td>

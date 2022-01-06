@@ -1,6 +1,6 @@
 <?php
     require 'includes/header.php';
-    
+   
     $pname = get_safe_value($_GET['productname']);
     $ProductDetails =  ProductDetails('left join shop_category on product_details.product_categories =  shop_category.cat_id  left join brands on product_details.product_brand = brands.bid  where product_name = "'.$pname.'"');
     $ProductDetails = $ProductDetails[0];
@@ -138,27 +138,17 @@
 
                     <div class="row">
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12 col-sp-12">
-
                             <section class="page-content" id="content">
-
-
                                 <ul class="product-flags">
                                 </ul>
-
-
-
                                 <div class="images-container">
-
-
                                     <div class="product-cover product-img-slick">
-
                                         <?php
                                         $ProductImageById = ProductImageById($ProductDetails['id']);
                                         array_unshift($ProductImageById,"");
                                         unset($ProductImageById[0]);
                                         foreach ($ProductImageById as $key => $value) {
                                             ?>
-
                                         <img class="images-zoom"
                                             data-zoom-image="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
                                             data-src="<?= FRONT_SITE_IMAGE_PRODUCT.$value['product_img'] ?>"
@@ -170,11 +160,7 @@
                                         }
                                       ?>
                                     </div>
-
-
-
                                     <div id="rb_gallery" class="product-img-slick">
-
                                         <?php
                                         foreach ($ProductImageById as $key => $value) {
                                             ?>
@@ -701,6 +687,7 @@
                                   while($pro_row = mysqli_fetch_assoc($pro_res)) {
                                     $UsersDetails_rate = UsersDetails("WHERE id = '".$pro_row['rate_user_id']."'");
                                     $UsersDetails_rate = $UsersDetails_rate[0];
+                                    
                                     ?>
                                         <div class="product_reviews_block_tab">
                                             <div class="rb-review-list">
@@ -709,7 +696,13 @@
                                                         itemtype="https://schema.org/Review">
                                                         <div class="review-info">
                                                             <div class="author_image"> <img alt=""
-                                                                    src="<?= USER_PROFILE.$UsersDetails_rate['user_img'] ?>"
+                                                                    src="<?php
+                                                                    if ($UsersDetails_rate['user_img'] != '') {
+                                                                        echo USER_PROFILE.$UsersDetails_rate['user_img'];
+                                                                    }else{
+                                                                        echo 'https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png';
+                                                                    }
+                                                                     ?>"
                                                                     class="avatar avatar-60 photo" height="60" width="60"></div>
                                                             <div class="comment-text">
                                                                 <div class="review_author">
@@ -776,7 +769,13 @@
                                                                                   itemtype="https://schema.org/Review">
                                                                                   <div class="review-info">
                                                                                       <div class="author_image"> <img alt=""
-                                                                                              src="<?= USER_PROFILE.$UsersDetails_rate['user_img'] ?>"
+                                                                                              src="<?php  
+                                                                                                if ($UsersDetails_rate['user_img'] != '') {
+                                                                                                    echo USER_PROFILE.$UsersDetails_rate['user_img'];
+                                                                                                }else{
+                                                                                                    echo 'https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png';
+                                                                                                }
+                                                                                              ?>"
                                                                                               class="avatar avatar-60 photo" height="60" width="60"></div>
                                                                                       <div class="comment-text">
                                                                                           <div class="review_author">
@@ -992,6 +991,512 @@
                 </div>
 
                 <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <article class="product-miniature js-product-miniature " data-id-product="17"
+                        data-id-product-attribute="32" itemscope itemtype="http://schema.org/Product">
+                        <div class="thumbnail-container">
+                            <div class="product-image">
+
+                                <a href="https://rubiktheme.com/demo/rb_evo_demo/en/clothing/17-32-brown-bear-notebook.html#/22-paper_type-ruled"
+                                    class="thumbnail product-thumbnail">
+                                    <img class="img-fluid rb-image image-cover"
+                                        data-lazy="https://rubiktheme.com/demo/rb_evo_demo/163-home_default/brown-bear-notebook.jpg"
+                                        data-full-size-image-url="https://rubiktheme.com/demo/rb_evo_demo/163-large_default/brown-bear-notebook.jpg">
+
+
+                                    <div class="product-hover">
+                                        <img class="img-fluid rb-image image-hover"
+                                            data-lazy="https://rubiktheme.com/demo/rb_evo_demo/164-home_default/brown-bear-notebook.jpg"
+                                            title="Crossover Leather Sandal" width="600" height="686">
+                                    </div>
+
+
+                                    <div class="rb-image-loading"></div>
+                                </a>
+
+
+
+                                <ul class="product-flags">
+                                    <span class="sr-only">Price</span>
+
+                                </ul>
+
+
+                                <div class="rb-ajax-loading">
+                                    <div class="cssload-container">
+                                        <div class="cssload-speeding-wheel"></div>
+                                    </div>
+                                </div>
+                                <div class="functional-buttons clearfix">
+
+                                    <div class="product-add-cart">
+                                        <form action="https://rubiktheme.com/demo/rb_evo_demo/en/cart" method="post"
+                                            class="add-to-cart-or-refresh">
+                                            <input type="hidden" name="token" value="9e645ea2b011b9302f90d49f848c7122">
+                                            <input type="hidden" name="id_product" value="17"
+                                                class="product_page_product_id">
+
+                                            <!-- begin /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/rbthemefunction/views/templates/hook/rb-cart.tpl -->
+                                            <div class="product-add-to-cart-rb">
+
+                                                <div class="product-quantity">
+                                                    <div class="add">
+                                                        <button class="btn rb-btn-product add-to-cart"
+                                                            title="Add to cart" data-button-action="add-to-cart"
+                                                            type="submit">
+                                                            <i class="icon-Ico_Cart"></i>
+                                                            <span class="icon-title">Add To
+                                                                Cart</span>
+                                                        </button>
+
+
+                                                        <span class="product-availability hidden">
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+
+
+
+                                                <p class="product-minimal-quantity hidden">
+                                                </p>
+
+                                            </div>
+                                        </form>
+                                    </div>
+
+
+                                    <div class="rb-wishlist">
+                                        <a class="rb-wishlist-link rb-btn-product " href="#" data-id-wishlist=""
+                                            data-id-product="17" data-id-product-attribute="32"
+                                            data-id_wishlist_product="0" title="Add to Wishlist">
+                                            <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                                            <span class="icon-title">Add to Wishlist</span>
+                                        </a>
+                                    </div>
+
+
+
+                                    <div class="product-quickview hidden-sm-down">
+                                        <a class="rb-quick-view rb-btn-product" href="#" data-link-action="quickview">
+                                            <i class="icon-Icon_Quick-view"></i>
+                                            <span class="icon-title">Quick view</span>
+                                        </a>
+                                    </div>
+
+                                    <div class="product-quick-view" style="display:none;">
+                                        <a class="quick-view rb-btn-product" href="#" data-link-action="quickview">
+                                            <i class="icon-Icon_Quick-view search"></i>
+                                            <span class="icon-title">Quick view</span>
+                                        </a>
+                                    </div>
+
+
+                                </div>
+
+
+
+
+                            </div>
+
+
+                            <div class="product-meta">
+                                <div class="meta-top">
+
+                                    <h3 class="h3 product-brand" itemprop="brand">
+                                        <span>Brand: </span>
+                                        <a href="https://rubiktheme.com/demo/rb_evo_demo/en/brand/2-graphic-corner"
+                                            tabindex="0">Graphic Corner</a>
+                                    </h3>
+
+
+
+                                    <div class="star_content clearfix">
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <meta itemprop="worstRating" content="0" />
+                                        <meta itemprop="ratingValue" content="0" />
+                                        <meta itemprop="bestRating" content="5" />
+                                    </div>
+
+
+
+
+
+
+                                </div>
+
+
+                                <h2 class="h3 product-title" itemprop="name"><a href="" itemprop="url"
+                                        content="https://rubiktheme.com/demo/rb_evo_demo/en/clothing/17-32-brown-bear-notebook.html#/22-paper_type-ruled">Crossover
+                                        Leather Sandal</a></h2>
+
+
+
+                                <div class="product-price-and-shipping">
+
+
+
+
+                                    <span class="price" aria-label="Price">$12.90</span>
+                                    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer"
+                                        class="invisible">
+                                        <meta itemprop="priceCurrency" content="USD" />
+                                        <meta itemprop="price" content="12.9" />
+                                    </div>
+
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </article>
+                </div>
+
+
+                <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <article class="product-miniature js-product-miniature " data-id-product="17"
+                        data-id-product-attribute="32" itemscope itemtype="http://schema.org/Product">
+                        <div class="thumbnail-container">
+                            <div class="product-image">
+
+                                <a href="https://rubiktheme.com/demo/rb_evo_demo/en/clothing/17-32-brown-bear-notebook.html#/22-paper_type-ruled"
+                                    class="thumbnail product-thumbnail">
+                                    <img class="img-fluid rb-image image-cover"
+                                        data-lazy="https://rubiktheme.com/demo/rb_evo_demo/163-home_default/brown-bear-notebook.jpg"
+                                        data-full-size-image-url="https://rubiktheme.com/demo/rb_evo_demo/163-large_default/brown-bear-notebook.jpg">
+
+
+                                    <div class="product-hover">
+                                        <img class="img-fluid rb-image image-hover"
+                                            data-lazy="https://rubiktheme.com/demo/rb_evo_demo/164-home_default/brown-bear-notebook.jpg"
+                                            title="Crossover Leather Sandal" width="600" height="686">
+                                    </div>
+
+
+                                    <div class="rb-image-loading"></div>
+                                </a>
+
+
+
+                                <ul class="product-flags">
+                                    <span class="sr-only">Price</span>
+
+                                </ul>
+
+
+                                <div class="rb-ajax-loading">
+                                    <div class="cssload-container">
+                                        <div class="cssload-speeding-wheel"></div>
+                                    </div>
+                                </div>
+                                <div class="functional-buttons clearfix">
+
+                                    <div class="product-add-cart">
+                                        <form action="https://rubiktheme.com/demo/rb_evo_demo/en/cart" method="post"
+                                            class="add-to-cart-or-refresh">
+                                            <input type="hidden" name="token" value="9e645ea2b011b9302f90d49f848c7122">
+                                            <input type="hidden" name="id_product" value="17"
+                                                class="product_page_product_id">
+
+                                            <!-- begin /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/rbthemefunction/views/templates/hook/rb-cart.tpl -->
+                                            <div class="product-add-to-cart-rb">
+
+                                                <div class="product-quantity">
+                                                    <div class="add">
+                                                        <button class="btn rb-btn-product add-to-cart"
+                                                            title="Add to cart" data-button-action="add-to-cart"
+                                                            type="submit">
+                                                            <i class="icon-Ico_Cart"></i>
+                                                            <span class="icon-title">Add To
+                                                                Cart</span>
+                                                        </button>
+
+
+                                                        <span class="product-availability hidden">
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+
+
+
+                                                <p class="product-minimal-quantity hidden">
+                                                </p>
+
+                                            </div>
+                                        </form>
+                                    </div>
+
+
+                                    <div class="rb-wishlist">
+                                        <a class="rb-wishlist-link rb-btn-product " href="#" data-id-wishlist=""
+                                            data-id-product="17" data-id-product-attribute="32"
+                                            data-id_wishlist_product="0" title="Add to Wishlist">
+                                            <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                                            <span class="icon-title">Add to Wishlist</span>
+                                        </a>
+                                    </div>
+
+
+
+                                    <div class="product-quickview hidden-sm-down">
+                                        <a class="rb-quick-view rb-btn-product" href="#" data-link-action="quickview">
+                                            <i class="icon-Icon_Quick-view"></i>
+                                            <span class="icon-title">Quick view</span>
+                                        </a>
+                                    </div>
+
+                                    <div class="product-quick-view" style="display:none;">
+                                        <a class="quick-view rb-btn-product" href="#" data-link-action="quickview">
+                                            <i class="icon-Icon_Quick-view search"></i>
+                                            <span class="icon-title">Quick view</span>
+                                        </a>
+                                    </div>
+
+
+                                </div>
+
+
+
+
+                            </div>
+
+
+                            <div class="product-meta">
+                                <div class="meta-top">
+
+                                    <h3 class="h3 product-brand" itemprop="brand">
+                                        <span>Brand: </span>
+                                        <a href="https://rubiktheme.com/demo/rb_evo_demo/en/brand/2-graphic-corner"
+                                            tabindex="0">Graphic Corner</a>
+                                    </h3>
+
+
+
+                                    <div class="star_content clearfix">
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <meta itemprop="worstRating" content="0" />
+                                        <meta itemprop="ratingValue" content="0" />
+                                        <meta itemprop="bestRating" content="5" />
+                                    </div>
+
+
+
+
+
+
+                                </div>
+
+
+                                <h2 class="h3 product-title" itemprop="name"><a href="" itemprop="url"
+                                        content="https://rubiktheme.com/demo/rb_evo_demo/en/clothing/17-32-brown-bear-notebook.html#/22-paper_type-ruled">Crossover
+                                        Leather Sandal</a></h2>
+
+
+
+                                <div class="product-price-and-shipping">
+
+
+
+
+                                    <span class="price" aria-label="Price">$12.90</span>
+                                    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer"
+                                        class="invisible">
+                                        <meta itemprop="priceCurrency" content="USD" />
+                                        <meta itemprop="price" content="12.9" />
+                                    </div>
+
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </article>
+                </div>
+
+
+                <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    <article class="product-miniature js-product-miniature " data-id-product="17"
+                        data-id-product-attribute="32" itemscope itemtype="http://schema.org/Product">
+                        <div class="thumbnail-container">
+                            <div class="product-image">
+
+                                <a href="https://rubiktheme.com/demo/rb_evo_demo/en/clothing/17-32-brown-bear-notebook.html#/22-paper_type-ruled"
+                                    class="thumbnail product-thumbnail">
+                                    <img class="img-fluid rb-image image-cover"
+                                        data-lazy="https://rubiktheme.com/demo/rb_evo_demo/163-home_default/brown-bear-notebook.jpg"
+                                        data-full-size-image-url="https://rubiktheme.com/demo/rb_evo_demo/163-large_default/brown-bear-notebook.jpg">
+
+
+                                    <div class="product-hover">
+                                        <img class="img-fluid rb-image image-hover"
+                                            data-lazy="https://rubiktheme.com/demo/rb_evo_demo/164-home_default/brown-bear-notebook.jpg"
+                                            title="Crossover Leather Sandal" width="600" height="686">
+                                    </div>
+
+
+                                    <div class="rb-image-loading"></div>
+                                </a>
+
+
+
+                                <ul class="product-flags">
+                                    <span class="sr-only">Price</span>
+
+                                </ul>
+
+
+                                <div class="rb-ajax-loading">
+                                    <div class="cssload-container">
+                                        <div class="cssload-speeding-wheel"></div>
+                                    </div>
+                                </div>
+                                <div class="functional-buttons clearfix">
+
+                                    <div class="product-add-cart">
+                                        <form action="https://rubiktheme.com/demo/rb_evo_demo/en/cart" method="post"
+                                            class="add-to-cart-or-refresh">
+                                            <input type="hidden" name="token" value="9e645ea2b011b9302f90d49f848c7122">
+                                            <input type="hidden" name="id_product" value="17"
+                                                class="product_page_product_id">
+
+                                            <!-- begin /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/rbthemefunction/views/templates/hook/rb-cart.tpl -->
+                                            <div class="product-add-to-cart-rb">
+
+                                                <div class="product-quantity">
+                                                    <div class="add">
+                                                        <button class="btn rb-btn-product add-to-cart"
+                                                            title="Add to cart" data-button-action="add-to-cart"
+                                                            type="submit">
+                                                            <i class="icon-Ico_Cart"></i>
+                                                            <span class="icon-title">Add To
+                                                                Cart</span>
+                                                        </button>
+
+
+                                                        <span class="product-availability hidden">
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+
+
+
+                                                <p class="product-minimal-quantity hidden">
+                                                </p>
+
+                                            </div>
+                                        </form>
+                                    </div>
+
+
+                                    <div class="rb-wishlist">
+                                        <a class="rb-wishlist-link rb-btn-product " href="#" data-id-wishlist=""
+                                            data-id-product="17" data-id-product-attribute="32"
+                                            data-id_wishlist_product="0" title="Add to Wishlist">
+                                            <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
+                                            <span class="icon-title">Add to Wishlist</span>
+                                        </a>
+                                    </div>
+
+
+
+                                    <div class="product-quickview hidden-sm-down">
+                                        <a class="rb-quick-view rb-btn-product" href="#" data-link-action="quickview">
+                                            <i class="icon-Icon_Quick-view"></i>
+                                            <span class="icon-title">Quick view</span>
+                                        </a>
+                                    </div>
+
+                                    <div class="product-quick-view" style="display:none;">
+                                        <a class="quick-view rb-btn-product" href="#" data-link-action="quickview">
+                                            <i class="icon-Icon_Quick-view search"></i>
+                                            <span class="icon-title">Quick view</span>
+                                        </a>
+                                    </div>
+
+
+                                </div>
+
+
+
+
+                            </div>
+
+
+                            <div class="product-meta">
+                                <div class="meta-top">
+
+                                    <h3 class="h3 product-brand" itemprop="brand">
+                                        <span>Brand: </span>
+                                        <a href="https://rubiktheme.com/demo/rb_evo_demo/en/brand/2-graphic-corner"
+                                            tabindex="0">Graphic Corner</a>
+                                    </h3>
+
+
+
+                                    <div class="star_content clearfix">
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <div class="star"></div>
+                                        <meta itemprop="worstRating" content="0" />
+                                        <meta itemprop="ratingValue" content="0" />
+                                        <meta itemprop="bestRating" content="5" />
+                                    </div>
+
+
+
+
+
+
+                                </div>
+
+
+                                <h2 class="h3 product-title" itemprop="name"><a href="" itemprop="url"
+                                        content="https://rubiktheme.com/demo/rb_evo_demo/en/clothing/17-32-brown-bear-notebook.html#/22-paper_type-ruled">Crossover
+                                        Leather Sandal</a></h2>
+
+
+
+                                <div class="product-price-and-shipping">
+
+
+
+
+                                    <span class="price" aria-label="Price">$12.90</span>
+                                    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer"
+                                        class="invisible">
+                                        <meta itemprop="priceCurrency" content="USD" />
+                                        <meta itemprop="price" content="12.9" />
+                                    </div>
+
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </article>
+                </div>      
+
+                <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                     <article class="product-miniature js-product-miniature " data-id-product="11"
                         data-id-product-attribute="26" itemscope itemtype="http://schema.org/Product">
                         <div class="thumbnail-container">
@@ -1173,37 +1678,27 @@
                 Viewed products
             </h2>
             <div class="products featured-products-slick">
-
                 <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                     <article class="product-miniature js-product-miniature " data-id-product="9"
                         data-id-product-attribute="22" itemscope itemtype="http://schema.org/Product">
                         <div class="thumbnail-container">
                             <div class="product-image">
-
                                 <a href="https://rubiktheme.com/demo/rb_evo_demo/en/accessories/9-22-mountain-fox-cushion.html#/8-color-white"
                                     class="thumbnail product-thumbnail">
                                     <img class="img-fluid rb-image image-cover"
                                         data-lazy="https://rubiktheme.com/demo/rb_evo_demo/136-home_default/mountain-fox-cushion.jpg"
                                         data-full-size-image-url="https://rubiktheme.com/demo/rb_evo_demo/136-large_default/mountain-fox-cushion.jpg">
-
-
                                     <div class="product-hover">
                                         <img class="img-fluid rb-image image-hover"
                                             data-lazy="https://rubiktheme.com/demo/rb_evo_demo/137-home_default/mountain-fox-cushion.jpg"
                                             title="Ottoto Arezzo" width="600" height="686">
                                     </div>
-
-
                                     <div class="rb-image-loading"></div>
                                 </a>
 
-
-
                                 <ul class="product-flags">
                                     <span class="sr-only">Price</span>
-
                                 </ul>
-
 
                                 <div class="rb-ajax-loading">
                                     <div class="cssload-container">
@@ -1259,8 +1754,6 @@
                                         </a>
                                     </div>
 
-
-
                                     <div class="product-quickview hidden-sm-down">
                                         <a class="rb-quick-view rb-btn-product" href="#" data-link-action="quickview">
                                             <i class="icon-Icon_Quick-view"></i>
@@ -1306,22 +1799,13 @@
                                         <meta itemprop="ratingValue" content="0" />
                                         <meta itemprop="bestRating" content="5" />
                                     </div>
-
-
-
-
-
-
                                 </div>
-
 
                                 <h2 class="h3 product-title" itemprop="name"><a
                                         href="https://rubiktheme.com/demo/rb_evo_demo/en/accessories/9-22-mountain-fox-cushion.html#/8-color-white"
                                         itemprop="url"
                                         content="https://rubiktheme.com/demo/rb_evo_demo/en/accessories/9-22-mountain-fox-cushion.html#/8-color-white">Ottoto
                                         Arezzo</a></h2>
-
-
 
                                 <div class="product-price-and-shipping">
 
@@ -1346,189 +1830,9 @@
                         </div>
                     </article>
                 </div>
-
-                <div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <article class="product-miniature js-product-miniature " data-id-product="1"
-                        data-id-product-attribute="1" itemscope itemtype="http://schema.org/Product">
-                        <div class="thumbnail-container">
-                            <div class="product-image">
-
-                                <a href="https://rubiktheme.com/demo/rb_evo_demo/en/polo-shirts/1-1-hummingbird-printed-t-shirt.html#/1-size-s/8-color-white"
-                                    class="thumbnail product-thumbnail">
-                                    <img class="img-fluid rb-image image-cover"
-                                        data-lazy="https://rubiktheme.com/demo/rb_evo_demo/101-home_default/hummingbird-printed-t-shirt.jpg"
-                                        data-full-size-image-url="https://rubiktheme.com/demo/rb_evo_demo/101-large_default/hummingbird-printed-t-shirt.jpg">
-
-
-                                    <div class="product-hover">
-                                        <img class="img-fluid rb-image image-hover"
-                                            data-lazy="https://rubiktheme.com/demo/rb_evo_demo/100-home_default/hummingbird-printed-t-shirt.jpg"
-                                            title="Harman Blue Sneakers" width="600" height="686">
-                                    </div>
-
-
-                                    <div class="rb-image-loading"></div>
-                                </a>
-
-
-
-                                <ul class="product-flags">
-                                    <li class="product-flag discount">-20%</li>
-                                    <span class="sr-only">Price</span>
-
-                                </ul>
-
-
-                                <div class="rb-ajax-loading">
-                                    <div class="cssload-container">
-                                        <div class="cssload-speeding-wheel"></div>
-                                    </div>
-                                </div>
-                                <div class="functional-buttons clearfix">
-
-                                    <div class="product-add-cart">
-                                        <form action="https://rubiktheme.com/demo/rb_evo_demo/en/cart" method="post"
-                                            class="add-to-cart-or-refresh">
-                                            <input type="hidden" name="token" value="9e645ea2b011b9302f90d49f848c7122">
-                                            <input type="hidden" name="id_product" value="1"
-                                                class="product_page_product_id">
-
-                                            <!-- begin /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/rbthemefunction/views/templates/hook/rb-cart.tpl -->
-                                            <div class="product-add-to-cart-rb">
-
-                                                <div class="product-quantity">
-                                                    <div class="add">
-                                                        <button class="btn rb-btn-product add-to-cart"
-                                                            title="Add to cart" data-button-action="add-to-cart"
-                                                            type="submit">
-                                                            <i class="icon-Ico_Cart"></i>
-                                                            <span class="icon-title">Add To
-                                                                Cart</span>
-                                                        </button>
-
-
-                                                        <span class="product-availability hidden">
-                                                        </span>
-
-                                                    </div>
-                                                </div>
-
-
-
-                                                <p class="product-minimal-quantity hidden">
-                                                </p>
-
-                                            </div>
-                                            <!-- end /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/rbthemefunction/views/templates/hook/rb-cart.tpl -->
-                                        </form>
-                                    </div>
-
-
-                                    <div class="rb-wishlist">
-                                        <a class="rb-wishlist-link rb-btn-product " href="#" data-id-wishlist=""
-                                            data-id-product="1" data-id-product-attribute="1"
-                                            data-id_wishlist_product="0" title="Add to Wishlist">
-                                            <i class="icon-btn-product icon-wishlist icon-Icon_Wishlist"></i>
-                                            <span class="icon-title">Add to Wishlist</span>
-                                        </a>
-                                    </div>
-
-
-
-                                    <div class="product-quickview hidden-sm-down">
-                                        <a class="rb-quick-view rb-btn-product" href="#" data-link-action="quickview">
-                                            <i class="icon-Icon_Quick-view"></i>
-                                            <span class="icon-title">Quick view</span>
-                                        </a>
-                                    </div>
-
-                                    <div class="product-quick-view" style="display:none;">
-                                        <a class="quick-view rb-btn-product" href="#" data-link-action="quickview">
-                                            <i class="icon-Icon_Quick-view search"></i>
-                                            <span class="icon-title">Quick view</span>
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-
-
-
-                            </div>
-
-
-                            <div class="product-meta">
-                                <div class="meta-top">
-
-                                    <h3 class="h3 product-brand" itemprop="brand">
-                                        <span>Brand: </span>
-                                        <a href="https://rubiktheme.com/demo/rb_evo_demo/en/brand/1-studio-design"
-                                            tabindex="0">Studio Design</a>
-                                    </h3>
-
-
-
-                                    <div class="star_content clearfix" itemprop="reviewRating" itemscope
-                                        itemtype="https://schema.org/Rating">
-                                        <div class="star star_on"></div>
-                                        <div class="star star_on"></div>
-                                        <div class="star star_on"></div>
-                                        <div class="star star_on"></div>
-                                        <div class="star star_on"></div>
-                                        <meta itemprop="worstRating" content="0" />
-                                        <meta itemprop="ratingValue" content="5" />
-                                        <meta itemprop="bestRating" content="5" />
-                                    </div>
-
-
-
-
-
-
-                                </div>
-
-
-                                <h2 class="h3 product-title" itemprop="name"><a
-                                        href="https://rubiktheme.com/demo/rb_evo_demo/en/polo-shirts/1-1-hummingbird-printed-t-shirt.html#/1-size-s/8-color-white"
-                                        itemprop="url"
-                                        content="https://rubiktheme.com/demo/rb_evo_demo/en/polo-shirts/1-1-hummingbird-printed-t-shirt.html#/1-size-s/8-color-white">Harman
-                                        Blue Sneakers</a></h2>
-
-
-
-                                <div class="product-price-and-shipping">
-
-
-                                    <span class="regular-price" aria-label="Regular price">$23.90</span>
-                                    <span class="discount-percentage discount-product">-20%</span>
-
-
-
-                                    <span class="price" aria-label="Price">$19.12</span>
-                                    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer"
-                                        class="invisible">
-                                        <meta itemprop="priceCurrency" content="USD" />
-                                        <meta itemprop="price" content="19.12" />
-                                    </div>
-
-
-
-
-                                </div>
-
-                            </div>
-
-
-
-                        </div>
-                    </article>
-                </div>
             </div>
         </section>
         <!-- end /var/www/html/demo/rb_evo_demo/themes/rb_evo/modules/ps_viewedproduct/views/templates/hook/ps_viewedproduct.tpl -->
-
-
 
         <div class="modal fade js-product-images-modal" id="product-modal">
             <div class="modal-dialog" role="document">
@@ -1613,13 +1917,13 @@
 
     <div class="footer-container footer-v1">
 
-        <div id="rb-product-cart" class="rb-hidden hidden-md-down">
+        <div id="rb-product-cart">
             <form action="" method='post' id="add-to-cart-all-items">
                 <input type="hidden" name='prod_id' value="<?= $ProductDetails['id'] ?>">
                 <input type="hidden" name='user_id' value="<?= $user['id'] ?>">
                 <input type="hidden" name='prod_price' value="<?= $ProductDetails['product_price'] ?>">
                 <div class="container">
-                    <div class="rb-product-thumb">
+                    <div class="rb-product-thumb hidden-sm-down">
                         <div class="product-cover-img">
                             <?php
                             $ProductImageById = ProductImageById($ProductDetails['id'],"limit 1");
@@ -1670,7 +1974,7 @@
 
                     <div class="product-actions">
 
-                        <div class="product-variants">
+                        <div class="product-variants hidden-sm-down">
                             <div class="clearfix product-variants-item">
                                 <span class="control-label">Size</span>
                                 <ul id="group_3">
@@ -1769,5 +2073,5 @@
 </main>
 
 <?php
-    require 'includes/footer.php';
+    require 'includes/footer.php';    
 ?>

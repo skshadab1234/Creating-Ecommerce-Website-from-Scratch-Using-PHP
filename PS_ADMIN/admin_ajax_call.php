@@ -166,11 +166,19 @@ elseif (isset($_POST['SelectedDate']))
             $text = 'Error';
             $color = 'red';
         }
+
+        if ($value['payment_mode'] == 'wallet') {
+            $payment_mode = 'Wallet';
+        }elseif ($value['payment_mode'] == 'stripe') {
+            $payment_mode = 'Stripe';
+        }else{
+            $payment_mode = "";
+        }
     
         $today_orders_total .= '[
             '.json_encode("<a href=".ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].">".$value['Order_Id']."</a>").',
             "₹ '.$value['amount_captured'].'",
-            "By Card",
+            "By '.$payment_mode.'",
             '.json_encode("<span class='label label-pill bright' style='background-color:".$color." ; padding: 5px 10px'>".$text."</span>").',
             '.json_encode('<a style="color:#ddd" href='.FRONT_SITE_PATH.'Invoices?orderId='.$value['Order_Id'].'&redirect='.ADMIN_FRONT_SITE.'>Generate</a> / <a href='.FRONT_SITE_PATH.'download?filename='.$value['invoice_file'].'&filepath=UserInvoice/'.$value['invoice_file'].'&redirect='.ADMIN_FRONT_SITE.'" style="color:#ddd">Download</a> / <a href='.ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'].'&PrintData=print" style="color:#ddd">Print</a>').'
             ]'.$addcomma.'';
@@ -475,12 +483,7 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
         $qc_status_forUpdate = $ProductDetails['qc_status'].',0';
         if ($product_opt == 'update')
         {
-            if ($total_stock == $ProductDetails['total_stock']) {
-                $total_stock = $ProductDetails['total_stock'];
-            }else{
-                $total_stock = $ProductDetails['total_stock'] + $total_stock;
-            }
-            
+            $total_stock = $ProductDetails['total_stock'] + $total_stock;
             $_SESSION['product_name'] = $product_name;
             SqlQuery("UPDATE product_details set sku_id = '$sku_id',
                                             product_name = '$product_name', 
@@ -661,11 +664,13 @@ elseif (isset($_POST['product_name']) && isset($_POST['total_stock']) && isset($
             {
                 $_SESSION['product_name'] = $product_name;
                 $ProductDetails = ProductDetails("WHERE product_name = '$product_name'")[0];
-                if ($total_stock == $ProductDetails['total_stock']) {
-                    $total_stock = $ProductDetails['total_stock'];
-                }else{
-                    $total_stock = $ProductDetails['total_stock'] + $total_stock;
-                }
+                // if ($total_stock == $ProductDetails['total_stock']) {
+                    // $total_stock = $ProductDetails['total_stock'];
+                // }else{
+                // }
+
+                $total_stock = $ProductDetails['total_stock'] + $total_stock;
+
                 SqlQuery("UPDATE product_details set 
                                                     sku_id = '$sku_id',
                                                     product_name = '$product_name', 
@@ -832,7 +837,7 @@ elseif (isset($_POST['ProductListingAjax']))
 
         if ($val['total_stock'] -  $val['total_sold'] < 100) {
             $color = 'red';
-            $total_stock_msg = 'Out of Stock';
+            $total_stock_msg = "".($val['total_stock'] -  $val['total_sold']);
         }else{
             $color = 'green';
             $total_stock_msg = "".($val['total_stock'] -  $val['total_sold']);
@@ -847,7 +852,7 @@ elseif (isset($_POST['ProductListingAjax']))
         }elseif($end_qc_status == 1) {
             $qc_text = '<span class="text-success">Approved</span>';
         }else{
-            $qc_text = '<span class="text-danger">Rejected</span>';
+            $qc_text = '<spanOrderTrackId class="text-danger">Rejected</span>';
         }
         $product_listing_td .= '[
                                 '.json_encode("<input type=\"checkbox\" name=\"checked_product_update[]\" onclick=\"get_total_selected()\" id='".$val['id']."' value='".$val['id']."'>").',
@@ -861,7 +866,7 @@ elseif (isset($_POST['ProductListingAjax']))
                                 '.json_encode("".$val['category_name'].' - '.urldecode($val['product_subCategories']).''.$product_subCat_Values ."").',
                                 '.json_encode("<span class=\"btn ".$bgColor."\">".$text."</span>").',
                                 '.json_encode("".$qc_text."").',
-                                '.json_encode("".date("d M,Y", strtotime($val['product_added_on']))."").'
+                                '.json_encode("<span title=".date("d-M-Y", strtotime($val['product_added_on'])).">".date("m/d/Y", strtotime($val['product_added_on']))."</span>").'
                             ]'.$addcomma.'';
 
     }
@@ -878,10 +883,15 @@ elseif (isset($_POST['ProductListingAjax']))
 else if (isset($_POST['checked_product_update'][0]))
 {
     $product_status = get_safe_value($_POST['product_status']);
+    $added_stock_now = get_safe_value($_POST['UpdateStockBulk']);
     foreach ($_POST['checked_product_update'] as $list)
     {
         $id = get_safe_value($list);
-        SqlQuery("UPDATE product_details SET product_status='$product_status' where id='$id'");
+        $ProductDetails = ProductDetails("WHERE id = '$id'");
+        $ProductDetails = $ProductDetails[0];
+
+        $total_stock = $ProductDetails['total_stock'] + $added_stock_now;
+        SqlQuery("UPDATE product_details SET product_status='$product_status', total_stock = '$total_stock' where id='$id'");
     }
 }
 
@@ -1238,19 +1248,12 @@ elseif (isset($_POST['SubmitAssignedDelivery_id']) && $_POST['SubmitAssignedDeli
     $res= SqlQuery("SELECT * FROM delivery_boy WHERE delivery_boy_id = '$SubmitAssignedDelivery_id'");
     $row = mysqli_fetch_assoc($res);
 
-    if ($row['delivery_boy_profile'] != '') {
-        $delivery_image = DELIVERY_PROFILE.$row['delivery_boy_profile'];
-    }else{
-        $delivery_image = 'https://png.pngitem.com/pimgs/s/35-350426_profile-icon-png-default-profile-picture-png-transparent.png';
-    }
     $html = ' 
-            <table class="table table-bordered table-striped dataTable dtr-inline">
+            <table class="table table-bordered">
                 <thead>
-                    <th>Image</th>
-                    <th>Name</th>
+                    <th>Detail</th>
                 </thead>
                 <tbody>
-                    <td><img src='.$delivery_image.' style="border-radius:50%;width:50px;height:50px" alt=""></td>
                     <td>'.$row['delivery_boy_name'].'<br>'.$row['delivery_boy_email'].'<br> <a href="javascript:void(0)" onclick="RemoveAssignedDeliveryBoy('.$orderTrackId.')">Remove</a></td>
                 </tbody>
             </table>';

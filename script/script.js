@@ -1,3 +1,4 @@
+// -----------------Login Script Start------------------------------------------
 $(document).ready(() => {
     $("#SignSubmit_Desktop").submit((e) => {
         e.preventDefault();
@@ -11,13 +12,16 @@ $(document).ready(() => {
                 var json = $.parseJSON(res);
                 $(".login-button").prop("disabled", false);
 
+                
                 if (json.status == 'success') {
-                    $(".error_place").html(' <div class="alert alert-success" role="alert">' + json.msg + '</div>')
-                    window.location.href = window.location.href; //one level up
+                    swal("Login Successfully" , json.msg ,"success");   
+                    setTimeout( () => {
+                        window.location.href = window.location.href; //one level up
+                    }, 2000)
                 }
 
                 else if (json.status == 'error') {
-                    $(".error_place").html(' <div class="alert alert-danger" role="alert">' + json.msg + '</div>')
+                    swal( json.msg ,"" ,"error");   
                 }
             }
         });
@@ -37,19 +41,48 @@ $(document).ready(() => {
                 $(".login-button").prop("disabled", false);
 
                 if (json.status == 'success') {
-                    $(".error_place").html(' <div class="alert alert-success" role="alert">' + json.msg + '</div>')
-                    window.location.href = window.location.href; //one level up
+                    swal("Login Successfully" , json.msg ,"success");   
+                    setTimeout( () => {
+                        window.location.href = window.location.href; //one level up
+                    }, 2000)
                 }
 
                 else if (json.status == 'error') {
-
-
-                    $(".error_place").html(' <div class="alert alert-danger" role="alert">' + json.msg + '</div>')
+                    swal(json.msg, "" , "error");   
                 }
             }
         });
     })
 
+    $("#LoginiPage_Submit").submit((e) => {
+        e.preventDefault();
+        var data = $("#LoginiPage_Submit").serialize();
+        $(".login-button").prop("disabled", true);
+        $.ajax({
+            url: 'ajax_call.php',
+            type: 'post',
+            data: data,
+            success: (res) => {
+
+                var json = $.parseJSON(res);
+                $(".login-button").prop("disabled", false);
+
+                if (json.status == 'success') {
+                    swal("Login Successfully" , json.msg ,"success");   
+                    setTimeout( () => {
+                        window.location.href = window.location.href; //one level up
+                    }, 2000)
+                }
+
+                else if (json.status == 'error') {
+                    swal(json.msg, "" , "error");   
+                }
+            }
+        });
+    })
+// -----------------Login Script End------------------------------------------
+
+// -----------------Register Script Start------------------------------------------
 
     $("#Signup_Desktop").submit((e) => {
         e.preventDefault();
@@ -67,11 +100,11 @@ $(document).ready(() => {
 
                 if (json.status == 'success') {
                     $("#Signup_Desktop")[0].reset();
-                    $(".error_place_register").html(' <div class="alert alert-success" role="alert">' + json.msg + '</div>')
+                    swal("Account Created Successfully" , json.msg ,"success");   
                 }
 
                 else if (json.status == 'error') {
-                    $(".error_place_register").html(' <div class="alert alert-danger" role="alert">' + json.msg + '</div>')
+                    swal(json.msg ,"" , "error");   
                 }
             }
         });
@@ -92,16 +125,44 @@ $(document).ready(() => {
                 $(".register-button").html("Register");
 
                 if (json.status == 'success') {
-                    $("#SignUp_Phone")[0].reset();
-                    $(".error_place_register").html(' <div class="alert alert-success" role="alert">' + json.msg + '</div>')
+                    $("#Signup_Desktop")[0].reset();
+                    swal("Account Created Successfully" , json.msg ,"success");   
                 }
 
                 else if (json.status == 'error') {
-                    $(".error_place_register").html(' <div class="alert alert-danger" role="alert">' + json.msg + '</div>')
+                    swal(json.msg , "","error");   
                 }
             }
         });
     })
+    
+    // Register Page Signup 
+    $("#RegisterPageSignup").submit((e) => {
+        e.preventDefault();
+        var data = $("#RegisterPageSignup").serialize();
+        $(".register-button").prop("disabled", true);
+        $(".register-button").html("Sending Mail");
+        $.ajax({
+            url: 'ajax_call.php',
+            type: 'post',
+            data: data,
+            success: (res) => {
+                var json = $.parseJSON(res);
+                $(".register-button").prop("disabled", false);
+                $(".register-button").html("Register");
+
+                if (json.status == 'success') {
+                    $("#RegisterPageSignup")[0].reset();
+                    swal("Account Created Successfully" , json.msg ,"success");   
+                }
+                else if (json.status == 'error') {
+                    swal(json.msg , "" ,"error");   
+                }
+            }
+        });
+    })
+
+// -----------------Register Script End------------------------------------------
 });
 
 
@@ -397,7 +458,7 @@ function delete_product_from_cart(uid, pid, size) {
         success : (res) => {
             getCartDetails();
             var data = $.parseJSON(res);
-            swal("Product Deleted Successfully" , data.CartTotal+' Remains in yout Cart' ,"success");
+            swal("Product Deleted Successfully" , data.CartTotal+' Remains in yout Cart' ,"success");   
 
             $(".cart-products-count-btn").html(data.CartTotal);
             getCartData();
@@ -447,7 +508,7 @@ $("#submitAddress").submit( (e) => {
 })
 
 // JAB USR LOGN NAHI RAHEGA TB login_to_CHECKOUT YE WALI ID EXIST KREGI US SAMAYE HAME ISKE CLICK EVENT PE CHECKOUT PAGE OPEN KRNA HAI 
-$("#login_to_CHECKOUT, #cart_checkout_id, #add_wishlist_no_login, #back_to_login_forgot_password").click( () => {
+$("#login_to_CHECKOUT, #cart_checkout_id, #add_wishlist_no_login, #back_to_login_forgot_password, #InviteNowNoLogin").click( () => {
     $("#blockcart").removeClass("open");
     $(".mfp-bg, .mfp-wrap").hide();
     setTimeout(()=>{
@@ -747,13 +808,14 @@ $("#product_review_submit").submit( e => {
 
 
 // Download Invoice 
-function DownloadInvoice(ProductOrderId, pid, qty_key, prd_varint_key, payment_prod_price, filename, redirect) {
-    $("#DownloadInvoiceAtag_" +pid+prd_varint_key).hide();
+function DownloadInvoice(ProductOrderId, track_id,pid, qty_key, prd_varint_key, payment_prod_price, filename, redirect) {
+    $("#DownloadInvoiceAtag_" +ProductOrderId+track_id+pid+prd_varint_key).hide();
     $.ajax({
-        url: './Invoices.php',
+        url: 'Invoices.php',
         method: 'post',
         data: {
             ProductOrderId: ProductOrderId,
+            track_id:track_id,
             pid: pid,
             qty_key: qty_key,
             prd_varint_key: prd_varint_key,
@@ -764,13 +826,13 @@ function DownloadInvoice(ProductOrderId, pid, qty_key, prd_varint_key, payment_p
         success: (res) => {
             var data = $.parseJSON(res);
 
-            $("#DownloadInvoiceAtag_" +pid+prd_varint_key).show();
+            $("#DownloadInvoiceAtag_" +ProductOrderId+track_id+pid+prd_varint_key).show();
 
             swal({
                 title: "Invoice Downloaded Successfully",
                 type: "success"
             }).then(() => {
-                $("#addInvoiceMessagefromRespone_"+pid+prd_varint_key).html("<a href="+data.filepath+data.filename+" target='_blank'>#"+data.filename+"</a>");   
+                $("#addInvoiceMessagefromRespone_"+ProductOrderId+track_id+pid+prd_varint_key).html("<a href="+data.filepath+data.filename+" target='_blank'>#"+data.filename+"</a>");   
             });
         }
     })

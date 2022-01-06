@@ -31,6 +31,14 @@ if (isset($_GET['orderId']) && $_GET['orderId'] != '') {
         $payment_status = "Not paid";
     }
 
+    if ($row['payment_mode'] == 'wallet') {
+        $payment_mode = 'Wallet';
+    }elseif ($row['payment_mode'] == 'stripe') {
+        $payment_mode = 'Stripe';
+    }else{
+        $payment_mode = "";
+    }
+
 
     $html = '
         <!DOCTYPE html>
@@ -249,6 +257,7 @@ if (isset($_GET['orderId']) && $_GET['orderId'] != '') {
                         </tbody>
                         </table>
                         <br>
+                        <h3 class="heading">Payment Mode: '.$payment_mode.'</h3>
                         <h3 class="heading">Payment Status: '.$payment_status.'</h3>
                     </div>
 
@@ -323,6 +332,14 @@ elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && iss
             $payment_status = 'Paid';
         }else{
             $payment_status = "Not paid";
+        }
+
+        if ($row['payment_mode'] == 'wallet') {
+            $payment_mode = 'Wallet';
+        }elseif ($row['payment_mode'] == 'stripe') {
+            $payment_mode = 'Stripe';
+        }else{
+            $payment_mode = "";
         }
 
         $rand = rand(1111,9999);
@@ -519,6 +536,7 @@ elseif (isset($_POST['ProductOrderId']) && $_POST['ProductOrderId'] != '' && iss
                             </tbody>
                             </table>
                             <br>
+                            <h3 class="heading">Payment Mode: '.$payment_mode.'</h3>
                             <h3 class="heading">Payment Status: '.$payment_status.'</h3>
                         </div>
 

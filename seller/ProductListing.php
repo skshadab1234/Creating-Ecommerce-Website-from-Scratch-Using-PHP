@@ -70,7 +70,7 @@
                                             <tr class="odd" id="delete_box_<?= $val['id'] ?>">
                                                 <td style=""><img class="img-reponsive img-fluid"
                                                         width="80px" height="80px"
-                                                        style="border-radius:50%;width:80px;height:80px"
+                                                        style="border-radius:20%;width:60px;height:80px"
                                                         src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById['1']['product_img'] ?>"
                                                         alt=""></td>
                                                 <td style=""><a
@@ -593,9 +593,9 @@
             <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4 card p-2">
                 <div class="row">
                     <div class="col-sm-12">
-                        <table id="example1"
+                        <table id="example2"
                             class="table table-bordered table-striped dataTable dtr-inline text-center"
-                            role="grid" aria-describedby="example1_info">
+                            role="grid" aria-describedby="example2_info">
                             <thead>
                                 <tr role="row">
                                     <th>IMAGE</th>
@@ -637,7 +637,7 @@
                                         <tr class="odd" >
                                             <td style=""><img class="img-reponsive img-fluid"
                                                     width="80px" height="80px"
-                                                    style="border-radius:50%;width:80px;height:80px"
+                                                    style="border-radius:20%;width:60px;height:80px"
                                                     src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById['1']['product_img'] ?>"
                                                     alt=""></td>
                                             <td>
@@ -1098,8 +1098,60 @@
         $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
     } );
     $("#example1").DataTable({
+        dom: 'Blfrtip',
         "language": {
             "emptyTable": "No Product available to list"
+        },
+        "responsive": true,
+        "autoWidth": false,
+        "lengthMenu": [[2,5, 10, 25, 50, -1], [2,5, 10, 25, 50, "All"]],
+        initComplete: function () {
+            // Apply the search
+            this.api().columns(':gt(0)').every( function () {
+                var that = this;
+
+                $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                    if ( that.search() !== this.value ) {
+                        that
+                            .search( this.value )
+                            .draw();
+                    }
+                } );
+            } );
+        },
+        buttons: 
+        [
+            {
+                extend: 'searchBuilder',
+                config: {
+                    depthLimit: 2
+                }
+            },
+            {
+                extend: 'print',
+                title: function(){
+                    var printTitle = '<h5 class="text-center mb-3">List of Products Belong to '+seller_fullname+' Seller Account</h5>';
+                    return printTitle
+                },
+                exportOptions: {
+                    stripHtml: false,
+                    columns: [0,1, 2, 3,4,5,6,7,8]
+                    //specify which column you want to print
+
+                }
+            },
+            
+        ]   
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+
+    $('#example2 tfoot th:gt(0)').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
+    } );
+    $("#example2").DataTable({
+        "language": {
+            "emptyTable": "No Listing in Process is found."
         },
         "responsive": true,
         "autoWidth": false,
@@ -1121,12 +1173,12 @@
         buttons: [{
             extend: 'print',
             title: function(){
-                var printTitle = '<h5 class="text-center mb-3">List of Products Belong to '+seller_fullname+' Seller Account</h5>';
+                var printTitle = '<h5 class="text-center mb-3">List in process Belong to '+seller_fullname+' Seller Account</h5>';
                 return printTitle
             },
             exportOptions: {
                 stripHtml: false,
-                columns: [0,1, 2, 3,4,5,6,7,8]
+                columns: [0,1, 2, 3,4,5]
                 //specify which column you want to print
 
             }

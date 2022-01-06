@@ -98,8 +98,12 @@ else if(isset($_POST['email_signup']) && $_POST['email_signup'] != '' && isset($
     $firstname = get_safe_value($_POST['firstname']);
     $lastname = get_safe_value($_POST['lastname']);
     $page_url = get_safe_value($_POST['page_url']);
+    $referral_code = get_safe_value($_POST['referral_code']); // jisne referr kiya hai uska referral code hai ye
+    $UserId = get_safe_value($_POST['UserId']); // jisne referr kiya hai uska User Id hai ye
     $date = date("Y-m-d");
     
+    // Generating Referral Code
+    $AccountCreateRefrralCode = random_strings(8); // random_strings is a function define in function.inc.php file.
 
     $query = "SELECT * FROM users WHERE email = '$email'";
     $result = mysqli_query($con, $query);
@@ -114,7 +118,6 @@ else if(isset($_POST['email_signup']) && $_POST['email_signup'] != '' && isset($
         $new_password=password_hash($password,PASSWORD_BCRYPT);
         $rand_str = rand(00000,99999);
         
-        
         if (isset($_POST['id_gender']) && $_POST['id_gender'] != '') {
             $social_title = get_safe_value($_POST['id_gender']);
         }else{
@@ -127,16 +130,18 @@ else if(isset($_POST['email_signup']) && $_POST['email_signup'] != '' && isset($
             $newsletter = '';
         }
 
-        mysqli_query($con, "insert into users(social_title, firstname, lastname, password, email, newsletter, verify, userLoginCode, userAdded_On) VALUES('$social_title', '$firstname', '$lastname', '$new_password', '$email', '$newsletter', '0', '$rand_str','$date')");
-        $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$email.'&userLoginCode='.$rand_str.'&redirect='.$page_url.">Click here to Verify</a>";
-        $responseMail = send_email($email, $html, 'Verify Your Account '.$firstname.' '.$lastname);
+        if (mysqli_query($con, "insert into users(social_title, firstname, lastname, password, email, newsletter, verify, userLoginCode, MyReferralCode, userAdded_On) VALUES('$social_title', '$firstname', '$lastname', '$new_password', '$email', '$newsletter', '0', '$rand_str','$AccountCreateRefrralCode','$date')")) {
+            $UserJustInserted = mysqli_insert_id($con);
 
-        if($responseMail == 'Sended') {
-            $arr = array(
-                'status' => 'success',
-                'msg' => 'Mail has been Sended. Please Verify and Continue your Shopping',
-                'field' => 'error'
-            );
+            $html = "<a href=".FRONT_SITE_PATH.'verify?email='.$email.'&userLoginCode='.$rand_str.'&ReferByID='.$UserId.'&Code='.$referral_code.'&redirect='.$page_url.">Click here to Verify</a>";
+            $responseMail = send_email($email, $html, 'Verify Your Account '.$firstname.' '.$lastname);
+            if($responseMail == 'Sended') {
+                $arr = array(
+                    'status' => 'success',
+                    'msg' => 'Mail has been Sended. Please Verify and Continue your Shopping',
+                    'field' => 'error'
+                );
+            }
         }
     }
 
@@ -430,7 +435,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
                         <div class="box-cart-modal">
                             <div class=" col-sm-4 col-xs-4 divide-right">
                                 <div class="row no-gutters align-items-center">
-                                    <div class="col-6 text-center">
+                                    <div class="col-12 text-center">
                                             <img src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
                                                 alt="'.$row['product_name'].'" title="'.$row['product_name'].'" class="img-fluid">
                                     </div>
@@ -482,13 +487,13 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
                 $arr = array("status" => 'logged',  'msg' => $html, 'modal_title' => 'Limited Stock', 'Cart_Total' => $CartTotal);                        
             }else{
                 $html .= '
-                    <div class="modal-body">
+                    
                         <div class="box-cart-modal">
-                            <div class=" col-sm-4 col-xs-2 divide-right">
+                            <div class=" col-md-4 col-xs-12 divide-right">
                                 <div class="row no-gutters align-items-center">
-                                    <div class="col-6 text-center">
+                                    <div class="col-12  text-center">
                                             <img src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
-                                                alt="'.$ProductDetails['product_name'].'" title="'.$ProductDetails['product_name'].'" class="img-fluid">
+                                                alt="'.$ProductDetails['product_name'].'" title="'.$ProductDetails['product_name'].'" class="img-fluid h-sm-200">
                                     </div>
                                 </div>
                             </div>
@@ -513,9 +518,7 @@ elseif (isset($_POST['prod_id']) && isset($_POST['prod_price'])) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-    
-                    </div>';
+                        </div>';
     
                 if (mysqli_num_rows($res) > 0) {
                     // Update  Cart Quantity
@@ -684,15 +687,13 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
                         </span>
                     </div>
                     <div class="col-sm-4 col-xs-9 details">
-                        <a href="'.FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name']).'"
-                            target="_blank"> <span>'.$row['product_name'].' <br> (Size - '.$row['size'].')</span>
-                        </a>
+                        <span>'.$row['product_name'].' <br> (Size - '.$row['size'].')</span>
                     </div>
                     <div class="col-sm-6 col-xs-12 qty">
                         <div class="row">
-                            <div class="col-xs-4 text-sm-center text-xs-left">₹ '.$row['product_price'].'</div>
+                            <div class="col-xs-4 text-sm-center text-xs-left">₹ '.number_format($row['product_price'],2).'</div>
                             <div class="col-xs-4 text-sm-center">'.$row['qty'].'</div>
-                            <div class="col-xs-4 text-sm-center text-xs-right bold">₹ '.$row['qty'] * $row['product_price'].'
+                            <div class="col-xs-4 text-sm-center text-xs-right bold">₹ '.number_format($row['qty'] * $row['product_price'],2).'
                             </div>
                         </div>
                     </div>
@@ -700,39 +701,39 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
             ';
 
             $detaills_page_data .= '<li class="media">
-                                                <div class="media-left">
-                                                    <a href="'.FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name']).'"
-                                                        title="'.$row['product_name'].'">
-                                                        <img class="media-object"
-                                                            src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
-                                                            alt="'.$row['product_name'].'">
-                                                    </a>
-                                                </div>
-                                                <div class="media-body">
-                                                    <span class="product-name">'.$row['product_name'].'</span>
-                                                    <span class="product-quantity">x'.$row['qty'].'</span>
-                                                    <span class="product-price float-xs-right">₹ '.$row['product_price'] * $row['qty'].'</span>
+                                        <div class="media-left">
+                                            <a href="'.FRONT_SITE_PATH.'product-details?productname='.urlencode($row['product_name']).'"
+                                                title="'.$row['product_name'].'">
+                                                <img class="media-object"
+                                                    src="'.FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'].'"
+                                                    alt="'.$row['product_name'].'">
+                                            </a>
+                                        </div>
+                                        <div class="media-body">
+                                            <span class="product-name">'.$row['product_name'].'</span>
+                                            <span class="product-quantity">x'.$row['qty'].'</span>
+                                            <span class="product-price float-xs-right">₹ '.$row['product_price'] * $row['qty'].'</span>
 
-                                                    <div class="product-line-info product-line-info-secondary text-muted" style="display:block">
-                                                        <span class="label">Size:</span>
-                                                        <span class="value">'.$row['size'].'</span>
-                                                    </div>
-                                                
-                                                    <br />
-                                                    
-                                                </div>
+                                            <div class="product-line-info product-line-info-secondary text-muted" style="display:block">
+                                                <span class="label">Size:</span>
+                                                <span class="value">'.$row['size'].'</span>
+                                            </div>
+                                        
+                                            <br />
+                                            
+                                        </div>
 
-                                            </li>';
+                                    </li>';
             }
 
             $cart_products_count = 'There are '.$CartTotal.' items in your cart.';
             
             if($price_total > 500) {
                 $shipping_price = '<span style="color:green">Free</span>';
-                $total_payable = '₹ '.$price_total;
+                $total_payable = '₹ '.number_format($price_total,2);
             }else {
                 $shipping_price = '₹ 500';
-                $total_payable = '₹ '.($price_total + 500);
+                $total_payable = '₹ '.number_format(($price_total + 500));
             }
 
 
@@ -743,7 +744,7 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['type'])) {
                         'cart_product' => $cart_product, 
                         'cart_products_count' => $cart_products_count, 
                         'cart_total' => $CartTotal, 
-                        'price_total' => '₹ '.$price_total, 
+                        'price_total' => '₹ '.number_format($price_total), 
                         'shipping_price' => $shipping_price,
                         'total_payable' => $total_payable,
                         'product_payment_section' => $product_payment_section,
@@ -890,14 +891,14 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['data'])) {
                         <div class=\"product-line-grid\">
                             <!--  product line left content: image-->
                             <div
-                                class=\"product-line-grid-left col-md-2 col-sm-3 col-xs-4 col-sp-12\">
+                                class=\"product-line-grid-left col-md-2 col-sm-3 col-xs-4 \">
                                 <span class=\"product-image media-middle\">
                                     <img src=".FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img']."
                                         alt=".$row['product_name'].">
                                 </span>
                             </div>
     
-                            <div class=\"col-md-10 col-sm-9 col-xs-8 col-sp-12\">
+                            <div class=\"col-md-10 col-sm-9 col-xs-8 \">
                                 <div class=\"row\">
                                     <!--  product line body: label, discounts, price, attributes, customizations -->
                                     <div
@@ -938,10 +939,10 @@ elseif (isset($_POST['id']) && $_POST['id'] != "" && isset($_POST['data'])) {
                                                                 style=\"display: none;\"></span><input
                                                                 type=\"number\" value=".$row['qty']."
                                                                 name=\"product-quantity-spin\" min='1' onchange=\"onChangeFunction(this.value, ".$row['cid'].", ".$row['id'].")\"
-                                                                style=\"display: block;width:100px\">
+                                                                style=\"display: block;width:100%\">
                                                         </div>
                                                     </div>
-                                                    <div class=\"col-md-6 col-xs-2 price\">
+                                                    <div class=\"col-md-6 col-xs-6 text-center price\">
                                                         <span class=\"product-price\" id='product".$row['cid']."'>
                                                             <strong>
                                                             ₹ ".$row['product_price'] * $row['qty']."
@@ -1245,10 +1246,16 @@ elseif (isset($_POST['prod_id']) && $_POST['prod_id'] > 0 && isset($_POST['quick
             <div class="product-attributes-label">
                 <div class="product-manufacturer">
                     <label class="label">Brand:</label>
-
-                    <a href="<?= FRONT_SITE_PATH.'brand?brand_name='.$ProductDetails['brand_name'] ?>">
-                        <img src="<?= FRONT_SITE_IMAGE_BRAND.$ProductDetails['brand_img'] ?>"
-                            class="img img-thumbnail manufacturer-logo" alt="<?= $ProductDetails['brand_name'] ?>">
+                    <?php
+                        if($ProductDetails['brand_img'] == '' ){
+                            $brand_name_check = $ProductDetails['brand_name'];
+                        }else{
+                            $brand_name_check = ' <img src='.FRONT_SITE_IMAGE_BRAND.$ProductDetails['brand_img'].' class="img img-thumbnail manufacturer-logo" alt="Studio Design">';
+                        }
+                    ?>  
+                    <a
+                        href="<?= FRONT_SITE_PATH.'brand?brand_name='.$ProductDetails['brand_name'] ?>" title="<?= $ProductDetails['brand_name'] ?>">
+                        <?= $brand_name_check ?>
                     </a>
 
                 </div>

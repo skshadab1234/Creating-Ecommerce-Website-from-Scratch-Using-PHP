@@ -1,8 +1,5 @@
 <?php
     require 'includes/header.php';
-
-    
-
     if (isset($_GET['orderId'])) {
         $orderId = get_safe_value($_GET['orderId']);
         $SQL = "SELECT * FROM payment_details WHERE Order_Id = '$orderId'";
@@ -13,47 +10,32 @@
             $product_ids = explode(',', $row['product_id']);
             array_unshift($product_ids,"");
             unset($product_ids[0]);
-            
         }else{
             redirect(FRONT_SITE_PATH);
         }
-        
     } else{
         redirect(FRONT_SITE_PATH);
     }
-
-    
 ?>
-
-
 <section id="wrapper">
-
     <nav data-depth="1" class="breadcrumb">
         <div class="container">
             <ol itemscope="" itemtype="http://schema.org/BreadcrumbList" class="p-a-0">
-
                 <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
                     <a itemprop="item" href="<?= FRONT_SITE_PATH ?>">
                         <span itemprop="name">Home</span>
                     </a>
                     <meta itemprop="position" content="1">
                 </li>
-
-
                 <li>
                     <span>Order confirmation</span>
                 </li>
-
             </ol>
         </div>
     </nav>
 
-
     <div class="container">
         <div class="row">
-
-
-
             <div id="content-wrapper" class="col-lg-12 col-xs-12">
                 <section id="main">
                     <section id="content-hook_order_confirmation" class="card">
@@ -63,7 +45,6 @@
                                     <h3 class="h1 card-title">
                                         <i class="material-icons rtl-no-flip done"></i>Your order is confirmed
                                     </h3>
-
                                     <p>
                                         An email has been sent to the <?= $user['email'] ?> address.
                                     </p>
@@ -72,15 +53,12 @@
                         </div>
                     </section>
 
-                    <section id="content" class="page-content page-order-confirmation card box mb-2">
+                    <section id="content" class="page-content page-order-confirmation card box mb-2 p-0">
                         <div class="card-block">
                             <div class="row">
-
-
                                 <div id="order-items" class="col-md-12">
                                     <div class="row">
-
-                                        <h3 class="card-title h3 col-md-6 col-12">Order items</h3>
+                                        <h3 class="card-title h3 col-md-6 col-6">Order items</h3>
                                         <h3 class="card-title h3 col-md-2 text-md-center _desktop-title">Unit
                                             price</h3>
                                         <h3 class="card-title h3 col-md-2 text-md-center _desktop-title">
@@ -121,13 +99,13 @@
                                                     ?>
 
                                         <div class="order-line row">
-                                            <div class="col-sm-2 col-xs-3">
+                                            <div class="col-sm-2 col-xs-4">
                                                 <span class="image">
                                                     <img
                                                         src="<?= FRONT_SITE_IMAGE_PRODUCT.$ProductImageById[1]['product_img'] ?>">
                                                 </span>
                                             </div>
-                                            <div class="col-sm-4 col-xs-9 details">
+                                            <div class="col-sm-4 col-xs-8 details">
                                                 <span><?= $Prdrow['product_name']." (Size: ".$product_varient[$key].")" ?></span>
                                                 <br>
                                                 <p><strong>Estimated Delivery: </strong><?= date("D M d, Y", strtotime($estimate_delivery_date[$key])) ?></p>
@@ -192,18 +170,21 @@
                                                 </tr>
                                             </tbody>
                                         </table>
-
-
                                     </div>
                                 </div>
 
                                 <div id="order-details" class="col-md-12">
                                     <h3 class="h3 card-title">Order details:</h3>
                                     <ul>
-                                        <li>Order reference: <?= $row['fingerprint'] ?></li>
-                                        <li>Payment method: Stripe</li>
-                                        <li>Receipt : <a href="<?= $row['receipt_url'] ?>" download target="_blank">View
-                                                Receipt From Stripe</a></li>
+                                        <li>Order reference: <?= $row['Order_Id'] ?></li>
+                                        <li>Payment method: <?= $row['payment_mode'] ?></li>
+                                        <?php
+                                            if ($row['payment_mode'] == 'stripe') {
+                                                ?>
+                                                <li>Receipt : <a href="<?= $row['receipt_url'] ?>" download target="_blank">View Receipt From Stripe</a></li>
+                                                <?php
+                                            }
+                                        ?>
                                         <li><a class="btn btn-primary float-right" href="<?= FRONT_SITE_PATH ?>download?filename=<?= $row['invoice_file'] ?>&filepath=UserInvoice/<?= $row['invoice_file']?>&redirect=<?= $url ?>">Download Invoice</a></li>
                                     </ul>
                                 </div>

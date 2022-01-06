@@ -347,7 +347,13 @@
                         } );
                     } );
                 },
-                    buttons: [{
+                    buttons: [
+                        {
+                            extend: 'searchBuilder',
+                            config: {
+                                depthLimit: 2
+                            }
+                        },{
                         extend: 'print',
                         exportOptions: {
                             stripHtml: false,

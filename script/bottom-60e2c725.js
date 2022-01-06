@@ -20368,7 +20368,7 @@ function ChangeNumberQty() {
 }
 function scrollJs() {
   var offset = $("#add-to-cart-or-refresh .product-discounts").offset();
-  var top = offset.top;
+  var top = offset.top + 500;
   $(window).scroll(function (event) {
       pos_body = $("html,body").scrollTop();
       if (pos_body > top) {

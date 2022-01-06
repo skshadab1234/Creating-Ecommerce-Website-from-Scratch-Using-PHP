@@ -134,7 +134,7 @@
 
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 First name
                                             </label>
                                             <div class="col-md-8">
@@ -150,7 +150,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Last name
                                             </label>
                                             <div class="col-md-8">
@@ -166,7 +166,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label">
+                                            <label class="col-md-2 col-form-label text-xs-left text-lg-right">
                                                 Company
                                             </label>
                                             <div class="col-md-8">
@@ -184,7 +184,7 @@
 
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Address
                                             </label>
                                             <div class="col-md-8">
@@ -200,7 +200,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Zip/Postal Code
                                             </label>
                                             <div class="col-md-8">
@@ -218,7 +218,7 @@
                                        
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 City
                                             </label>
                                             <div class="col-md-8">
@@ -235,7 +235,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 State
                                             </label>
                                             <div class="col-md-8">
@@ -252,7 +252,7 @@
 
                                       
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Address Complement
                                             </label>
                                             <div class="col-md-8">
@@ -272,7 +272,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Country
                                             </label>
                                             <div class="col-md-8">
@@ -296,17 +296,15 @@
 
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Phone
                                             </label>
                                             <div class="col-md-8">
                                                 <input class="form-control" name="phone_number" type="tel" value="<?= $phone_number ?>"
-                                                    maxlength="32">
+                                                    maxlength="32" required="">
                                             </div>
 
                                             <div class="col-md-2 form-control-comment">
-
-                                                Optional
 
                                             </div>
                                         </div>

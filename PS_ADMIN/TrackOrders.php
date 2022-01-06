@@ -105,13 +105,14 @@
                                             <strong><a><?= $ProductDetails['product_name'] ?>
                                                 </a></strong><br>
                                             Size: <?= $product_size_array[$estimate_dd_index] ?><br>
-                                            Qty : <?= $product_qty[$estimate_dd_index].' x '.$payment_prod_price[$estimate_dd_index] ?><br>
+                                            Qty :
+                                            <?= $product_qty[$estimate_dd_index].' x '.$payment_prod_price[$estimate_dd_index] ?><br>
                                             Total Price : <strong>₹
-                                                    <?= number_format($payment_prod_price[$estimate_dd_index]) ?></strong><br>
+                                                <?= number_format($payment_prod_price[$estimate_dd_index]) ?></strong><br>
                                             Current Status : <span style="color:green"><?= $CurrentStatus ?></span>
 
                                             <?=  $product_message ?>
-                                           
+
                                         </div>
                                     </div>
                                 </div>
@@ -132,17 +133,18 @@
                                                 $delivery_image = 'https://png.pngitem.com/pimgs/s/35-350426_profile-icon-png-default-profile-picture-png-transparent.png';
                                             }
                                             ?>
-                                            <table class="table table-bordered table-striped dataTable dtr-inline text-center">
-                                                <thead>
-                                                    <th>Image</th>
-                                                    <th>Name</th>
-                                                </thead>
-                                                <tbody>
-                                                    <td><img src="<?= $delivery_image ?>" style="border-radius:50%;width:50px;height:50px" alt=""></td>
-                                                    <td><?= $delivery_row['delivery_boy_name'] ?></td>
-                                                </tbody>
-                                            </table>
-                                            <?php
+                                <table class="table table-bordered table-striped dataTable dtr-inline text-center">
+                                    <thead>
+                                        <th>Image</th>
+                                        <th>Name</th>
+                                    </thead>
+                                    <tbody>
+                                        <td><img src="<?= $delivery_image ?>"
+                                                style="border-radius:50%;width:50px;height:50px" alt=""></td>
+                                        <td><?= $delivery_row['delivery_boy_name'] ?></td>
+                                    </tbody>
+                                </table>
+                                <?php
                                         }
                                     }
                                 ?>
@@ -150,7 +152,7 @@
                         </tbody>
                     </table>
                 </div>
-               <?= OrderTrackStatus($currentTrack) ?>
+                <?= OrderTrackStatus($currentTrack) ?>
             </div>
         </div>
     </section>
@@ -187,20 +189,20 @@
                             <div class="col-sm-12">
 
                                 <table id="example1"
-                                    class="table table-bordered table-striped dataTable dtr-inline text-center"
+                                    class="table table-bordered table-striped dataTable dtr-inline text-center w-100"
                                     role="grid" aria-describedby="example1_info">
                                     <thead>
                                         <tr role="row">
-                                            <th>Order Id</th>
-                                            <th>Tracking Id</th>
-                                            <th>Assign Delivery</th>
-                                            <th>Invoice Status</th>
-                                            <th>Payment</th>
-                                            <th>Pincode</th>    
-                                            <th>Status</th>
-                                            <th>User Details</th>
-                                            <th>Order Placed at</th>
-                                            <th>Estimate Delivery</th>
+                                            <th width="5%">Order Id</th>
+                                            <th width="5%">Tracking Id</th>
+                                            <th width="5%">Invoice Status</th>
+                                            <th width="30%">Assign Delivery</th>
+                                            <th width="5%">Payment</th>
+                                            <th width="5%">Pincode</th>
+                                            <th width="5%">Status</th>
+                                            <th width="30%">User Details</th>
+                                            <th width="5%">Order Placed at</th>
+                                            <th width="5%">Estimate Delivery</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -236,49 +238,63 @@
                                                                  onclick=\"DownloadInvoice('".$value['Order_Id']."','".$tarcking_id[$tarcking_id_key]."', '".$product_ids_array[$tarcking_id_key]."', '".$product_qty_array[$tarcking_id_key]."', '".$product_varient_array[$tarcking_id_key]."', '".$payment_prod_price_array[$tarcking_id_key]."', '".$per_product_invoice_array[$tarcking_id_key]."','".$url."')\">Download</a>";
                                                              }
                                                              ?>
-                                                            <tr>
-                                                                <td><a target="_blank"
-                                                                        href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'] ?>"><?= $value['Order_Id'] ?></a>
-                                                                </td>
-                                                                <td><a target="_blank"
-                                                                        href="<?= ADMIN_FRONT_SITE.'TrackOrders?track_id='.$tarcking_id_val.'&Order_id='.$value['Order_Id'] ?>"><?= $tarcking_id_val ?></a>
-                                                                </td>
-                                                                <td id="dumpAssignedDeliveryData_<?= $rowTrack['id'] ?>">
-                                                                    <?php
+                                        <tr>
+                                            <td><a target="_blank"
+                                                    href="<?= ADMIN_FRONT_SITE.'orders?orderDetails='.$value['Order_Id'] ?>"><?= $value['Order_Id'] ?></a>
+                                            </td>
+                                            <td><a target="_blank"
+                                                    href="<?= ADMIN_FRONT_SITE.'TrackOrders?track_id='.$tarcking_id_val.'&Order_id='.$value['Order_Id'] ?>"><?= $tarcking_id_val ?></a>
+                                            </td>
+
+                                            <td
+                                                id="addInvoiceMessagefromRespone_<?= $value['Order_Id'].$tarcking_id[$tarcking_id_key].$product_ids_array[$tarcking_id_key].$product_varient_array[$tarcking_id_key] ?>">
+                                                <?= $invoice_message ?></td>
+                                            <td id="dumpAssignedDeliveryData_<?= $rowTrack['id'] ?>">
+                                                <?php
                                                                         if ($rowTrack['delivery_boy_id'] == '') {
                                                                             ?>
-                                                                            <button type="button" class="btn btn-default" onclick="getDeliveryBoyForAssigning(<?= $rowTrack['id'] ?>)" data-toggle="modal" data-target="#getDeliveryBoyForAssigning_<?= $rowTrack['id']  ?>">
-                                                                                Assign Delivery to
-                                                                            </button>
-                                                                            <div class="modal fade" id="getDeliveryBoyForAssigning_<?= $rowTrack['id'] ?>"  aria-hidden="true">
-                                                                                <div class="modal-dialog modal-xl">
-                                                                                    <div class="modal-content ">
-                                                                                        <div class="modal-header card_box">
-                                                                                            <h4 class="modal-title">Assigning this item to </h4>
-                                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                                <span aria-hidden="true">×</span>
-                                                                                            </button>
-                                                                                        </div>
-                                                                                            <div class="modal-body text-left card_box" id="hideDiv_NoDeliveryBoy_<?= $rowTrack['id'] ?>"> 
-                                                                                                <div class="form-group col-md-12">
-                                                                                                    <select name="delivery_id" id="listofdeliveryBoy_<?= $rowTrack['id'] ?>"
-                                                                                                        class="form-control select2 select2-hidden-accessible" style="width: 100%;"
-                                                                                                        required>
-                                                                                                        
-                                                                                                    </select>
-                                                                                                </div>
+                                                <button type="button" class="btn btn-default"
+                                                    onclick="getDeliveryBoyForAssigning(<?= $rowTrack['id'] ?>)"
+                                                    data-toggle="modal"
+                                                    data-target="#getDeliveryBoyForAssigning_<?= $rowTrack['id']  ?>">
+                                                    Assign Delivery to
+                                                </button>
+                                                <div class="modal fade"
+                                                    id="getDeliveryBoyForAssigning_<?= $rowTrack['id'] ?>"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-xl">
+                                                        <div class="modal-content ">
+                                                            <div class="modal-header card_box">
+                                                                <h4 class="modal-title">Assigning this item to </h4>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body text-left card_box"
+                                                                id="hideDiv_NoDeliveryBoy_<?= $rowTrack['id'] ?>">
+                                                                <div class="form-group col-md-12">
+                                                                    <select name="delivery_id"
+                                                                        id="listofdeliveryBoy_<?= $rowTrack['id'] ?>"
+                                                                        class="form-control select2 select2-hidden-accessible"
+                                                                        style="width: 100%;" required>
 
-                                                                                            </div>
-                                                                                            <div class="modal-footer card_box justify-content-between">
-                                                                                                <button type="button" data-dismiss="modal" onclick="SubmitAssignedDelivery(<?= $rowTrack['id'] ?>)" class="btn btn-primary">Save changes</button>
-                                                                                            </div>
-                                                                                    
-                                                                                    </div>
-                                                                                    <!-- /.modal-content -->
-                                                                                    </div>
-                                                                                    <!-- /.modal-dialog -->
-                                                                                </div>
-                                                                            <?php
+                                                                    </select>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="modal-footer card_box justify-content-between">
+                                                                <button type="button" data-dismiss="modal"
+                                                                    onclick="SubmitAssignedDelivery(<?= $rowTrack['id'] ?>)"
+                                                                    class="btn btn-primary">Save changes</button>
+                                                            </div>
+
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
+                                                <?php
                                                                         }else{
                                                                             if ($CurrentStatus == 'Delivered') {
                                                                                 //  agar Ye product Delivered hogaya hai tho action button and link ko hata dena hai 
@@ -292,31 +308,24 @@
                                                                             foreach ($deliveryBoy_Ids as $keys => $values) {
                                                                                 $delivery_res = SqlQuery("SELECT * FROM delivery_boy WHERE delivery_boy_id= '$values'");
                                                                                 while ($delivery_row = mysqli_fetch_assoc($delivery_res)) {
-                                                                                    if ($delivery_row['delivery_boy_profile'] != '') {
-                                                                                        $delivery_image = DELIVERY_PROFILE.$delivery_row['delivery_boy_profile'];
-                                                                                    }else{
-                                                                                        $delivery_image = 'https://png.pngitem.com/pimgs/s/35-350426_profile-icon-png-default-profile-picture-png-transparent.png';
-                                                                                    }
                                                                                     ?>
-                                                                                    <table class="table table-bordered table-striped dataTable dtr-inline">
-                                                                                        <thead>
-                                                                                            <th>Image</th>
-                                                                                            <th>Name</th>
-                                                                                        </thead>
-                                                                                        <tbody>
-                                                                                            <td><img src="<?= $delivery_image ?>" style="border-radius:50%;width:50px;height:50px" alt=""></td>
-                                                                                            <td><?= $delivery_row['delivery_boy_name'].'<br>'.$delivery_row['delivery_boy_email'].'<br>'.$showLink ?></td>
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                    <?php
+                                                <table class="table table-bordered table-striped dataTable dtr-inline">
+                                                    <thead>
+                                                        <th>Detail</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <td><?= $delivery_row['delivery_boy_name'].'<br>'.$delivery_row['delivery_boy_email'].'<br>'.$showLink ?>
+                                                        </td>
+                                                    </tbody>
+                                                </table>
+                                                <?php
                                                                                 }
                                                                             }
                                                                         }
                                                                     ?>
-                                                                </td>
-                                                                <td id="addInvoiceMessagefromRespone_<?= $value['Order_Id'].$tarcking_id[$tarcking_id_key].$product_ids_array[$tarcking_id_key].$product_varient_array[$tarcking_id_key] ?>"><?= $invoice_message ?></td>
-                                                                <td>
-                                                                    <?php
+                                            </td>
+                                            <td>
+                                                <?php
                                                                         if($value['payment_status'] == 'succeeded') {
                                                                             // Done 
                                                                             $text = 'Success';
@@ -327,64 +336,56 @@
                                                                             $color = 'red';
                                                                         }
                                                                     ?>
-                                                                    <span class=" label label-pill bright"
-                                                                        style="background-color:<?= $color ?> ; padding: 5px 10px">
-                                                                        <?= $text ?>
-                                                                    </span>
-                                                                </td>
-                                                                <td><?= $rowTrack['delivery_to_pincode'] ?></td>
-                                                            
-                                                                <td><?= $CurrentStatus ?> </td>
-                                                                <td>
-                                                                    <table class="table table-bordered table-striped dataTable dtr-inline">
-                                                                        <thead>
-                                                                            <th>Profile</th>
-                                                                            <th>Name</th>
-                                                                            <th>Email</th>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <td>
-                                                                                <img class="img-reponsive img-fluid" width="40px"
-                                                                                    height="40px"
-                                                                                    style="border-radius:50%;width:40px;height:40px"
-                                                                                    src="<?= USER_PROFILE.$userDetails['user_img'] ?>"
-                                                                                    alt="">
-                                                                            </td>
-                                                                            <td><?= $userDetails['firstname'].' '.$userDetails['lastname'] ?>
-                                                                            </td>
-                                                                            <td><?= $userDetails['email'] ?></td>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </td>
-                                                                <td>
-                                                                    <?= date("d/m/Y h:i A", strtotime($value["created"])) ?>
-                                                                </td>
-                                                                <td>
-                                                                    <?= date("D M d, Y", strtotime($estimate_delivery_date_array[$tarcking_id_key])) ?>
-                                                                </td>
-                                                                
-                                                            
-                                                            </tr>
-                                                            <?php
+                                                <span class=" label label-pill bright"
+                                                    style="background-color:<?= $color ?> ; padding: 5px 10px">
+                                                    <?= $text ?>
+                                                </span>
+                                            </td>
+                                            <td><?= $rowTrack['delivery_to_pincode'] ?></td>
+
+                                            <td><?= $CurrentStatus ?> </td>
+                                            <td>
+                                                <table class="table table-bordered table-striped dataTable dtr-inline">
+                                                    <thead>
+                                                        <th>Detail</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <td><?= $userDetails['firstname'].' '.$userDetails['lastname'] ?>
+                                                            <br><a
+                                                                href="mailto:<?= $userDetails['email'] ?>"><?= $userDetails['email'] ?></a>
+                                                        </td>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <?= date("d/m/Y h:i A", strtotime($value["created"])) ?>
+                                            </td>
+                                            <td>
+                                                <?= date("D M d, Y", strtotime($estimate_delivery_date_array[$tarcking_id_key])) ?>
+                                            </td>
+
+
+                                        </tr>
+                                        <?php
                                                          }
                                                      }
                                                 ?>
 
                                     </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Order Id</th>
-                                                <th>Track Id</th>
-                                                <th>Assign Delivery Boy</th>
-                                                <th>Invoice</th>
-                                                <th>Payment Status</th>
-                                                <th>Pincode</th>
-                                                <th>DELIVERY Status</th>
-                                                <th>USer Details</th>
-                                                <th>Order Placed Date</th>
-                                                <th>Estimate Delivery Date</th>
-                                            </tr>
-                                        </tfoot>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Order Id</th>
+                                            <th>Track Id</th>
+                                            <th>Assign Delivery Boy</th>
+                                            <th>Invoice</th>
+                                            <th>Payment Status</th>
+                                            <th>Pincode</th>
+                                            <th>DELIVERY Status</th>
+                                            <th>USer Details</th>
+                                            <th>Order Placed Date</th>
+                                            <th>Estimate Delivery Date</th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
 
                             </div>
@@ -407,51 +408,56 @@
 ?>
     <script>
     $(function() {
-        $('#example1 tfoot th').each( function () {
+        $('#example1 tfoot th').each(function() {
             var title = $(this).text();
-            $(this).html( '<input type="text" class="form-control" placeholder="Search '+title+'" />' );
-        } );
+            $(this).html('<input type="text" class="form-control" placeholder="Search ' + title +
+                '" />');
+        });
 
         $("#example1").DataTable({
             mark: {
                 diacritics: false
             },
-            "order": [[ 8, "desc" ]],
+            "order": [
+                [8, "desc"]
+            ],
             "responsive": true,
-            "autoWidth": false, 
-            "lengthMenu": [[2,5, 10, 25, 50, -1], [2,5, 10, 25, 50, "All"]],
+            "lengthMenu": [
+                [2, 5, 10, 25, 50, -1],
+                [2, 5, 10, 25, 50, "All"]
+            ],
             buttons: [{
                     extend: 'print',
                     exportOptions: {
                         stripHtml: false,
-                        columns: [0,1, 2, 3,4,5,6,7,8,9]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
                         //specify which column you want to print
 
                     }
                 }
 
             ],
-            initComplete: function () {
+            initComplete: function() {
                 // Apply the search
-                this.api().columns().every( function () {
+                this.api().columns().every(function() {
                     var that = this;
-    
-                    $( 'input', this.footer() ).on( 'keyup change clear', function () {
-                        if ( that.search() !== this.value ) {
+
+                    $('input', this.footer()).on('keyup change clear', function() {
+                        if (that.search() !== this.value) {
                             that
-                                .search( this.value )
+                                .search(this.value)
                                 .draw();
                         }
-                    } );
-                } );
+                    });
+                });
             },
-          
+
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         $("#example2").DataTable({
             "responsive": true,
             "autoWidth": false,
-            "searching":false,
+            "searching": false,
             "paging": false,
             "info": false,
             "order": false,

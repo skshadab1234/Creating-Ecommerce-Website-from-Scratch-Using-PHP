@@ -531,10 +531,36 @@
                         <div class="container-fluid">
                             <div class="card_box">
                                 <div class="card-header">
-                                    <button type="submit" class="btn btn-success" id="product_activate_btn" style="display:none">Activate</button>
-                                    <button type="submit" class="btn btn-danger" id="product_deactivate_btn" style="display:none">Deactive</button>
-                                    <button type="submit" class="btn btn-info" id="product_draft_btn" style="display:none">Draft</button>
+                                    <button type="submit" class="btn text-primary" id="product_activate_btn" style="display:none">Activate</button>
+                                    <button type="submit" class="btn text-primary" id="product_deactivate_btn" style="display:none">Deactive</button>
+                                    <button type="submit" class="btn text-primary" id="product_draft_btn" style="display:none">Draft</button>
+                                    <button type="button" class="btn text-primary" id="update_stock_bulk" style="display:none" data-toggle="modal"
+                                                    data-target="#update_stock_modal" >Update Stock</button>
 
+                                    <div class="modal fade" aria-hidden="true" id='update_stock_modal'>
+                                        <div class="modal-dialog modal-xl">
+                                            <div class="modal-content ">
+                                                <div class="modal-header card_box">
+                                                    <h4 class="modal-title">Update Stock</h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body text-left card_box" >
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" name="UpdateStockBulk" id="update_stock_value_123" placeholder="Enter Bulk Stock"> 
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer card_box justify-content-between">
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                </div>
+
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
                                     <h3 class="card-title float-right">
                                         <button class="btn btn-success"><a
                                                 href="<?= ADMIN_FRONT_SITE.'products?operation=addNewProduct' ?>"

@@ -4,13 +4,11 @@
         redirect(FRONT_SITE_PATH);
     }
     require('config.php');
-    
+    unset($_SESSION['id_address_delivery']);    
 ?>
 <section id="wrapper">
 
     <div class="container">
-
-
         <section id="content">
             <div class="row">
                 <div class="cart-grid-body col-xs-12 col-lg-8">
@@ -22,7 +20,6 @@
                             Personal Information
                             <span class="step-edit text-muted"><i class="fa fa-pencil-square-o"></i></span>
                         </h1>
-
                         <div class="content">
                             <p class="identity">
                                 Connected as <a
@@ -40,13 +37,9 @@
                                         Continue
                                     </button>
                                 </form>
-
                             </div>
-
-
                         </div>
                     </section>
-
                     <!-- -current -reachable js-current-step -clickable -->
                     <?php
                         if(isset($_SESSION['id_address_delivery']) && $_SESSION['id_address_delivery'] > 0){
@@ -246,7 +239,7 @@
                                                     </tr>
                                                     <tr id="cart-subtotal-shipping">
                                                         <td>Shipping</td>
-                                                        <td class="value">$7.00</td>
+                                                        <td class="value"></td>
                                                     </tr>
                                                     <tr class="sub taxes">
                                                         <td><span class="label"
@@ -265,20 +258,52 @@
                             </section>
 
                             <div class="payment-options ">
-
+                                <h5 class="mb-2">Choose Payment Mode:</h5>
                                 <div>
-                                    <div id="payment-option-1-container" class="payment-option clearfix">
-                                        <span class="custom-radio float-xs-left">
-                                            <input class="ps-shown-by-js " id="stripe_pay" name="payment-option"
-                                                type="radio" required="">
-                                            <span></span>
-                                        </span>
-
-                                        <label for="stripe_pay">
-                                            <span> <img
+                                    <div class="form-group row">
+                                        <div class="radio custom col-xs-12 col-lg-4">
+                                            <label>
+                                                <input type="radio"  name="choosePaymentMode" value="stripe">
+                                                <img
                                                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Stripe_Logo%2C_revised_2016.svg/2560px-Stripe_Logo%2C_revised_2016.svg.png"
-                                                    alt="" style="width: 100%;height: 50px;margin-left: 10px;"> </span>
-                                        </label>
+                                                    alt="" style="width: 100px;height: 50px;"> 
+                                            </label>
+                                        </div>
+                                        <div class="radio custom col-xs-12 col-lg-4">
+                                            <label>
+                                                <?php
+                                                 $uid = $user['id'];
+                                                 $sql = "SELECT *, cart.id as cid FROM `cart` left join product_details on cart.product_id = product_details.id where cart.user_id = '$uid'";
+                                                 $result = mysqli_query($con , $sql);
+                                                  $price_total = "";
+                                                 if (mysqli_num_rows($result) > 0) {
+                                                     while ($row = mysqli_fetch_assoc($result)) {
+                                                         $price_total = $price_total.",";
+                                                         $price_total .= $row['product_price'] * $row['qty'];
+                                                         $price_total_arr = explode(",", $price_total);
+                                                         $price_total = array_sum($price_total_arr);
+                                                     }
+         
+                                                     if($price_total > 500) {
+                                                         $total_payable = $price_total;
+                                                     }else {
+                                                         $total_payable = ($price_total + 500);
+                                                     }
+                                                 }   
+
+                                                    $disabledRadioButton = '';
+                                                    $disp_color = 'text-success';
+                                                    if($FetchUserWalletAmt['Total_WalletAmt'] < $total_payable ) {
+                                                        $disabledRadioButton = "disabled";
+                                                        $disp_color = 'text-danger';
+                                                    }
+                                                ?>
+                                                <input type="radio"  name="choosePaymentMode" <?= $disabledRadioButton ?> value="wallet">
+                                                <img
+                                                    src="https://www.kindpng.com/picc/m/421-4213376_credit-wallet-png-icon-transparent-png.png"
+                                                    alt="" style="width: 50px;height: 50px;"><span class="<?= $disp_color ?>">(<?= "₹".number_format($FetchUserWalletAmt['Total_WalletAmt'],2) ?>)</span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -286,42 +311,25 @@
 
                             <div id="payment-confirmation">
                                 <div class="ps-shown-by-js">
-                                    <?php
-                                        $uid = $user['id'];
-                                        $sql = "SELECT *, cart.id as cid FROM `cart` left join product_details on cart.product_id = product_details.id where cart.user_id = '$uid'";
-                                        $result = mysqli_query($con , $sql);
-                                         $price_total = "";
-                                        if (mysqli_num_rows($result) > 0) {
-                                            while ($row = mysqli_fetch_assoc($result)) {
-                                                $price_total = $price_total.",";
-                                                $price_total .= $row['product_price'] * $row['qty'];
-                                                $price_total_arr = explode(",", $price_total);
-                                                $price_total = array_sum($price_total_arr);
-                                            }
-
-                                            if($price_total > 500) {
-                                                $total_payable = $price_total * 10000;
-                                            }else {
-                                                $total_payable = ($price_total + 500) * 10000;
-                                            }
-                                        }   
-                                        
-                                    ?>
-
-                                    <div id="PayWithStripe" >
+                                    <div id="PayWithStripe"  style="display:none">
                                         <form action="submit.php" method="post">
+                                            <input type="hidden" name="btnname" value="stripe">
                                             <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                                                 data-key="<?php echo $publishableKey?>"
-                                                data-amount="<?= $total_payable  / 100?>"
+                                                data-amount="<?= $total_payable * 100?>"
                                                 data-name="Programming with Shadab"
                                                 data-description="Programming with Shadab Desc"
                                                 data-image="https://pbs.twimg.com/profile_images/932986247642939392/CDq_0Vcw_400x400.jpg"
                                                 data-currency="inr" data-email="ks615044@gmail.com">
                                             </script>
-
                                         </form>
                                     </div>
-
+                                    <div class="form-group" id="payfromwallet" style="display:none">
+                                        <form action="submit.php" method="post">
+                                            <input type="hidden" name="btnname" value="wallet">
+                                            <button type="submit" class="btn btn-primary form-control">Pay From Wallet</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
 
@@ -339,21 +347,12 @@
                             </div>
 
                         </div>
-
                     </section>
-
-
-
-
                 </div>
 
                 <div class="cart-grid-right col-xs-12 col-lg-4">
-
-
-                    <section id="js-checkout-summary" class="card js-cart rb-cart-checkout"
-                        data-refresh-url="https://rubiktheme.com/demo/rb_evo_demo/en/cart?ajax=1&action=refresh">
+                    <section id="js-checkout-summary" class="card js-cart rb-cart-checkout">
                         <div class="card-block">
-
                             <div class="cart-summary-products">
                                 <div class="head-cart-total">
                                     <h4>Cart totals</h4>
@@ -374,8 +373,6 @@
                                 </div>
 
                             </div>
-
-
 
                             <div class="card-block cart-summary-subtotals-container">
 
@@ -401,11 +398,7 @@
                                 </div>
 
                             </div>
-
-
-
                         </div>
-
 
                         <div class="card-block cart-summary-totals">
 
@@ -467,3 +460,17 @@
 <?php
 require 'includes/footer.php';
 ?>
+
+<script>
+    $('input[type=radio][name=choosePaymentMode]').on('change', function() {
+        if($(this).val() == 'stripe'){
+            $("#PayWithStripe").show();
+            $("#payfromwallet").hide();
+        }
+
+        else if($(this).val() == 'wallet') {
+            $("#PayWithStripe").hide();
+            $("#payfromwallet").show();
+        }
+    });
+</script>

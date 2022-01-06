@@ -138,7 +138,7 @@
                                     <section>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label">
+                                            <label class="col-md-2 col-form-label text-xs-left text-lg-right">
                                                 Social title
                                             </label>
                                             <div class="col-md-8 form-control-valign">
@@ -178,7 +178,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 First name
                                             </label>
                                             <div class="col-md-8">
@@ -195,7 +195,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Last name
                                             </label>
                                             <div class="col-md-8">
@@ -213,7 +213,7 @@
 
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Email
                                             </label>
                                             <div class="col-md-8">
@@ -226,7 +226,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label required">
+                                            <label class="col-md-2 col-form-label required text-xs-left text-lg-right">
                                                 Password
                                             </label>
                                             <div class="col-md-8">
@@ -249,7 +249,7 @@
 
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label">
+                                            <label class="col-md-2 col-form-label text-xs-left text-lg-right">
                                                 New password
                                             </label>
                                             <div class="col-md-8">
@@ -272,7 +272,7 @@
                                         </div>
 
                                         <div class="form-group row align-items-center ">
-                                            <label class="col-md-2 col-form-label">
+                                            <label class="col-md-2 col-form-label text-xs-left text-lg-right">
                                             </label>
                                             <div class="col-md-8">
                                                 <span class="custom-checkbox">
