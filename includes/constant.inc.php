@@ -5,9 +5,9 @@ define("COMPANY_EMAIL",'ks615044@gmail.com');
 define("TOP_SALE_RANGE",2);
 define("CASH_LABEL_NAME","PSCASH");
 define("1PSCASHVALUE","0.25");
-define("SIGNUP_BONUS","50");
+define("SIGNUP_BONUS","20");
 define("FIRSTORDER_BONUS","100");
-define("GETSIGNEDUPBONUS","150");
+define("GETSIGNEDUPBONUS","50");
 
 define('FRONT_SITE_PATH','http://localhost/Ecomm/');
 define('SERVER_IMAGE',$_SERVER['DOCUMENT_ROOT']."/");

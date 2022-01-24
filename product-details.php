@@ -475,11 +475,18 @@
 
                                     <?php
                                                 $categories = explode("/",$ProductDetails['product_categories']);
+                                                
                                                 foreach ($categories as $key => $value) {
+                                                    $cat_data = ExecutedQuery("Select * from shop_category WHERE cat_id = '$value'");
+                                                    if (count($cat_data) > 1) {
+                                                        $add_comma = ',';
+                                                    }else{
+                                                        $add_comma = '';
+                                                    }
                                                     ?>
                                     <span class="rb-items">
-                                        <a href="" target="_blank" title="Shop">
-                                            <?= $value.', ' ?>
+                                        <a href="<?= FRONT_SITE_PATH.'category?cat_name='.$cat_data[0]['category_name'] ?>" target="_blank" title="Shop">
+                                            <?= $cat_data[0]['category_name'].$add_comma ?>
                                         </a>
                                     </span>
 
@@ -497,63 +504,30 @@
 
                                     <?php
                                                 $tags = explode(",",$ProductDetails['product_tags']);
-                                                foreach ($tags as $key => $value) {
+                                                if ($tags[0] == '') {
                                                     ?>
-                                    <span class="rb-items">
-                                        <a href="" target="_blank" title="">
-                                            <?= trim($value, " ") ?>
-                                        </a>
-                                    </span>
-
-
-                                    <?php 
-                                                    }                           
+                                                        NO tags
+                                                    <?php
+                                                }else{
+                                                    foreach ($tags as $key => $value) {
+                                                        ?>
+                                                        <span class="rb-items">
+                                                            <a href="" target="_blank" title="">
+                                                                <?= trim($value, " ") ?>
+                                                            </a>
+                                                        </span>
+            
+            
+                                                        <?php 
+                                                     }    
+                                                }
+                                                                 
                                                 ?>
 
                                 </div>
                             </div>
 
                         </div>
-
-
-                        <div class="block-reassurance">
-                            <ul>
-                                <li>
-                                    <div class="block-reassurance-item">
-                                        <img src="media/security.svg" alt="Security policy">
-                                        <div>
-                                            <span style="color:#000000;">Security policy</span>
-                                            <p style="color:#000000;">(edit with the Customer
-                                                Reassurance module)</p>
-
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="block-reassurance-item">
-                                        <img src="media/carrier.svg" alt="Delivery policy">
-                                        <div>
-                                            <span style="color:#000000;">Delivery policy</span>
-                                            <p style="color:#000000;">(edit with the Customer
-                                                Reassurance module)</p>
-
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="block-reassurance-item">
-                                        <img src="media/parcel.svg" alt="Return policy">
-                                        <div>
-                                            <span style="color:#000000;">Return policy</span>
-                                            <p style="color:#000000;">(edit with the Customer
-                                                Reassurance module)</p>
-
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
 
                     </div>
             </div>

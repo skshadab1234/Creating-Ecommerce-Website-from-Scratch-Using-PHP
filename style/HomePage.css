@@ -7,7 +7,9 @@
             justify-content: center;
             align-items: center;
         }
-
+        .text-lg-right{
+            text-align: right;
+        }
         .text-center{
             text-align: center!important;
         }
@@ -883,6 +885,9 @@
             }
             .h-sm-200 {
                 height: 200px;
+            }
+            .text-center-sm{
+                text-align: center!important;
             }
         }
 

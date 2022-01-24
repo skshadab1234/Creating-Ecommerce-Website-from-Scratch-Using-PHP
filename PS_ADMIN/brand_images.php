@@ -34,7 +34,7 @@ elseif (isset($_POST['list_image_files']) && isset($_POST['brand_ids'])) {
                 <div class="col-6 col-sm-2  mt-2" style="">
                     <div class="container" style="display: flex;justify-content: center; margin-top: 10px;">
                         <img class="img-reponsive img-fluid" width="100px"
-                            style="object-fit: cover;object-position: top;height: 100px;border-radius: 10px;margin: 0px 10px;"
+                            style="object-fit: contain;object-position: top;height: 100px;border-radius: 10px;margin: 0px 10px;"
                             src="<?= FRONT_SITE_IMAGE_BRAND.urldecode($row['brand_img']) ?>">
                     </div>
                     <div class="contaner" style="display: flex;justify-content: center; margin-top: 10px;">

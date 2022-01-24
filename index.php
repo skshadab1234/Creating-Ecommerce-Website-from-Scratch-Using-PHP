@@ -51,17 +51,17 @@
         <div id="content-wrapper" class="col-lg-12 col-xs-12">
             <section id="main">
                 <!-- Swiper -->
-                <!-- <div class="swiper mySwiper">
+                <div class="swiper mySwiper">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide"><a href=""><img src="media/banner/1.jpg" alt=""></a></div>
                         <div class="swiper-slide"><a href=""><img src="media/banner/2.jpg" alt=""></a></div>
+                        <div class="swiper-slide"><a href=""><img src="media/banner/1.jpg" alt=""></a></div>
                     </div>
                     <div class="swiper-button-next"></div>
                     <div class="swiper-button-prev"></div>
                     <div class="swiper-pagination"></div>
-                </div> -->
+                </div>
 
-                <div class="container">
+                <div class="container mt-5">
                     <h1 class="text-center mb-3">New Arrivals</h1>
                     <div class="row row-cols-5 ">
                         <?php

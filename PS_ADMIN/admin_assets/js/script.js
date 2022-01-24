@@ -181,26 +181,35 @@ $("#product_draft_btn").click(()=>{
     $("#productStatusAfterBtnClick").val('2');
 });
 
+// Selecting checkbox to Update Brand and Showig and Hiding All Buttons
+$("#product_brand_btn").click(()=>{
+    $("#productBrandStatusAfterBtnClick").val('1');
+});
+
+$("#product_brand_btn_d").click(()=>{
+    $("#productBrandStatusAfterBtnClick").val('0');
+});
+
 
 function select_all() {
     if (jQuery('#update_check_data').prop("checked")) {
         jQuery('input[type=checkbox]').each(function () {
             jQuery('#' + this.id).prop('checked', true);
         });
-        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk").show();
+        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk, #update_qc_status").show();
     } else {
         jQuery('input[type=checkbox]').each(function () {
             jQuery('#' + this.id).prop('checked', false);
         });
-        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk").hide();
+        $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk, #update_qc_status").hide();
     }
 }
 
 function get_total_selected() {
     if ($('input[type=checkbox]:checked').length > 0) {
-        $("#product_activate_btn, #product_deactivate_btn, #product_draft_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn, #update_stock_bulk").show();
+        $("#product_activate_btn, #product_deactivate_btn, #product_draft_btn, #product_brand_btn, #product_brand_btn_d, #product_category_btn, #product_subcategory_btn, #update_stock_bulk, #update_qc_status").show();
     } else {
-        $("#product_activate_btn, #product_deactivate_btn, #product_draft_btn, #product_category_btn, #product_subcategory_btn, #product_brand_btn, #update_stock_bulk").hide();
+        $("#product_activate_btn, #product_deactivate_btn, #product_draft_btn, #product_brand_btn, #product_brand_btn_d, #product_category_btn, #product_subcategory_btn, #update_stock_bulk, #update_qc_status").hide();
     }
 }
 
@@ -214,11 +223,11 @@ $("#update_all_product_checkbox_frm").submit((e) => {
         data: form_data,
         success: function (result) {
             ProductListingAjax();
-            $("#update_stock_value_123").val('');
+            $("#update_all_product_checkbox_frm")[0].reset();
             $(".modal").hide();
             $(".fade").hide();
             $("body").css({"overflow-y" : "auto"});
-            $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk").hide();
+            $("#product_activate_btn,  #product_deactivate_btn, #product_draft_btn, #update_stock_bulk, #update_qc_status").hide();
         }
     });
 })
@@ -492,12 +501,12 @@ function select_all_brand() {
         jQuery('input[type=checkbox]').each(function () {
             jQuery('#' + this.id).prop('checked', true);
         });
-        $("#product_brand_btn").show();
+        $("#product_brand_btn,#product_brand_btn_d").show();
     } else {
         jQuery('input[type=checkbox]').each(function () {
             jQuery('#' + this.id).prop('checked', false);
         });
-        $("#product_brand_btn").hide();
+        $("#product_brand_btn,#product_brand_btn_d").hide();
     }
 }
 

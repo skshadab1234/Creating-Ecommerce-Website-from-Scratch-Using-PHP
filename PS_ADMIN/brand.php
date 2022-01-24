@@ -157,12 +157,13 @@
         <!-- /.content-header -->
 
         <form action="" id="delete_all_brand_checkbox_frm" method="post">
+        <input type="hidden" name="product_BRAND_status" id="productBrandStatusAfterBtnClick">
             <div class="content">
                 <div class="container-fluid">
                     <div class="card_box">
                         <div class="card-header">
-                            <button type="submit" class="btn btn-danger float-left" id="product_brand_btn"
-                                style="display:none">Delete</button>
+                            <button type="submit" class="btn btn-success col-md-2" id="product_brand_btn" style="display:none">Activate</button>
+                            <button type="submit" class="btn btn-danger col-md-2" id="product_brand_btn_d" style="display:none">Deactive</button>
 
                             <h3 class="card-title float-right">
 

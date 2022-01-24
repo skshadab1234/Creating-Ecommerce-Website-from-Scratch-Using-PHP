@@ -24,7 +24,8 @@ if (isset($_GET['userLoginCode']) && $_GET['userLoginCode'] > 0)  {
                 ManageWallet("insert",$id,rand(1,SIGNUP_BONUS),'Signup Bonus',date("Y-m-d H:i:s"),'in');
             }
             if(GETSIGNEDUPBONUS > 0){
-                ManageWallet("insert",$ReferByID,rand(1,GETSIGNEDUPBONUS),"₹ ".rand(1,GETSIGNEDUPBONUS).'Referral Amount Added to Wallet',date("Y-m-d H:i:s"),'in');
+                $bonuus_get_amt = rand(1,GETSIGNEDUPBONUS);
+                ManageWallet("insert",$ReferByID,$bonuus_get_amt,"₹".$bonuus_get_amt.' Referral Amount Added to Wallet',date("Y-m-d H:i:s"),'in');
             }
         }
         

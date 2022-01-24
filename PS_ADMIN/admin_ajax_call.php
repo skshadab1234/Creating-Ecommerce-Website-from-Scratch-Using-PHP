@@ -884,14 +884,20 @@ else if (isset($_POST['checked_product_update'][0]))
 {
     $product_status = get_safe_value($_POST['product_status']);
     $added_stock_now = get_safe_value($_POST['UpdateStockBulk']);
+    
     foreach ($_POST['checked_product_update'] as $list)
     {
         $id = get_safe_value($list);
         $ProductDetails = ProductDetails("WHERE id = '$id'");
         $ProductDetails = $ProductDetails[0];
 
+        $qc_status = get_safe_value($_POST['qc_status']);
+        $qc_note = get_safe_value($_POST['qc_note']);
+        $qc_status__db = $ProductDetails['qc_status'].','.$qc_status;
+        $qc_notes__db = $ProductDetails['qc_message'].',PS_FASHION_STORE,'.$qc_note;
+        
         $total_stock = $ProductDetails['total_stock'] + $added_stock_now;
-        SqlQuery("UPDATE product_details SET product_status='$product_status', total_stock = '$total_stock' where id='$id'");
+        SqlQuery("UPDATE product_details SET product_status='$product_status', total_stock = '$total_stock',qc_status='$qc_status__db', qc_message= '$qc_notes__db'  where id='$id'");
     }
 }
 
@@ -1019,7 +1025,8 @@ else if (isset($_POST['checked_brand_delete'][0]))
     foreach ($_POST['checked_brand_delete'] as $list)
     {
         $id = get_safe_value($list);
-        SqlQuery("delete from brands where bid = '$id'");
+        $brand_status = get_safe_value($_POST['product_BRAND_status']);
+        SqlQuery("UPDATE brands set brand_status = '$brand_status' where bid = '$id'");
     }
     
 }
