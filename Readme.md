@@ -1,21 +1,57 @@
 
-# Rock Paper Scissor Game using JavaScript.
+# Creating Ecommerce Website from Scratch Using PHP.
 
-In this project, I have created Game Where User have to play with Computer and try to beat higher score.
+In this project, I have created Ecommerce Website Where user can buy or sell products. User can use coupon to get discount and many more.
 
-## Screenshots
+## Home Page
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot1.png)
 
-![Screenshot 1](https://github.com/skshadab1234/rock-paper-scissor-using-js/blob/main/images/rps.png)
+## Product Detail Page
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot2.png)
+   
+## Add to Cart On Selected Product
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot3.png)   
+
+## Cart View Page
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot4.png)   
+
+## Checkout Page
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot5.png)   
+
+## Shout & Earn Page
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot6.png)   
+   
+## Order Details
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot7.png)      
+   
+## Admin Dashboard
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot8.png)      
+
+## Invoice PDF
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot9.png)   
+   
+## Admin Panel Product Listing
+   ![Screenshot 1](https://github.com/skshadab1234/Creating-Ecommerce-Website-from-Scratch-Using-PHP/blob/master/media/screenshot10.png)      
 
 ## 🛠 Front End
 HTML, CSS, JS
 
+## 🛠 BAck End
+PHP
+
+## 🛠 Database
+MySqli
+
 ## Features
 
 - Mobile/Tablet Friendly.
-- Previous Round History Recorded.
-- Easy Level.
-
+- refer & earn
+- Stripe Payment Gateway
+- Admin Panel with multiple features.
+- Multi vendor feature also available.
+- Product Tracking until Delivered.
+- Delivery Boy Panel.
+- Many more ........
     
 ## Authors
 
